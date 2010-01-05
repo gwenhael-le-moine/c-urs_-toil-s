@@ -1,5 +1,5 @@
+
 levelsets = {
-   --   gstar = require( "star/levelsets/gstar" ),
    gstar = {
       [ 1 ] = {
          { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  },
@@ -456,43 +456,10 @@ star.load_level(  )
 
 print( star.to_s() )
 
-moves = {
-   "down",
-   "right",
-   "down",
-   "left",
-   "up",
-   "right",
-   "up",
-   "left",
-   "down",
-   "right",
-   "down",
-   "left",
-   "right",
-   "up",
-   "left",
-   "up",
-   "right",
-   "up",
-   "down",
-   "left",
-   "up",
-   "right",
-   "down",
-   "up",
-   "left",
-}
+moves = { "down", "right", "down", "left", "up", "right", "up", "left", "down", "right", "down", "left", "right", "up", "left", "up", "right", "up", "down", "left", "up", "right", "down", "up", "left", }
 for _, m in ipairs( moves ) do
    star.move( m )
    print( star.is_it_over(  ) and "YES \o/" or "not yet" )
 end
 
 print( star.to_s() )
-
--- for _, v in ipairs( star.list_levelsets() ) do
---    print( v )
---    for _, w in ipairs( star.list_levels_in_levelset( v ) ) do
---       print( w )
---    end
--- end
