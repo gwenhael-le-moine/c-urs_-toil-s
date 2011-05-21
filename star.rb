@@ -293,32 +293,32 @@ class Star
       d[ :v ] = 1 if direction == :down
 
       tmp = { :x => 0, :y => 0 }
-      tmp[ :x ] = @positions[ @whats_moving ][ :x ]
-      tmp[ :y ] = @positions[ @whats_moving ][ :y ]
+      tmp[ :x ] = @positions[ objectToMove ][ :x ]
+      tmp[ :y ] = @positions[ objectToMove ][ :y ]
 
       while ( 0 <= tmp[ :y ] + d[ :v ] && tmp[ :y ] + d[ :v ] < @level[ :height ] ) &&
               ( 0 <= tmp[ :x ] + d[ :h ] && tmp[ :x ] + d[ :h ] < @level[ :width ] ) &&
               ( @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'V' ) ||
-              ( @whats_moving == :ball &&
+              ( objectToMove == :ball &&
                 @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'G' )
          tmp[ :x ] = tmp[ :x ] + d[ :h ]
          tmp[ :y ] = tmp[ :y ] + d[ :v ]
 
-         if @whats_moving == :ball && @board[ tmp[ :y ] ][ tmp[ :x ] ] == 'G'
+         if objectToMove == :ball && @board[ tmp[ :y ] ][ tmp[ :x ] ] == 'G'
          then
             @board[ tmp[ :y ] ][ tmp[ :x ] ] = 'V'
             @counters[ :gifts ] = @counters[ :gifts ] - 1
          end
       end
 
-      if tmp[ :x ] != @positions[ @whats_moving][ :x ] ||
-            tmp[ :y ] != @positions[ @whats_moving][ :y ]
+      if tmp[ :x ] != @positions[ objectToMove][ :x ] ||
+            tmp[ :y ] != @positions[ objectToMove][ :y ]
       then
-         @board[ @positions[ @whats_moving][ :y ] ][ @positions[ @whats_moving][ :x ] ] = 'V'
-         @positions[ @whats_moving][ :x ] = tmp[ :x ]
-         @positions[ @whats_moving][ :y ] = tmp[ :y ]
+         @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = 'V'
+         @positions[ objectToMove][ :x ] = tmp[ :x ]
+         @positions[ objectToMove][ :y ] = tmp[ :y ]
 
-         @board[ @positions[ @whats_moving][ :y ] ][ @positions[ @whats_moving][ :x ] ] = @whats_moving == :ball ? 'B' : 'C'
+         @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = objectToMove == :ball ? 'B' : 'C'
          @counters[ :moves ] = @counters[ :moves ] + 1
       end
    end
