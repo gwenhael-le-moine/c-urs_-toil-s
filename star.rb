@@ -1,3 +1,5 @@
+require 'test/unit'
+
 class Star
    def initialize
       @levelsets = {
@@ -377,15 +379,21 @@ class Star
    end
 end
 
-st = Star.new
-puts st.to_s
 
-moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+class TestBla < Test::Unit::TestCase
+   def test_level_completion
+      st = Star.new
+      puts st.to_s
 
-moves.map do
-   |direction|
-   st.move( direction )
-   puts st.is_it_over? ? "YES \o/" : "not yet"
+      moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+
+      moves.each do
+         |direction|
+         st.move( direction )
+         # puts st.is_it_over? ? "YES \o/" : "not yet"
+      end
+
+      puts st.to_s
+      assert_equal( true, st.is_it_over? )
+   end
 end
-
-puts st.to_s
