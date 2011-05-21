@@ -289,7 +289,16 @@ class Star
    end
 
    def move_1_step( direction, objectToMove)
+      d = { :h => 0, :v => 0 }
+      d[ :h ] = -1 if direction == :left
+      d[ :h ] = 1 if direction == :right
+      d[ :v ] = -1 if direction == :up
+      d[ :v ] = 1 if direction == :down
 
+      new_x = @positions[ objectToMove ][ :x ] + d[ :h ]
+      new_y = @positions[ objectToMove ][ :y ] + d[ :v ]
+      @positions[ objectToMove ][ :x ] = new_x
+      @positions[ objectToMove ][ :y ] = new_y
    end
 
    def move( direction, objectToMove )
