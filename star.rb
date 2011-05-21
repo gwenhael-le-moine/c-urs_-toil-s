@@ -284,6 +284,13 @@ class Star
 
       load_level
    end
+   def positions()
+      @positions
+   end
+
+   def move_1_step( direction, objectToMove)
+
+   end
 
    def move( direction, objectToMove )
       
@@ -396,5 +403,15 @@ class TestBla < Test::Unit::TestCase
 
       puts st.to_s
       assert_equal( true, st.is_it_over? )
+   end
+
+   def test_move_1_step
+      st = Star.new
+      puts st.to_s
+
+      st.move_1_step( :down, :ball )
+
+      assert_equal( 1, st.positions[ :ball ][ :x ] )
+      assert_equal( 2, st.positions[ :ball ][ :y ] )
    end
 end
