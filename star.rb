@@ -286,37 +286,38 @@ class Star
    end
 
    def move( direction, objectToMove )
+      
       d = { :h => 0, :v => 0 }
       d[ :h ] = -1 if direction == :left
       d[ :h ] = 1 if direction == :right
       d[ :v ] = -1 if direction == :up
       d[ :v ] = 1 if direction == :down
 
-      tmp = { :x => 0, :y => 0 }
-      tmp[ :x ] = @positions[ objectToMove ][ :x ]
-      tmp[ :y ] = @positions[ objectToMove ][ :y ]
+      newpos = { :x => 0, :y => 0 }
+      newpos[ :x ] = @positions[ objectToMove ][ :x ]
+      newpos[ :y ] = @positions[ objectToMove ][ :y ]
 
-      while ( 0 <= tmp[ :y ] + d[ :v ] && tmp[ :y ] + d[ :v ] < @level[ :height ] ) &&
-              ( 0 <= tmp[ :x ] + d[ :h ] && tmp[ :x ] + d[ :h ] < @level[ :width ] ) &&
-              ( @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'V' ) ||
+      while ( 0 <= newpos[ :y ] + d[ :v ] && newpos[ :y ] + d[ :v ] < @level[ :height ] ) &&
+              ( 0 <= newpos[ :x ] + d[ :h ] && newpos[ :x ] + d[ :h ] < @level[ :width ] ) &&
+              ( @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'V' ) ||
               ( objectToMove == :ball &&
-                @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'G' )
-         tmp[ :x ] = tmp[ :x ] + d[ :h ]
-         tmp[ :y ] = tmp[ :y ] + d[ :v ]
+                @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'G' )
+         newpos[ :x ] = newpos[ :x ] + d[ :h ]
+         newpos[ :y ] = newpos[ :y ] + d[ :v ]
 
-         if objectToMove == :ball && @board[ tmp[ :y ] ][ tmp[ :x ] ] == 'G'
+         if objectToMove == :ball && @board[ newpos[ :y ] ][ newpos[ :x ] ] == 'G'
          then
-            @board[ tmp[ :y ] ][ tmp[ :x ] ] = 'V'
+            @board[ newpos[ :y ] ][ newpos[ :x ] ] = 'V'
             @counters[ :gifts ] = @counters[ :gifts ] - 1
          end
       end
 
-      if tmp[ :x ] != @positions[ objectToMove][ :x ] ||
-            tmp[ :y ] != @positions[ objectToMove][ :y ]
+      if newpos[ :x ] != @positions[ objectToMove][ :x ] ||
+            newpos[ :y ] != @positions[ objectToMove][ :y ]
       then
          @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = 'V'
-         @positions[ objectToMove][ :x ] = tmp[ :x ]
-         @positions[ objectToMove][ :y ] = tmp[ :y ]
+         @positions[ objectToMove][ :x ] = newpos[ :x ]
+         @positions[ objectToMove][ :y ] = newpos[ :y ]
 
          @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = objectToMove == :ball ? 'B' : 'C'
          @counters[ :moves ] = @counters[ :moves ] + 1
