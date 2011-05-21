@@ -285,7 +285,7 @@ class Star
       load_level
    end
 
-   def move( direction )
+   def move( direction, objectToMove )
       d = { :h => 0, :v => 0 }
       d[ :h ] = -1 if direction == :left
       d[ :h ] = 1 if direction == :right
@@ -389,7 +389,7 @@ class TestBla < Test::Unit::TestCase
 
       moves.each do
          |direction|
-         st.move( direction )
+         st.move( direction, :ball )
          # puts st.is_it_over? ? "YES \o/" : "not yet"
       end
 
