@@ -295,7 +295,8 @@ class Star
       dy = 0 unless dy
       new_x = @positions[ objectToMove ][ :x ] + dx 
       new_y = @positions[ objectToMove ][ :y ] + dy 
-      @positions[ objectToMove ] = { :x => new_x, :y => new_y }
+      { :x => new_x, :y => new_y }
+      
    end
 
    def move( direction, objectToMove )
@@ -315,6 +316,7 @@ class Star
               ( @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'V' ) ||
               ( objectToMove == :ball &&
                 @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'G' )
+         
          newpos[ :x ] = newpos[ :x ] + d[ :h ]
          newpos[ :y ] = newpos[ :y ] + d[ :v ]
 
@@ -415,9 +417,9 @@ class TestBla < Test::Unit::TestCase
       st = Star.new
       puts st.to_s
 
-      st.move_1_step( :down, :ball )
-
-      assert_equal( 1, st.positions[ :ball ][ :x ] )
-      assert_equal( 2, st.positions[ :ball ][ :y ] )
+      result = st.move_1_step( :down, :ball )
+      
+      assert_equal( 1, result[ :x ] )
+      assert_equal( 2, result[ :y ] )
    end
 end
