@@ -1,3 +1,5 @@
+//&>/dev/null;x="${0%.*}";[ ! "$x" -ot "$0" ]||(rm -f "$x";cc -lncurses -o "$x" "$0")&&"$x" $*;exit
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
