@@ -291,9 +291,9 @@ char get_cell( struct state *s, int x, int y )
    return s->level[ y * LEVEL_WIDTH + x ];
 }
 
-void set_cell( struct state *s, int x, int y, char item )
+void set_cell( struct state *s, int x, int y, cell value )
 {
-   s->level[ y * LEVEL_WIDTH + x ] = item;
+   s->level[ y * LEVEL_WIDTH + x ] = value;
 }
 
 void load_level( struct state *s, char* lvl )
