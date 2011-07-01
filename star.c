@@ -284,16 +284,18 @@ typedef enum {
 } direction;
 
 struct state {
-   char level[ LEVEL_HEIGHT * LEVEL_WIDTH ];
+   char board[ LEVEL_HEIGHT * LEVEL_WIDTH ];
    char moving;
    int moves;
+   int level;
+   int nb_levels;
 };
 
 int count_gifts( struct state *s )
 {
    int i, n = 0;
    for( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
-      if ( s->level[ i ] == GIFT ) {
+      if ( s->board[ i ] == GIFT ) {
          n++;
       }
    }
@@ -304,7 +306,7 @@ void get_pos( struct state *s, int* pos )
 {
    int p;
 
-   p = (int)( strchr( s->level, s->moving ) - s->level );
+   p = (int)( strchr( s->board, s->moving ) - s->board );
 
    pos[ 1 ] = p / LEVEL_WIDTH;
    pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH );
@@ -312,17 +314,18 @@ void get_pos( struct state *s, int* pos )
 
 char get_cell( struct state *s, int x, int y )
 {
-   return s->level[ y * LEVEL_WIDTH + x ];
+   return s->board[ y * LEVEL_WIDTH + x ];
 }
 
 void set_cell( struct state *s, int x, int y, cell value )
 {
-   s->level[ y * LEVEL_WIDTH + x ] = value;
+   s->board[ y * LEVEL_WIDTH + x ] = value;
 }
 
-void load_level( struct state *s, char* lvl )
+void load_level( struct state *s, char* lvl[], int nb )
 {
-   strncpy( s->level, lvl, LEVEL_HEIGHT * LEVEL_WIDTH );
+   strncpy( s->board, lvl[ nb ], LEVEL_HEIGHT * LEVEL_WIDTH );
+   s->level = nb;
    s->moving = BALL;
    s->moves = 0;
 }
@@ -446,20 +449,18 @@ void display_level( struct state *s )
       }
    }
 
-   mvprintw( 1, 35, "%i gifts left", count_gifts( s ) );
-   mvprintw( 2, 35, "%i moves made", s->moves );
+   mvprintw( 1, 35, "level %i of %i", s->level + 1, s->nb_levels );
+   mvprintw( 2, 35, "%i gifts left", count_gifts( s ) );
+   mvprintw( 3, 35, "%i moves made", s->moves );
 
    refresh();
 }
 
 int main( int argc, char* argv[] )
 {
-   int i = 0, lvl = 0, key, load_requested = 0;
+   int i = 0, key;
    struct state *s = malloc( sizeof( struct state ) );
 
-   /* trick to count how many levels we have */
-   int nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
-   
    /* ncurses */
    WINDOW *w_main = initscr(  ); /* why can't stdscr be used transparently? */
    cbreak();
@@ -478,17 +479,21 @@ int main( int argc, char* argv[] )
 	  init_pair( color_BALL_SELECTED, COLOR_BLUE,   COLOR_YELLOW );
    }
 
+   /* s->level = 0; */
+   /* trick to count how many levels we have */
+   s->nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
+   
    /* load the first level to start the loop in a correct state */
-   load_level( s, levels[ lvl ] );
+   load_level( s, levels, 0 );
    
    do {
 	  if ( won_or_not( s ) ) {
-	  	 lvl++;
-		 load_requested = 1;
-	  }
-	  if ( load_requested == 1 ) {
-		 load_requested = 0;
-		 load_level( s, levels[ lvl ] );
+		 if ( s->level < s->nb_levels - 1 ) {
+			load_level( s, levels, s->level + 1 );
+		 }
+		 else {
+			// Damn it you finished the whole game!!
+		 }
 	  }
 
       display_level( s );
@@ -510,24 +515,22 @@ int main( int argc, char* argv[] )
 			switch_actor( s );
 			break;
 		 case 'n':
-			if ( lvl < nb_levels - 1 ) {
-			   lvl++;
-			   load_requested = 1;
+			if ( s->level < s->nb_levels - 1 ) {
+			   load_level( s, levels, s->level + 1 );
 			}
 			break;
 		 case 'p':
-			if ( lvl > 0 ) {
-			   lvl--;
-			   load_requested = 1;
+			if ( s->level > 0 ) {
+			   load_level( s, levels, s->level - 1 );
 			}
 			break;
 		 case 'r':
-			load_requested = 1;
+			load_level( s, levels, s->level );
 			break;
 		 default:
 			break;
 	  }
-   } while( lvl < nb_levels && (( key != 'q' ) && ( key != 'Q' )) );
+   } while( ( s->level < s->nb_levels ) && (( key != 'q' ) && ( key != 'Q' )) );
    display_level( s );
 
    free( s );
