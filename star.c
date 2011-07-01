@@ -458,7 +458,7 @@ void display_level( struct state *s )
 
 int main( int argc, char* argv[] )
 {
-   int i = 0, key;
+   int key;
    struct state *s = malloc( sizeof( struct state ) );
 
    /* ncurses */
@@ -492,7 +492,7 @@ int main( int argc, char* argv[] )
 			load_level( s, levels, s->level + 1 );
 		 }
 		 else {
-			// Damn it you finished the whole game!!
+			// TODO:Damn it you finished the whole game!!
 		 }
 	  }
 
