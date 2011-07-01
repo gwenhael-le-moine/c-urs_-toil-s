@@ -422,6 +422,9 @@ int main( int argc, char* argv[] )
    int i = 0, lvl = 0, key;
    struct state *s = malloc( sizeof( struct state ) );
 
+   /* trick to count how many levels we have */
+   int nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
+   
    /* ncurses */
    WINDOW *w_main = initscr(  );
    cbreak();
@@ -459,7 +462,7 @@ int main( int argc, char* argv[] )
 		 default:
 			break;
 	  }
-   } while( lvl < 25 && (( key != 'q' ) && ( key != 'Q' )) );
+   } while( lvl < nb_levels && (( key != 'q' ) && ( key != 'Q' )) );
    display_level( s );
 
    free( s );
