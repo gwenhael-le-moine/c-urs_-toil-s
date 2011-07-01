@@ -419,7 +419,7 @@ void display_level( struct state *s )
 
 int main( int argc, char* argv[] )
 {
-   int i = 0, lvl = 0, key;
+   int i = 0, lvl = 0, key, load_requested = 0;
    struct state *s = malloc( sizeof( struct state ) );
 
    /* trick to count how many levels we have */
@@ -439,6 +439,9 @@ int main( int argc, char* argv[] )
    do {
 	  if ( won_or_not( s ) ) {
 	  	 lvl++;
+	  }
+	  if ( load_requested == 1 ) {
+		 load_requested = 0;
 		 load_level( s, levels[ lvl ] );
 	  }
 
@@ -459,6 +462,21 @@ int main( int argc, char* argv[] )
 			break;
 		 case ' ':
 			switch_actor( s );
+			break;
+		 case 'n':
+			if ( lvl < nb_levels - 1 ) {
+			   lvl++;
+			   load_requested = 1;
+			}
+			break;
+		 case 'p':
+			if ( lvl > 0 ) {
+			   lvl--;
+			   load_requested = 1;
+			}
+			break;
+		 case 'r':
+			load_requested = 1;
 			break;
 		 default:
 			break;
