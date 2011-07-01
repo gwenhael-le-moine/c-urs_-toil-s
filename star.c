@@ -8,13 +8,14 @@
 #define LEVEL_HEIGHT 9
 #define LEVEL_WIDTH 16
 
-enum { color_BALL = 1,
-	   color_CUBE,
-	   color_VOID,
-	   color_GIFT,
-	   color_WALL,
-	   color_BALL_SELECTED,
-	   color_CUBE_SELECTED,
+enum {
+   color_BALL = 1,
+   color_CUBE,
+   color_VOID,
+   color_GIFT,
+   color_WALL,
+   color_BALL_SELECTED,
+   color_CUBE_SELECTED,
 };
 
 typedef enum {
@@ -471,16 +472,16 @@ int main( int argc, char* argv[] )
    nonl();
    intrflush( w_main, FALSE );
    keypad( w_main, TRUE );
-   /* if ( has_colors(  ) == TRUE ) { */
-   start_color(  );
-   init_pair( color_CUBE,          COLOR_RED,    COLOR_BLACK  );
-   init_pair( color_BALL,          COLOR_BLUE,   COLOR_BLACK  );
-   init_pair( color_GIFT,          COLOR_YELLOW, COLOR_BLACK  );
-   init_pair( color_WALL,          COLOR_WHITE,  COLOR_WHITE  );
-   init_pair( color_VOID,          COLOR_BLACK,  COLOR_BLACK  );
-   init_pair( color_CUBE_SELECTED, COLOR_RED,    COLOR_YELLOW );
-   init_pair( color_BALL_SELECTED, COLOR_BLUE,   COLOR_YELLOW );
-   /* } */
+   if ( has_colors(  ) == TRUE ) {
+	  start_color(  );
+	  init_pair( color_CUBE,          COLOR_RED,    COLOR_BLACK  );
+	  init_pair( color_BALL,          COLOR_BLUE,   COLOR_BLACK  );
+	  init_pair( color_GIFT,          COLOR_YELLOW, COLOR_BLACK  );
+	  init_pair( color_WALL,          COLOR_WHITE,  COLOR_WHITE  );
+	  init_pair( color_VOID,          COLOR_BLACK,  COLOR_BLACK  );
+	  init_pair( color_CUBE_SELECTED, COLOR_RED,    COLOR_YELLOW );
+	  init_pair( color_BALL_SELECTED, COLOR_BLUE,   COLOR_YELLOW );
+   }
 
    /* load the first level to start the loop in a correct state */
    load_level( s, levels[ lvl ] );
