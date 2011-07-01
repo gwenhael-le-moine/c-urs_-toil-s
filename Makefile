@@ -1,2 +1,2 @@
 star: star.c
-	gcc star.c -o star
+	gcc -lncurses star.c -o star
