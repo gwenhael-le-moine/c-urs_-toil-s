@@ -459,6 +459,7 @@ int main( int argc, char* argv[] )
 			break;
 		 case ' ':
 			switch_actor( s );
+			break;
 		 default:
 			break;
 	  }
