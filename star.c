@@ -461,7 +461,7 @@ int main( int argc, char* argv[] )
    int nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
    
    /* ncurses */
-   WINDOW *w_main = initscr(  );
+   WINDOW *w_main = initscr(  ); /* why can't stdscr be used transparently? */
    cbreak();
    noecho();
    nonl();
