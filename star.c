@@ -2,40 +2,265 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* levels have fixed, hardcoded dimensions */
 #define LEVEL_HEIGHT 9
 #define LEVEL_WIDTH 16
 
-#define WALL 'W'
-#define BALL 'B'
-#define CUBE 'C'
-#define VOID 'V'
-#define GIFT 'G'
+#define WALL '#'
+#define BALL '@'
+#define CUBE 'H'
+#define VOID ' '
+#define GIFT '*'
 
-char* levels[] = { "WWWWWWWWWWWWWWWWWBWWVVVVVVVVGWCWWVVVVVVVVVVGVWWWWVVVVVVVWWGVVVVWWVVVWWVGVVVVVVWWWWVGVVGVVVVVGVVWWVGVVVVVVGWWVGVWWVVVVVWWGVVVVVGWWWWWWWWWWWWWWWWW",
-				   "VWVVWVWVWVVVWVWWWVVVGVVVVVVVVVBWVVVWGVVWGVVVGVVVWVWVGVVVVVGVVWVWVVVVVVWVVVGVVVWVWVVVVWCWVVGVVVVWVVVWVVWVWVVVWGGWWVVVVVVVVVVVVVWVVWVVWVVVVVVVVWVV",
-				   "WWWWWWWWWWWWWWWWWVVVVVVVVVVVGWBWWVVVWWVVVVVVWWCWWVVVWGVVVVVGVVVWWVGVVVVVGWWVVVGWWVWGVVGVVGWVVGWWWVWWGVWGVVGVGWWWWGVVVVWWGVVVVVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVVVVVVVVVVVVWCWWVVVVVWVVVVVVVVWWWGWGVGWGWGWGWGWWVWVWGVGWVWVWVWWWWGWGWGVGWGWGWGWWVVVVVWVVVVVVVVWWVVVWVVVVVVVWBVWWWWWWWWWWWWWWWWW",
-				   "VWWWWWWWWWWWWWWVWBVVWVVVWVVWVVVWWVVWGVWVGVVGVWVWWWVVVVVVWVVWVVVWWGVWGWVVVVVVVVWWWWVVVVVWVGVWVVVWWGWVVWVWVWVVVWCWWVVVWVVVVGWVVWGWVWWWWWWWWWWWWWWV",
-				   "VVVVWWWWWWWWWWWWVVVWVVVGVVVWGVGWVVWVVVVGVVVVWVWWVWVVVVVGVVVVVVVWWBVVVVVGVVVVVVVWWWVVVVVGVVWVVVWWWVVVVVVGVVVVWVVWWCVWVVVGVVWWGVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVWVWWVWWWVVWGVWWGWVWGVVWGVWVWVWVWVVVWVVWVVWWWVWWVVVWWVVWVVWGWVWGWVWVVVVVVVVVVVVVVWWVVBWGVVVVCVVWGWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWVWVVGWWVVVVVVVVWWWVVWGVVWWVGVVVVWWVVGWWVWVWGVVVVWWWVVVVVWWVVWGWVWWWVWVVVVVVVGWGVWWGCGWVVVGVVWBWVWWWVVVVVVVVVVVVVWVWWWWWWWWWWWWWWW",
-				   "VVWVWWWWWWWWWWWVVWGWGVVVVVVWVVBWWGVGWVVVVGVVVVWVVWVWVVGWWVVGWVVWWVVWGVWGCGVVVVGWWVVVVVGWWVVVVVWVWGWGVVVVVVVVVWVVWVVVVVVVVVVVWVVVWWWWWWWWWWWWVVVV",
-				   "VVVVWWWWWWWWWWWVWWWWVGVVVVVVVVVWWVVVCVWWWGVGWVGWWVGVVVWGVWGVVVWVWVVVVVWVVGVVWVGWWGWGVVWVGWVVWBWVVWGVVVWWWVVWWWVVWVVVVVVVVVWVWVWVVWWWWWWWWWVVWVVW",
-				   "WWWWWWWWWWWWWWWWWVVVVVVWVVVVVVBWWVVWGGVVVVVGGVWWWWVVVGVVVWWVVVGWWGVVVVWGWGGVVWWWWWVWWVVVVWWVVVVWWGVVGWVGVVVVCVGWWWGWWWVVVVWVVVWWVWWVWWWWWWWWWWWV",
-				   "WWVVVVVWWVVWWWWVWBWWWWWGVWWWVGWWWVVVVGGVVVVVGVVWWVWWVVWWGVVWGWVWWVWVGVWWWGVWWVVWWVWWVVWWVVVWCWVWWVVVVVGVVVVVVVVWWVVVVVVVVGVVVVVWWWWWWWWWWWWWWWWW",
-				   "VWWWWWWWWWWWWWWVWVBWVVVVVVVVGVWWWVWVVVWGVVVGWWVWWVVVVVVVGVVVVWVWWVGVVVVVVVVVVWGWWVWVVVVVVGVVVVVWWWVVVVVVGVGVVWGWWCVVWVVVVGVWVWVWVWWWWWWWWWWWWWWV",
-				   "WWWWWWWWWWWWWWWWWGWGVVVVVVVVGWGWWVGWBVVVVVVWWVVWWVCVVVVVVVVGVVVWWVVVVVVVVGWVVVVWWVVVVVVGVVVVVVVWWVGWVVVVVVVVWVVWWGWGVVVVVVVVGWGWWWWWWWWWWWWWWWWW",
-				   "VWWWWWWVWWWWWWWVWVVVVVGWVVVVVGVWWVWVGVWVVWVVVGVWWVVBWVVVWGGVWGVWVWVWVVVWVGVVCWVWWGVVVVVVVWVVWGVWVWVVVVVVGVVVVVWVWGVVVVVVVVVVVVGWVWWWWWWWWWWWWWWV",
-				   "WWWWWWWWWWWWWWWWWWVCWGVGVVVVVVGWWGVBGWGVVVVVVVWWWWVWWWVVVVGVVVWWWWVVVVVGWGWVVVVWWGGVVVVVVVGWGVVWWWVGVVVVWWWWGVVWWWGWVVWVVVVVVVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVGWVVVVVVVVWBVWWVWVVGWGGWGVVWVWWVVVVWGWWGWVGVVWWVGWVVVVVVVGWVVWWVVGWGVVVVGWVVVWWVWVVWVWWGWVVWVWWVVVVGVWGVVVCVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVGVVVVGVVCWVVVWWVVWGWGVVVWGVVVWWVVVWGWVVVVWGVVWWVVVGVVWVVVGWGVWWVWGWVVVWVGWVVVWWVGWGVWVGVWVVVVWWGWBVVWVVVVVWVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWGVVVWWVVVVVWWGWWVWVVWVVVVVVWGVWWVGWVVVGWWVVGVVWWVWVVVVWGVVVVVVWWVVVVWVVVGWVVVVWWVWWVGWVWWGVVWCWWVGWVWGVVVVVWWBWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVVVGWGVVVVVVVVWWWGVVGWVWWGVVVWWWVWVWVGVVVWVVWVWWVCVWVVWWVVWVBGWWVWVVWVVVGVWVWVWWWVVVGWWVWGVVGWWWVVVVVVVVGWGVVVWWWWWWWWWWWWWWWWW",
-				   "WWWWWWWWWWWWWWWWWVWWWVVVVVGVVVWWWVVVWVVVVVVVWVWWWVVVWWGVVVVVVGVWWVVGVVVVGVVVGVWWWVVVVWVVVVWWWGVWWVVGVGVBVCVGVGGWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV",
-				   "WWWWWWWWWWWWWWWWWGWVVWGWVWGVVWVWWVVVVWVVVVVVVVVWWGVVVWVVWGVVGVVWWWVWGVVVVVVGVWWWWVGVWVVVWWWGVVVWWVVVVVWBWCVVGVVWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV",
-				   "VWWWWWWWWWWWWWWVWVWVVWGWVWGVVWVWWVVVVGVVWVVVVVVWWWVVVWVVVGVWGVVWWVVWGVVWVVGGVGVWWWGVWVVVWWVGVVVWWVVVVVWBWCVVGVVWVWWWWWWWWWWWWWWVVVVVVVVVVVVVVVVV",
-				   "WWWWWWWWWWWWWWWWWVVVVVWVVVVVVVWWWVWWGVGVVVVWWGWWWVWGVVVVVGWVVWWWWVGGVVGWVWWVVVVWWVWGVGVWVVVVWWVWWVWWVVVBWCWWWGGWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV",
-				   "WWWWWWWWWWWWWWWWWVVVVVVVVVVVVWVWWVGVWWGVVVGVVVVWWVVVWGVVGVVWWVVWWVGVVVVWWVVWGVVWWVWGVVVGWVVVVGVWWVWWGVWBVCVVVVVWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV" };
+char* levels[] = { "################"
+				   "#@##        *#H#"
+				   "#          * ###"
+				   "#       ##*    #"
+				   "#   ## *      ##"
+				   "## *  *     *  #"
+				   "# *      *## * #"
+				   "#     ##*     *#"
+				   "################",
+
+				   " #  # # #   # ##"
+				   "#   *         @#"
+				   "   #*  #*   *   "
+				   "# # *     *  # #"
+				   "      #   *   # "
+				   "#    #H#  *    #"
+				   "   #  # #   #**#"
+				   "#             # "
+				   " #  #        #  ",
+
+				   "################"
+				   "#           *#@#"
+				   "#   ##      ##H#"
+				   "#   #*     *   #"
+				   "# *     *##   *#"
+				   "# #*  *  *#  *##"
+				   "# ##* #*  * *###"
+				   "#*    ##*      #"
+				   "################",
+
+				   "################"
+				   "#            #H#"
+				   "#     #        #"
+				   "##*#* *#*#*#*#*#"
+				   "# # #* *# # # ##"
+				   "##*#*#* *#*#*#*#"
+				   "#     #        #"
+				   "#   #       #@ #"
+				   "################",
+
+				   " ############## "
+				   "#@  #   #  #   #"
+				   "#  #* # *  * # #"
+				   "##      #  #   #"
+				   "#* #*#        ##"
+				   "##     # * #   #"
+				   "#*#  # # #   #H#"
+				   "#   #    *#  #*#"
+				   " ############## ",
+
+				   "    ############"
+				   "   #   *   #* *#"
+				   "  #    *    # ##"
+				   " #     *       #"
+				   "#@     *       #"
+				   "##     *  #   ##"
+				   "#      *    #  #"
+				   "#H #   *  ##*  #"
+				   "################",
+
+				   "################"
+				   "#              #"
+				   " ## ###  #* ##*#"
+				   " #*  #* # # # # "
+				   "  #  #  ### ##  "
+				   " ##  #  #*# #*# "
+				   "#              #"
+				   "#  @#*    H  #*#"
+				   "################",
+
+				   "############### "
+				   "#  *##        ##"
+				   "#  #*  ## *    #"
+				   "#  *## # #*    #"
+				   "##     ##  #*# #"
+				   "## #       *#* #"
+				   "#*H*#   *  #@# #"
+				   "##             #"
+				   " ###############",
+
+				   "  # ########### "
+				   " #*#*      #  @#"
+				   "#* *#    *    # "
+				   " # #  *##  *#  #"
+				   "#  #* #*H*    *#"
+				   "#     *##     # "
+				   "#*#*         #  "
+				   "#           #   "
+				   "############    ",
+
+				   "    ########### "
+				   "#### *         #"
+				   "#   H ###* *# *#"
+				   "# *   #* #*   # "
+				   "#     #  *  # *#"
+				   "#*#*  # *#  #@# "
+				   " #*   ###  ###  "
+				   "#         # # # "
+				   " #########  #  #",
+
+				   "################"
+				   "#      #      @#"
+				   "#  #**     ** ##"
+				   "##   *   ##   *#"
+				   "#*    #*#**  ###"
+				   "## ##    ##    #"
+				   "#*  *# *    H *#"
+				   "##*###    #   ##"
+				   " ## ########### ",
+
+				   "##     ##  #### "
+				   "#@#####* ### *##"
+				   "#    **     *  #"
+				   "# ##  ##*  #*# #"
+				   "# # * ###* ##  #"
+				   "# ##  ##   #H# #"
+				   "#     *        #"
+				   "#        *     #"
+				   "################",
+
+				   " ############## "
+				   "# @#        * ##"
+				   "# #   #*   *## #"
+				   "#       *    # #"
+				   "# *          #*#"
+				   "# #      *     #"
+				   "##      * *  #*#"
+				   "#H  #    * # # #"
+				   " ############## ",
+
+				   "################"
+				   "#*#*        *#*#"
+				   "# *#@      ##  #"
+				   "# H        *   #"
+				   "#        *#    #"
+				   "#      *       #"
+				   "# *#        #  #"
+				   "#*#*        *#*#"
+				   "################",
+
+				   " ###### ####### "
+				   "#     *#     * #"
+				   "# # * #  #   * #"
+				   "#  @#   #** #* #"
+				   " # #   # *  H# #"
+				   "#*       #  #* #"
+				   " #      *     # "
+				   "#*            *#"
+				   " ############## ",
+
+				   "################"
+				   "## H#* *      *#"
+				   "#* @*#*       ##"
+				   "## ###    *   ##"
+				   "##     *#*#    #"
+				   "#**       *#*  #"
+				   "## *    ####*  #"
+				   "##*#  #        #"
+				   "################",
+
+				   "################"
+				   "# *#        #@ #"
+				   "# #  *#**#*  # #"
+				   "#    #*##*# *  #"
+				   "# *#       *#  #"
+				   "#  *#*    *#   #"
+				   "# #  # ##*#  # #"
+				   "#    * #*   H  #"
+				   "################",
+
+				   "################"
+				   "# *    *  H#   #"
+				   "#  #*#*   #*   #"
+				   "#   #*#    #*  #"
+				   "#   *  #   *#* #"
+				   "# #*#   # *#   #"
+				   "# *#* # * #    #"
+				   "#*#@  #     #  #"
+				   "################",
+
+				   "################"
+				   "#*   ##     ##*#"
+				   "# #  #      #* #"
+				   "# *#   *##  *  #"
+				   "# #    #*      #"
+				   "#    #   *#    #"
+				   "# ## *# ##*  #H#"
+				   "# *# #*     ##@#"
+				   "################",
+
+				   "################"
+				   "#   *#*        #"
+				   "##*  *# ##*   ##"
+				   "# # # *   #  # #"
+				   "# H #  ##  # @*#"
+				   "# #  #   * # # #"
+				   "##   *## #*  *##"
+				   "#        *#*   #"
+				   "################",
+
+				   "################"
+				   "# ###     *   ##"
+				   "#   #       # ##"
+				   "#   ##*      * #"
+				   "#  *    *   * ##"
+				   "#    #    ###* #"
+				   "#  * * @ H * **#"
+				   "################"
+				   "                ",
+
+				   "################"
+				   "#*#  #*# #*  # #"
+				   "#    #         #"
+				   "#*   #  #*  *  #"
+				   "## #*      * ###"
+				   "# * #   ###*   #"
+				   "#     #@#H  *  #"
+				   "################"
+				   "                ",
+
+				   " ############## "
+				   "# #  #*# #*  # #"
+				   "#    *  #      #"
+				   "##   #   * #*  #"
+				   "#  #*  #  ** * #"
+				   "##* #   ## *   #"
+				   "#     #@#H  *  #"
+				   " ############## "
+				   "                ",
+
+				   "################"
+				   "#     #       ##"
+				   "# ##* *    ##*##"
+				   "# #*     *#  ###"
+				   "# **  *# ##    #"
+				   "# #* * #    ## #"
+				   "# ##   @#H###**#"
+				   "################"
+				   "                ",
+
+				   "################"
+				   "#            # #"
+				   "# * ##*   *    #"
+				   "#   #*  *  ##  #"
+				   "# *    ##  #*  #"
+				   "# #*   *#    * #"
+				   "# ##* #@ H     #"
+				   "################"
+				   "                " };
 
 struct state {
    char level[ LEVEL_HEIGHT * LEVEL_WIDTH ];
