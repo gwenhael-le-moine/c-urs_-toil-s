@@ -37,13 +37,13 @@ char* levels[] = { "WWWWWWWWWWWWWWWWWBWWVVVVVVVVGWCWWVVVVVVVVVVGVWWWWVVVVVVVWWGV
 				   "WWWWWWWWWWWWWWWWWVVVVVWVVVVVVVWWWVWWGVGVVVVWWGWWWVWGVVVVVGWVVWWWWVGGVVGWVWWVVVVWWVWGVGVWVVVVWWVWWVWWVVVBWCWWWGGWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV",
 				   "WWWWWWWWWWWWWWWWWVVVVVVVVVVVVWVWWVGVWWGVVVGVVVVWWVVVWGVVGVVWWVVWWVGVVVVWWVVWGVVWWVWGVVVGWVVVVGVWWVWWGVWBVCVVVVVWWWWWWWWWWWWWWWWWVVVVVVVVVVVVVVVV" };
 
-typedef struct {
+struct state {
    char level[ LEVEL_HEIGHT * LEVEL_WIDTH ];
    char moving;
    int moves;
-} state;
+};
 
-int count_gifts( state *s )
+int count_gifts( struct state *s )
 {
    int i, n = 0;
    for( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
@@ -54,7 +54,7 @@ int count_gifts( state *s )
    return n;
 }
 
-void get_pos( state *s, int* pos )
+void get_pos( struct state *s, int* pos )
 {
    int p;
    
@@ -64,34 +64,34 @@ void get_pos( state *s, int* pos )
    pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH );
 }
 
-char get_cell( state *s, int x, int y )
+char get_cell( struct state *s, int x, int y )
 {
    return s->level[ y * LEVEL_WIDTH + x ];
 }
 
-void set_cell( state *s, int x, int y, char item )
+void set_cell( struct state *s, int x, int y, char item )
 {
    s->level[ y * LEVEL_WIDTH + x ] = item;
 }
 
-void load_level( state *s, char* lvl )
+void load_level( struct state *s, char* lvl )
 {
    strncpy( s->level, lvl, LEVEL_HEIGHT * LEVEL_WIDTH );
    s->moving = BALL;
    s->moves = 0;
 }
 
-void switch_actor( state *s )
+void switch_actor( struct state *s )
 {
    s->moving = (s->moving == BALL) ? CUBE : BALL;
 }
 
-int won_or_not( state *s )
+int won_or_not( struct state *s )
 {
    return( count_gifts( s ) == 0 );
 }
 
-void move( state *s, int direction )
+void move( struct state *s, int direction )
 {
    int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
    item_coord = malloc( sizeof( int ) * 2 );
@@ -140,7 +140,7 @@ void move( state *s, int direction )
    free( item_coord );
 }
 
-void display_level( state *s )
+void display_level( struct state *s )
 {
    int i, j, *ball, *cube;
    
@@ -180,7 +180,7 @@ void display_level( state *s )
 int main( int argc, char* argv[] )
 {
    int i = 0;
-   state *s = malloc( sizeof( state ) );
+   struct state *s = malloc( sizeof( struct state ) );
    
    load_level( s, levels[ 0 ] );
    
