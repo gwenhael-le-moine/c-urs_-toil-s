@@ -413,14 +413,13 @@ void display_level( struct state *s )
             default: break;     /* ignore newlines */
          }
       }
-      /* printf( "\n" ); */
    }
    refresh();
 }
 
 int main( int argc, char* argv[] )
 {
-   int i = 0;
+   int i = 0, lvl = 0, key;
    struct state *s = malloc( sizeof( struct state ) );
 
    /* ncurses */
@@ -431,13 +430,15 @@ int main( int argc, char* argv[] )
    intrflush( w_main, FALSE );
    keypad( w_main, TRUE );
 
-   load_level( s, levels[ 0 ] );
-
-   display_level( s );
-
-   /* char* moves = "drdluruldrdlrulurudlurdul"; */
-   int key;
+   /* load the first level to start the loop in a correct state */
+   load_level( s, levels[ lvl ] );
+   
    do {
+	  if ( won_or_not( s ) ) {
+	  	 lvl++;
+		 load_level( s, levels[ lvl ] );
+	  }
+
       display_level( s );
 	  key = getch();
 	  switch( key ) {
@@ -453,12 +454,12 @@ int main( int argc, char* argv[] )
 		 case KEY_RIGHT:
 			make_a_move( s, RIGHT );
 			break;
+		 case ' ':
+			switch_actor( s );
 		 default:
 			break;
 	  }
-      /* make_a_move( s, key /\* moves[ i ] *\/ ); */
-      /* i++; */
-   } while( ( ! won_or_not( s ) ) && (( key != 'q' ) && ( key != 'Q' )) /* && ( moves[ i ] != '\0' ) */ );
+   } while( lvl < 25 && (( key != 'q' ) && ( key != 'Q' )) );
    display_level( s );
 
    free( s );
