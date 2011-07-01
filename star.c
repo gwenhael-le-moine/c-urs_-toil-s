@@ -269,26 +269,26 @@ enum {
 };
 
 typedef enum {
-   WALL ='#',
-   BALL ='@',
-   CUBE ='H',
-   VOID =' ',
-   GIFT ='x'
+   WALL = '#',
+   BALL = '@',
+   CUBE = 'H',
+   VOID = ' ',
+   GIFT = 'x'
 } cell;
 
 typedef enum {
-   UP    ='u',
-   DOWN  ='d',
-   LEFT  ='l',
-   RIGHT ='r'
+   UP    = 'u',
+   DOWN  = 'd',
+   LEFT  = 'l',
+   RIGHT = 'r'
 } direction;
 
 struct state {
    char board[ LEVEL_HEIGHT * LEVEL_WIDTH ];
    char moving;
-   int moves;
-   int level;
-   int nb_levels;
+   int  moves;
+   int  level;
+   int  nb_levels;
 };
 
 int count_gifts( struct state *s )
