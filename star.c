@@ -451,6 +451,7 @@ int main( int argc, char* argv[] )
    do {
 	  if ( won_or_not( s ) ) {
 	  	 lvl++;
+		 load_requested = 1;
 	  }
 	  if ( load_requested == 1 ) {
 		 load_requested = 0;
