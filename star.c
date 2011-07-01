@@ -128,7 +128,7 @@ void move( struct state *s, direction where )
 /* below for testing, my kind-of/sort-of unti-testing */
 
 /* so if I declare level as cell* levels[] I get a warning :/ */
-char xlevels[] = { "################"
+char *levels[] = { "################"
                    "#@##        x#H#"
                    "#          x ###"
                    "#       ##x    #"
@@ -424,13 +424,14 @@ int main( int argc, char* argv[] )
 
    display_level( s );
 
-   char* moves = "drdluruldrdlrulurudlurdul";
+   /* char* moves = "drdluruldrdlrulurudlurdul"; */
+   int key;
    do {
-      fprintf( stderr, "move %c\n", moves[ i ]);
-      move( s, moves[ i ] );
+	  key = getchar();
+      move( s, key /* moves[ i ] */ );
       display_level( s );
       i++;
-   } while( ( ! won_or_not( s ) ) && ( moves[ i ] != '\0' ) );
+   } while( ( ! won_or_not( s ) ) /* && ( moves[ i ] != '\0' ) */ );
    display_level( s );
 
    free( s );
