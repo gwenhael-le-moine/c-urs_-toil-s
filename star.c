@@ -107,7 +107,8 @@ void move( struct state *s, direction where )
 	  ( get_cell( s, tmpx + dx, tmpy + dy ) == VOID )
 	  /* or, in case the ball is moving, target cell can be a gift (which we'll eat) */
 	  || ( s->moving == BALL && ( get_cell( s, tmpx + dx, tmpy + dy ) == GIFT ) )
-	  ) {
+	  )
+   {
 	  tmpx += dx;
 	  tmpy += dy;
 
@@ -115,7 +116,7 @@ void move( struct state *s, direction where )
 		 set_cell( s, tmpx, tmpy, VOID );
 	  }
    }
-
+   
    /* Moving to arrival coordinates */
    set_cell( s, item_coord[ 0 ], item_coord[ 1 ], VOID );
    set_cell( s, tmpx, tmpy, s->moving );
