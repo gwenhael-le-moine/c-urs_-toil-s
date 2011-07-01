@@ -192,5 +192,6 @@ int main( int argc, char* argv[] )
    } while( ( ! won_or_not( s ) ) && ( moves[ i ] != '\0' ) );
    display_level( s );
 
+   free( s );
    return 0;
 }
