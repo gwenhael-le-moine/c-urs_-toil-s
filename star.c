@@ -402,10 +402,22 @@ void display_level( struct state *s )
                mvprintw( i+1, j*2, "  " );
                break;
             case BALL:
+			   if ( s->moving == BALL ) {
+				  attron( A_BOLD );
+			   }
                mvprintw( i+1, j*2, "()" );
+			   if ( s->moving == BALL ) {
+				  attroff( A_BOLD );
+			   }
                break;
             case CUBE:
+			   if ( s->moving == CUBE ) {
+				  attron( A_BOLD );
+			   }
                mvprintw( i+1, j*2, "[]" );
+			   if ( s->moving == CUBE ) {
+				  attroff( A_BOLD );
+			   }
                break;
             case GIFT:
                mvprintw( i+1, j*2, "<>" );
