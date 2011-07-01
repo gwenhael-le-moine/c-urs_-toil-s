@@ -116,10 +116,13 @@ void move( state *s, int direction )
    }
 
    /* Calculating arrival coordinates */
-   while (
+   while ( 						/* Hairy conditions ahead */
+	  /* target cell is within level's boundaries */
 	  ( ( tmpx + dx >= 0 ) && ( tmpx + dx < LEVEL_WIDTH ) ) &&
 	  ( ( tmpy + dy >= 0 ) && ( tmpy + dy < LEVEL_HEIGHT ) ) &&
+	  /* and target cell is empty */
 	  ( get_cell( s, tmpx + dx, tmpy + dy ) == VOID )
+	  /* or, in case the ball is moving, target cell can be a gift (which we'll eat) */
 	  || ( s->moving == BALL && ( get_cell( s, tmpx + dx, tmpy + dy ) == GIFT ) )
 	  ) {
 	  tmpx += dx;
@@ -182,7 +185,7 @@ int main( int argc, char* argv[] )
    load_level( s, levels[ 0 ] );
    
    display_level( s );
-   fprintf( stderr, "starting to move\n" );
+
    char* moves = "drdluruldrdlrulurudlurdul";
    do {
    	  fprintf( stderr, "move %c\n", moves[ i ]);
