@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <ncurses.h>
+
 /* levels have fixed, hardcoded dimensions */
 #define LEVEL_HEIGHT 9
 #define LEVEL_WIDTH 16
@@ -75,7 +77,7 @@ int won_or_not( struct state *s )
    return( count_gifts( s ) == 0 );
 }
 
-void move( struct state *s, direction where )
+void make_a_move( struct state *s, direction where )
 {
    int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
    item_coord = malloc( sizeof( int ) * 2 );
@@ -382,43 +384,52 @@ void display_level( struct state *s )
 {
    int i, j, *ball, *cube;
 
-   printf( "%i gifts left", count_gifts( s ) );
+   mvprintw( 0, 0, "%i gifts left, ", count_gifts( s ) );
    if ( won_or_not( s ) ) {
-      printf( ", You WON !\n");
+      mvprintw( 0, 17, "You WON !\n");
    }
    else {
-      printf( ", go on.\n");
+      mvprintw( 0, 17, "go on.\n");
    }
 
    for( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
       for( j = 0 ; j < LEVEL_WIDTH ; j++ ) {
          switch( get_cell( s, j, i ) ) {
             case WALL:
-               printf( "##" );
+               mvprintw( i+1, j*2, "##" );
                break;
             case VOID:
-               printf( "  " );
+               mvprintw( i+1, j*2, "  " );
                break;
             case BALL:
-               printf( "()" );
+               mvprintw( i+1, j*2, "()" );
                break;
             case CUBE:
-               printf( "[]" );
+               mvprintw( i+1, j*2, "[]" );
                break;
             case GIFT:
-               printf( "<>" );
+               mvprintw( i+1, j*2, "<>" );
                break;
             default: break;     /* ignore newlines */
          }
       }
-      printf( "\n" );
+      /* printf( "\n" ); */
    }
+   refresh();
 }
 
 int main( int argc, char* argv[] )
 {
    int i = 0;
    struct state *s = malloc( sizeof( struct state ) );
+
+   /* ncurses */
+   WINDOW *w_main = initscr(  );
+   cbreak();
+   noecho();
+   nonl();
+   intrflush( w_main, FALSE );
+   keypad( w_main, TRUE );
 
    load_level( s, levels[ 0 ] );
 
@@ -427,13 +438,33 @@ int main( int argc, char* argv[] )
    /* char* moves = "drdluruldrdlrulurudlurdul"; */
    int key;
    do {
-	  key = getchar();
-      move( s, key /* moves[ i ] */ );
       display_level( s );
-      i++;
-   } while( ( ! won_or_not( s ) ) /* && ( moves[ i ] != '\0' ) */ );
+	  key = getch();
+	  switch( key ) {
+		 case KEY_UP:
+			make_a_move( s, UP );
+			break;
+		 case KEY_DOWN:
+			make_a_move( s, DOWN );
+			break;
+		 case KEY_LEFT:
+			make_a_move( s, LEFT );
+			break;
+		 case KEY_RIGHT:
+			make_a_move( s, RIGHT );
+			break;
+		 default:
+			break;
+	  }
+      /* make_a_move( s, key /\* moves[ i ] *\/ ); */
+      /* i++; */
+   } while( ( ! won_or_not( s ) ) && (( key != 'q' ) && ( key != 'Q' )) /* && ( moves[ i ] != '\0' ) */ );
    display_level( s );
 
    free( s );
+
+   echo();
+   nocbreak();
+   endwin();
    return 0;
 }
