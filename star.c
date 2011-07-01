@@ -259,7 +259,7 @@ char *levels[] = { "################"
 #define LEVEL_WIDTH 16
 
 enum {
-   color_BALL = 1,
+   color_BALL,
    color_CUBE,
    color_VOID,
    color_GIFT,
