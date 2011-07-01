@@ -6,11 +6,8 @@
 #define LEVEL_HEIGHT 9
 #define LEVEL_WIDTH 16
 
-#define WALL '#'
-#define BALL '@'
-#define CUBE 'H'
-#define VOID ' '
-#define GIFT '*'
+typedef enum { WALL='#', BALL='@', CUBE='H', VOID=' ', GIFT='*' } cell;
+typedef enum { UP='u', DOWN='d', LEFT='l', RIGHT='r' } direction;
 
 char* levels[] = { "################"
 				   "#@##        *#H#"
@@ -316,7 +313,7 @@ int won_or_not( struct state *s )
    return( count_gifts( s ) == 0 );
 }
 
-void move( struct state *s, int direction )
+void move( struct state *s, direction where )
 {
    int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
    item_coord = malloc( sizeof( int ) * 2 );
@@ -324,17 +321,17 @@ void move( struct state *s, int direction )
    tmpx = item_coord[ 0 ];
    tmpy = item_coord[ 1 ];
 	  
-   switch( direction ) {
-	  case 'u':
+   switch( where ) {
+	  case UP:
 		 dy--;
 		 break;
-	  case 'd':
+	  case DOWN:
 		 dy++;
 		 break;
-	  case 'l':
+	  case LEFT:
 		 dx--;
 		 break;
-	  case 'r':
+	  case RIGHT:
 		 dx++;
 		 break;
 	  default: break;
