@@ -604,7 +604,7 @@ int main( int argc, char* argv[] )
                     case KEY_DOWN:
                     case KEY_LEFT:
                     case KEY_RIGHT:
-                         make_a_move( s, key );
+                         make_a_move( s, key ); /* see definition of direction up above */
                          break;
                     case ' ':
                          switch_actor( s );
