@@ -553,7 +553,7 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
 */
 int main( int argc, char* argv[] )
 {
-     int key;
+     int key, over = 0;
      struct state *s = malloc( sizeof( struct state ) );
      struct options *o = malloc( sizeof( struct options ) );
 
@@ -592,43 +592,48 @@ int main( int argc, char* argv[] )
                     load_level( s, levels, s->level + 1 );
                }
                else {
-                    // TODO:Damn it you finished the whole game!!
+                    over = 1;
                }
           }
 
-          display_level( s );
-          key = getch();
-          switch( key ) {
-               case KEY_UP:
-                    make_a_move( s, UP );
-                    break;
-               case KEY_DOWN:
-                    make_a_move( s, DOWN );
-                    break;
-               case KEY_LEFT:
-                    make_a_move( s, LEFT );
-                    break;
-               case KEY_RIGHT:
-                    make_a_move( s, RIGHT );
-                    break;
-               case ' ':
-                    switch_actor( s );
-                    break;
-               case 'n':
-                    if ( s->level < s->nb_levels - 1 ) {
-                         load_level( s, levels, s->level + 1 );
-                    }
-                    break;
-               case 'p':
-                    if ( s->level > 0 ) {
-                         load_level( s, levels, s->level - 1 );
-                    }
-                    break;
-               case 'r':
-                    load_level( s, levels, s->level );
-                    break;
-               default:
-                    break;
+          if ( over == 0 ) {
+               display_level( s );
+               key = getch();
+               switch( key ) {
+                    case KEY_UP:
+                         make_a_move( s, UP );
+                         break;
+                    case KEY_DOWN:
+                         make_a_move( s, DOWN );
+                         break;
+                    case KEY_LEFT:
+                         make_a_move( s, LEFT );
+                         break;
+                    case KEY_RIGHT:
+                         make_a_move( s, RIGHT );
+                         break;
+                    case ' ':
+                         switch_actor( s );
+                         break;
+                    case 'n':
+                         if ( s->level < s->nb_levels - 1 ) {
+                              load_level( s, levels, s->level + 1 );
+                         }
+                         break;
+                    case 'p':
+                         if ( s->level > 0 ) {
+                              load_level( s, levels, s->level - 1 );
+                         }
+                         break;
+                    case 'r':
+                         load_level( s, levels, s->level );
+                         break;
+                    default:
+                         break;
+               }
+          }
+          else {
+               key = 'q';
           }
      } while( ( s->level < s->nb_levels ) && (( key != 'q' ) && ( key != 'Q' )) );
 
@@ -639,6 +644,18 @@ int main( int argc, char* argv[] )
      echo();
      nocbreak();
      endwin();
+
+     if ( over == 1 ) {
+          printf( "################################\n" );
+          printf( "##                            ##\n" );
+          printf( "## You've finished the whole  ##\n" );
+          printf( "##  game!                     ##\n" );
+          printf( "##                            ##\n" );
+          printf( "## Now it's your turn to      ##\n" );
+          printf( "##  contribute new levels ;)  ##\n" );
+          printf( "##                            ##\n" );
+          printf( "################################\n" );
+     }
 
      return 0;
 }
