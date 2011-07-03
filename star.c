@@ -279,11 +279,11 @@ typedef enum {                  /* characters used to design levels */
      GIFT = 'x'
 } cell;
 
-typedef enum {                  /* values aren't strictly necessary but useful for unit-testing */
-     UP    = 'u',
-     DOWN  = 'd',
-     LEFT  = 'l',
-     RIGHT = 'r'
+typedef enum {                  /* and now a nasty trick to slightly simplify key handling */
+     UP    = KEY_UP,            /* we'll use ncurses codes to define directions */
+     DOWN  = KEY_DOWN,
+     LEFT  = KEY_LEFT,
+     RIGHT = KEY_RIGHT
 } direction;
 
 struct options {                /* store how the game is started (controlled by --arguments) */
@@ -601,16 +601,10 @@ int main( int argc, char* argv[] )
                key = getch();
                switch( key ) {
                     case KEY_UP:
-                         make_a_move( s, UP );
-                         break;
                     case KEY_DOWN:
-                         make_a_move( s, DOWN );
-                         break;
                     case KEY_LEFT:
-                         make_a_move( s, LEFT );
-                         break;
                     case KEY_RIGHT:
-                         make_a_move( s, RIGHT );
+                         make_a_move( s, key );
                          break;
                     case ' ':
                          switch_actor( s );
