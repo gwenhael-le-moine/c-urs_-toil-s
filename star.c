@@ -631,7 +631,6 @@ int main( int argc, char* argv[] )
 			break;
 	  }
    } while( ( s->level < s->nb_levels ) && (( key != 'q' ) && ( key != 'Q' )) );
-   display_level( s );
 
    free( s );
 
