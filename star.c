@@ -261,7 +261,7 @@ char *levels[] = { "################" /* 0 */
 #define LEVEL_HEIGHT 9
 #define LEVEL_WIDTH 16
 
-enum {
+enum {                          /* color names for ncurses */
    color_BALL,
    color_CUBE,
    color_VOID,
@@ -271,7 +271,7 @@ enum {
    color_CUBE_SELECTED,
 };
 
-typedef enum {
+typedef enum {                  /* characters used to design levels */
    WALL = '#',
    BALL = '@',
    CUBE = 'H',
@@ -279,19 +279,19 @@ typedef enum {
    GIFT = 'x'
 } cell;
 
-typedef enum {
+typedef enum {                  /* values aren't strictly necessary but useful for unit-testing */
    UP    = 'u',
    DOWN  = 'd',
    LEFT  = 'l',
    RIGHT = 'r'
 } direction;
 
-struct options {
+struct options {                /* store how the game is started (controlled by --arguments) */
      int black_and_white;
      int starting_level;
 };
 
-struct state {
+struct state {                  /* current state of the game at an instant T */
    char board[ LEVEL_HEIGHT * LEVEL_WIDTH ];
    char moving;
    int  moves;
@@ -299,6 +299,8 @@ struct state {
    int  nb_levels;
 };
 
+/* Count how many gifts are present in the current level
+ */
 int count_gifts( struct state *s )
 {
    int i, n = 0;
@@ -310,6 +312,8 @@ int count_gifts( struct state *s )
    return n;
 }
 
+/* Write the position of the currently moving actor into pos
+ */
 void get_pos( struct state *s, int* pos )
 {
    int p;
@@ -320,34 +324,49 @@ void get_pos( struct state *s, int* pos )
    pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH );
 }
 
+/* Returns the content of cell( x, y ) of the current level
+ */
 char get_cell( struct state *s, int x, int y )
 {
    return s->board[ y * LEVEL_WIDTH + x ];
 }
 
+/* Set cell( x, y ) of the current level to value
+ */
 void set_cell( struct state *s, int x, int y, cell value )
 {
    s->board[ y * LEVEL_WIDTH + x ] = value;
 }
 
-void load_level( struct state *s, char* lvl[], int nb )
+/* Load level nb from levels as the current level
+ */
+void load_level( struct state *s, char* levels[], int nb )
 {
-   strncpy( s->board, lvl[ nb ], LEVEL_HEIGHT * LEVEL_WIDTH );
+   strncpy( s->board, levels[ nb ], LEVEL_HEIGHT * LEVEL_WIDTH );
    s->level = nb;
    s->moving = BALL;
    s->moves = 0;
 }
 
+/* Swicth the currently moving actor between BALL and CUBE
+ */
 void switch_actor( struct state *s )
 {
    s->moving = (s->moving == BALL) ? CUBE : BALL;
 }
 
+/* Returns a 'boolean' indicating if the current level is finished (no gifts left)
+ */
 int won_or_not( struct state *s )
 {
    return( count_gifts( s ) == 0 );
 }
 
+/* Move the current actor towards direction in the current level,
+   eating gifts on the way if the moving actor is the ball
+
+   FIXME: more documentation
+ */
 void make_a_move( struct state *s, direction where )
 {
    int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
@@ -400,6 +419,8 @@ void make_a_move( struct state *s, direction where )
    free( item_coord );
 }
 
+/* display the current level (with Ncurses)
+ */
 void display_level( struct state *s )
 {
    int i, j, *ball, *cube;
@@ -464,6 +485,8 @@ void display_level( struct state *s )
    refresh();
 }
 
+/* Parse the --arguments, if any, to populate options
+ */
 int parse_args( int argc, char* argv[], struct options *o, struct state *s )
 {
      int option_index;
@@ -521,6 +544,13 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
      return optind;
 }
 
+/* Entry point of the program.
+
+   Read --arguments.
+   Initialize Ncurses.
+   Load the first level.
+   Enter the loop where it read the keys to play or 'q' or 'Q' to quit.
+ */
 int main( int argc, char* argv[] )
 {
    int key;
@@ -566,7 +596,7 @@ int main( int argc, char* argv[] )
 		 }
 	  }
 
-      display_level( s );
+       display_level( s );
 	  key = getch();
 	  switch( key ) {
 		 case KEY_UP:
@@ -605,8 +635,10 @@ int main( int argc, char* argv[] )
 
    free( s );
 
+   /* Clean ncurses mess */
    echo();
    nocbreak();
    endwin();
+
    return 0;
 }
