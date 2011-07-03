@@ -638,6 +638,7 @@ int main( int argc, char* argv[] )
      echo();
      nocbreak();
      endwin();
+     nl();
 
      if ( over == 1 ) {
           printf( "################################\n" );
