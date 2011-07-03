@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include <ncurses.h>
+#include <getopt.h>
 
 char *levels[] = { "################"
                    "#@##        x#H#"
@@ -285,6 +286,11 @@ typedef enum {
    RIGHT = 'r'
 } direction;
 
+struct options {
+     int black_and_white;
+     int starting_level;
+};
+
 struct state {
    char board[ LEVEL_HEIGHT * LEVEL_WIDTH ];
    char moving;
@@ -458,11 +464,68 @@ void display_level( struct state *s )
    refresh();
 }
 
+int parse_args( int argc, char* argv[], struct options *o )
+{
+     int option_index;
+     char c = '?';
+  
+     char* optstring = "l:bhv";
+     static struct option long_options[] = {
+          {"black-and-white" , no_argument,       NULL, 'b'},
+          {"level"           , required_argument, NULL, 'l'},
+          {"help"            , no_argument,       NULL, 'h'},
+          {"version"         , no_argument,       NULL, 'v'},
+          {0, 0, 0, 0}
+     };
+  
+     char* help_text = "ngstar [options]\n"
+          "\t-v --version :\n\t\t show version\n"
+          "\t-h --help :\n\t\t what you are reading\n"
+          "\t-b --black-and-white :\n\t\t don't use colors (ncurses)\n"
+          "\t-l<n> --level=<n> :\n\t\t wrap to level n\n";
+
+     while(c != EOF) {
+          c = getopt_long(argc, argv, optstring, long_options, &option_index);
+    
+          switch(c) {
+               case 'h' :
+                    printf( "%s\n", help_text );
+                    exit(0);
+                    break;
+               case 'b' :
+                    o->black_and_white = 1;
+                    break;
+               case 'l' :
+                    o->starting_level = atoi( optarg );
+                    break;
+               case '?' :
+               case ':' :
+                    exit(0);
+                    break;
+               default : break;
+          }
+     }
+
+     if (optind < argc) {
+          fprintf( stderr, "Invalid arguments :\n" );
+          while (optind < argc)
+               fprintf( stderr, "%s\n", argv[optind++] );
+     }
+  
+     return optind;
+}
+
 int main( int argc, char* argv[] )
 {
    int key;
    struct state *s = malloc( sizeof( struct state ) );
+   struct options *o = malloc( sizeof( struct options ) );
 
+   o->starting_level = 0;
+   o->black_and_white = 0;
+   
+   parse_args( argc, argv, o ); /* not caring about return value here, it's treated inside the function */
+   
    /* ncurses */
    WINDOW *w_main = initscr(  ); /* why can't stdscr be used transparently? */
    cbreak();
@@ -470,7 +533,7 @@ int main( int argc, char* argv[] )
    nonl();
    intrflush( w_main, FALSE );
    keypad( w_main, TRUE );
-   if ( has_colors(  ) == TRUE ) {
+   if ( ( ! o->black_and_white ) && has_colors(  ) == TRUE ) {
 	  start_color(  );
 	  init_pair( color_CUBE,          COLOR_RED,    COLOR_BLACK  );
 	  init_pair( color_BALL,          COLOR_BLUE,   COLOR_BLACK  );
@@ -486,7 +549,7 @@ int main( int argc, char* argv[] )
    s->nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
    
    /* load the first level to start the loop in a correct state */
-   load_level( s, levels, 0 );
+   load_level( s, levels, o->starting_level );
    
    do {
 	  if ( won_or_not( s ) ) {
