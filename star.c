@@ -479,7 +479,6 @@ int parse_args( int argc, char* argv[], struct options *o )
      };
   
      char* help_text = "ngstar [options]\n"
-          "\t-v --version :\n\t\t show version\n"
           "\t-h --help :\n\t\t what you are reading\n"
           "\t-b --black-and-white :\n\t\t don't use colors (ncurses)\n"
           "\t-l<n> --level=<n> :\n\t\t wrap to level n\n";
