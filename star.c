@@ -498,6 +498,10 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
                     o->starting_level = atoi( optarg ) - 1;
                     if ( o->starting_level > s->nb_levels ) {
                          o->starting_level = s->nb_levels - 1;
+                    } else {
+                         if ( o->starting_level < 0 ) {
+                              o->starting_level = 0;
+                         }
                     }
                     break;
                case '?' :
