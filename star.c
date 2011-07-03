@@ -633,6 +633,7 @@ int main( int argc, char* argv[] )
    } while( ( s->level < s->nb_levels ) && (( key != 'q' ) && ( key != 'Q' )) );
 
    free( s );
+   free( o );
 
    /* Clean ncurses mess */
    echo();
