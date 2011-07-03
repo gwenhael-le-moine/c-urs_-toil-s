@@ -543,7 +543,6 @@ int main( int argc, char* argv[] )
 	  init_pair( color_BALL_SELECTED, COLOR_BLUE,   COLOR_YELLOW );
    }
 
-   /* s->level = 0; */
    /* trick to count how many levels we have */
    s->nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
    
