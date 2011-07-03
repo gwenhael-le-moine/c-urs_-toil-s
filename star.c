@@ -640,7 +640,7 @@ int main( int argc, char* argv[] )
      endwin();
      nl();
 
-     if ( over == 1 ) {
+     if ( over == 1 ) {         /* FIXME: display bug, like ncurses hasn't been cleaned yet*/
           printf( "################################\n" );
           printf( "##                            ##\n" );
           printf( "## You've finished the whole  ##\n" );
