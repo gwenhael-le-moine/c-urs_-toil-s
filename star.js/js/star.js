@@ -104,7 +104,7 @@ function load_level( levelset, nb ) {
 	return state;
 }
 
-function display_level( elt, state ) {
+function display_level( state, elt ) {
 	$( elt ).html( format_level( state ) );
 }
 
@@ -153,8 +153,8 @@ function make_a_move( state, where ) {
 	return state;
 }
 
-function start_loop( elt, state ) {
-	display_level( elt, state );
+function start_loop( state, elt ) {
+	display_level( state, elt );
 
 	$( document ).keydown( function( e ) {
 		switch( e.keyCode ) {
@@ -187,13 +187,15 @@ function start_loop( elt, state ) {
 			break;
 		}
 		
-		if ( won_or_not( state ) && state.level < levels.length - 1 ) {
+		if ( won_or_not( state ) ) {
+			if ( state.level < levels.length - 1 ) {
 			state = load_level( levels, state.level + 1 )
-		}
-		else {
-			alert( "You won!" );
+			}
+			else {
+				alert( "You won!" );
+			}
 		}
 
-		display_level( elt, state );
+		display_level( state, elt );
 	});
 }
