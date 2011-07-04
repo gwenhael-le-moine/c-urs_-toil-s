@@ -367,7 +367,7 @@ int won_or_not( struct state *s )
  */
 void display_level( struct state *s )
 {
-     int i, j, *ball, *cube;
+     int i, j;
      
      for( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
           for( j = 0 ; j < LEVEL_WIDTH ; j++ ) {
