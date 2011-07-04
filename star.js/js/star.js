@@ -102,7 +102,7 @@ function format_level( state ) {
 			c = get_cell( state, j, i );
 			classes = "starcell " + css_classes[ c ];
 			if ( state.moving == c) {
-				classes = classes + "selected ";
+				classes = classes + " selected ";
 			}
 			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
 		}
