@@ -91,7 +91,34 @@ function won_or_not( state ) {
 function format_level( state ) {
 	dl = "";
 	for ( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
-		dl = dl + (state.board).substr( i*LEVEL_WIDTH, LEVEL_WIDTH ) + "\n";
+		for ( j = 0 ; j < LEVEL_WIDTH ; j++ ) {
+			c = get_cell( state, j, i );
+			classes = "starcell";
+			if ( state.moving == c) {
+				classes = classes + " selected";
+			}
+			switch( c ) {
+			case cell.BALL:
+				classes = classes + " ball";
+				break;
+			case cell.CUBE:
+				classes = classes + " cube";
+				break;
+			case cell.WALL:
+				classes = classes + " wall";
+				break;
+			case cell.VOID:
+				classes = classes + " void";
+				break;
+			case cell.GIFT:
+				classes = classes + " gift";
+				break;
+			default:
+				break;
+			}
+			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>"
+		}
+		dl = dl + "<br />"
 	}
 	return dl;
 }
