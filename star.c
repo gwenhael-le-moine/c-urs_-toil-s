@@ -527,7 +527,6 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
                case '?' :
                case ':' :
                     exit(0);
-                    break;
                default : break;
           }
      }
