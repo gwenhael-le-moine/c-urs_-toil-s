@@ -526,7 +526,7 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
                     break;
                case '?' :
                case ':' :
-                    exit(0);
+                    exit( 0 );
                default : break;
           }
      }
@@ -555,7 +555,7 @@ int main( int argc, char* argv[] )
      struct options *o = malloc( sizeof( struct options ) );
 
      if ( s == NULL || o == NULL ) {
-          return 1;               /* Guys, we're out of memory */
+          exit( 1 );               /* Guys, we're out of memory */
      }
           
      /* trick to count how many levels we have */
