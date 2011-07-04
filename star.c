@@ -514,7 +514,6 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
                case 'h' :
                     printf( "%s\n", help_text );
                     exit(0);
-                    break;
                case 'b' :
                     o->black_and_white = 1;
                     break;
