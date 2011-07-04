@@ -113,43 +113,43 @@ function make_a_move( state, where ) {
 	motion = [ 0, 0 ];
 	item_coord = get_pos( state, state.moving );
 
-     /* Setup the motion vector according to direction.*/
-     switch( where ) {
-          case direction.UP:
-               motion[ 1 ]--;
-               break;
-          case direction.DOWN:
-               motion[ 1 ]++;
-               break;
-          case direction.LEFT:
-               motion[ 0 ]--;
-               break;
-          case direction.RIGHT:
-               motion[ 0 ]++;
-               break;
-          default: break;
-     }
+    /* Setup the motion vector according to direction.*/
+    switch( where ) {
+    case direction.UP:
+        motion[ 1 ]--;
+        break;
+    case direction.DOWN:
+        motion[ 1 ]++;
+        break;
+    case direction.LEFT:
+        motion[ 0 ]--;
+        break;
+    case direction.RIGHT:
+        motion[ 0 ]++;
+        break;
+    default: break;
+    }
 
-	     /* Calculating arrival coordinates */
-     while (                      /* Hairy conditions ahead */
-          /* target cell is within level's boundaries */
-          ( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < LEVEL_WIDTH ) ) &&
-          ( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < LEVEL_HEIGHT ) ) &&
-          /* and target cell is empty */
-          ( get_cell( state, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.VOID )
-          /* or, the ball will eat gifts so we can move it on one */
-          || ( state.moving == cell.BALL && ( get_cell( state, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
-          )
-     {
-          state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
+	/* Calculating arrival coordinates */
+    while (                      /* Hairy conditions ahead */
+        /* target cell is within level's boundaries */
+        ( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < LEVEL_WIDTH ) ) &&
+			( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < LEVEL_HEIGHT ) ) &&
+			/* and target cell is empty */
+        ( get_cell( state, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.VOID )
+        /* or, the ball will eat gifts so we can move it on one */
+			|| ( state.moving == cell.BALL && ( get_cell( state, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
+    )
+    {
+        state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 
-          item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
-          item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
-          
-          state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
-     }
+        item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
+        item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
+        
+        state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
+    }
 
-     state.moves++;                /* increment moves' counter */
+    state.moves++;                /* increment moves' counter */
 	return state;
 }
 
