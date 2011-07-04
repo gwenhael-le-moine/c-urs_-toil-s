@@ -537,8 +537,9 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
 
      if (optind < argc) {
           fprintf( stderr, "Invalid arguments :\n" );
-          while (optind < argc)
+          while (optind < argc) {
                fprintf( stderr, "%s\n", argv[optind++] );
+          }
      }
   
      return optind;
