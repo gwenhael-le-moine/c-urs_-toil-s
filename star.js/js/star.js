@@ -14,6 +14,13 @@ direction = {
 	LEFT: 'l',
 	RIGHT: 'r'
 };
+css_classes = {
+	"@": "ball",
+	"H": "cube",
+	"#": "wall",
+	" ": "void",
+	"x": "gift"
+};
 options = {
 	starting_level: 0
 };
@@ -93,28 +100,9 @@ function format_level( state ) {
 	for ( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( j = 0 ; j < LEVEL_WIDTH ; j++ ) {
 			c = get_cell( state, j, i );
-			classes = "starcell";
+			classes = "starcell " + css_classes[ c ];
 			if ( state.moving == c) {
-				classes = classes + " selected";
-			}
-			switch( c ) {
-			case cell.BALL:
-				classes = classes + " ball";
-				break;
-			case cell.CUBE:
-				classes = classes + " cube";
-				break;
-			case cell.WALL:
-				classes = classes + " wall";
-				break;
-			case cell.VOID:
-				classes = classes + " void";
-				break;
-			case cell.GIFT:
-				classes = classes + " gift";
-				break;
-			default:
-				break;
+				classes = classes + "selected ";
 			}
 			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
 		}
