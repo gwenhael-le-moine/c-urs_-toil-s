@@ -6,23 +6,23 @@ cell= {
 	BALL: '@',
 	CUBE: 'H',
 	VOID: ' ',
-	GIFT: 'x',
-}
+	GIFT: 'x'
+};
 direction = {
 	UP: 'u',
 	DOWN: 'd',
 	LEFT: 'l',
-	RIGHT: 'r',
-}
+	RIGHT: 'r'
+};
 options = {
-	starting_level: 0,
-}
+	starting_level: 0
+};
 state = {
 	moving: cell.BALL,
 	moves: 0,
 	level: 0,
 	board: ""
-}
+};
 
 levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
            " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
@@ -51,7 +51,7 @@ levels = [ "#################@##        x#H##          x ####       ##x    ##   
            "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ];
 
 function count_gifts( state ) {
-	n = 0
+	n = 0;
 	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
 		if ( state.board.charAt( i ) == cell.GIFT ) {
 			n++;
@@ -62,7 +62,7 @@ function count_gifts( state ) {
 
 function get_pos( state, actor ) {
 	p = state.board.indexOf( actor, state.board );
-	pos = {}
+	pos = {};
     pos[ 1 ] = Math.floor( p / LEVEL_WIDTH ); /* y */
     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
 
@@ -116,15 +116,15 @@ function format_level( state ) {
 			default:
 				break;
 			}
-			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>"
+			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
 		}
-		dl = dl + "<br />"
+		dl = dl + "<br />";
 	}
 	return dl;
 }
 
 function load_level( levelset, nb ) {
-	state.level = nb
+	state.level = nb;
 	state.board = levelset[ state.level ];
 	state.moves = 0;
 	state.moving = cell.BALL;
@@ -202,12 +202,12 @@ function start_loop( state, elt ) {
 			break;
 		case 78: // n
 			if ( state.level < levels.length - 1 ) {
-				state = load_level( levels, state.level + 1 )
+				state = load_level( levels, state.level + 1 );
 			}
 			break;
 		case 80: // p
 			if ( state.level > 0 ) {
-				state = load_level( levels, state.level - 1 )
+				state = load_level( levels, state.level - 1 );
 			}
 			break;
 		default:
@@ -216,7 +216,7 @@ function start_loop( state, elt ) {
 		
 		if ( won_or_not( state ) ) {
 			if ( state.level < levels.length - 1 ) {
-			state = load_level( levels, state.level + 1 )
+			state = load_level( levels, state.level + 1 );
 			}
 			else {
 				alert( "You won!" );
