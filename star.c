@@ -499,7 +499,6 @@ int parse_args( int argc, char* argv[], struct options *o, struct state *s )
           {"black-and-white" , no_argument,       NULL, 'b'},
           {"level"           , required_argument, NULL, 'l'},
           {"help"            , no_argument,       NULL, 'h'},
-          {"version"         , no_argument,       NULL, 'v'},
           {0, 0, 0, 0}
      };
   
