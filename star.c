@@ -313,16 +313,16 @@ int count_gifts( struct state *s )
      return n;
 }
 
-/* Write the position of the currently moving actor into pos
+/* Write the position of actor into pos
  */
-void get_pos( struct state *s, int* pos )
+void get_pos( struct state *s, int* pos, cell actor )
 {
      int p;
 
-     p = (int)( strchr( s->board, s->moving ) - s->board );
+     p = (int)( strchr( s->board, actor ) - s->board );
 
-     pos[ 1 ] = p / LEVEL_WIDTH;
-     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH );
+     pos[ 1 ] = p / LEVEL_WIDTH; /* y */
+     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
 }
 
 /* Returns the content of cell( x, y ) of the current level
@@ -372,7 +372,7 @@ void make_a_move( struct state *s, direction where )
 {
      int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
      item_coord = malloc( sizeof( int ) * 2 );
-     get_pos( s, item_coord );
+     get_pos( s, item_coord, s->moving );
      tmpx = item_coord[ 0 ];
      tmpy = item_coord[ 1 ];
 
