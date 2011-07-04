@@ -20,7 +20,8 @@ options = {
 state = {
 	moving: cell.BALL,
 	moves: 0,
-	level: "",
+	level: 0,
+	board: ""
 }
 
 levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
@@ -52,14 +53,14 @@ levels = [ "#################@##        x#H##          x ####       ##x    ##   
 function count_gifts( state ) {
 	n = 0
 	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
-		if ( state.level.charAt( i ) == GIFTS ) {
+		if ( state.board.charAt( i ) == cell.GIFT ) {
 			n++;
 		}
 	}
 	return n;
 }
 function get_pos( state, actor ) {
-	p = state.level.indexOf( actor, state.level );
+	p = state.board.indexOf( actor, state.board );
 	pos = {}
     pos[ 1 ] = Math.floor( p / LEVEL_WIDTH ); /* y */
     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
@@ -67,11 +68,15 @@ function get_pos( state, actor ) {
 	return pos;
 }
 function get_cell( state, x, y ) {
-	return( state.level.charAt( x + ( y * LEVEL_WIDTH ) ) );
+	return( state.board.charAt( x + ( y * LEVEL_WIDTH ) ) );
 }
 function set_cell( state, x, y, value ) {
 	p = x + ( y * LEVEL_WIDTH );
-	state.level = state.level.substring( 0, p ) + value + state.level.substring( p+1, state.level.length );
+	state.board = state.board.substring( 0, p ) + value + state.board.substring( p+1, state.board.length );
+	return state;
+}
+function switch_actor( state ) {
+	state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
 	return state;
 }
 function won_or_not( state ) {
@@ -81,13 +86,14 @@ function won_or_not( state ) {
 function format_level( state ) {
 	dl = "";
 	for ( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
-		dl = dl + (state.level).substr( i*LEVEL_WIDTH, LEVEL_WIDTH ) + "\n";
+		dl = dl + (state.board).substr( i*LEVEL_WIDTH, LEVEL_WIDTH ) + "\n";
 	}
 	return dl;
 }
 
 function load_level( levelset, nb ) {
-	state.level = levelset[ nb ];
+	state.level = nb
+	state.board = levelset[ state.level ];
 	state.moves = 0;
 	state.moving = cell.BALL;
 	return state;
@@ -146,4 +152,36 @@ function make_a_move( state, where ) {
 
      state.moves++;                /* increment moves' counter */
 	return state;
+}
+
+function start_loop( elt, state ) {
+	display_level( elt, state );
+
+	$( document ).keydown( function( e ) {
+		switch( e.keyCode ) {
+		case 38: // UP
+			state = make_a_move( state, direction.UP );
+			break;
+		case 40: // DOWN
+			state = make_a_move( state, direction.DOWN );
+			break;
+		case 37: // LEFT
+			state = make_a_move( state, direction.LEFT );
+			break;
+		case 39: // RIGHT
+			state = make_a_move( state, direction.RIGHT );
+			break;
+		case 32: //SPACE
+			state = switch_actor( state );
+			break;
+		default:
+			break;
+		}
+		
+		if ( won_or_not( state ) ) {
+			state = load_level( levels, state.level + 1 )
+		}
+
+		display_level( elt, state );
+	});
 }
