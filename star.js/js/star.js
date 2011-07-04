@@ -59,6 +59,7 @@ function count_gifts( state ) {
 	}
 	return n;
 }
+
 function get_pos( state, actor ) {
 	p = state.board.indexOf( actor, state.board );
 	pos = {}
@@ -67,18 +68,22 @@ function get_pos( state, actor ) {
 
 	return pos;
 }
+
 function get_cell( state, x, y ) {
 	return( state.board.charAt( x + ( y * LEVEL_WIDTH ) ) );
 }
+
 function set_cell( state, x, y, value ) {
 	p = x + ( y * LEVEL_WIDTH );
 	state.board = state.board.substring( 0, p ) + value + state.board.substring( p+1, state.board.length );
 	return state;
 }
+
 function switch_actor( state ) {
 	state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
 	return state;
 }
+
 function won_or_not( state ) {
 	return count_gifts( state ) == 0;
 }
@@ -98,6 +103,7 @@ function load_level( levelset, nb ) {
 	state.moving = cell.BALL;
 	return state;
 }
+
 function display_level( elt, state ) {
 	$( elt ).html( format_level( state ) );
 }
@@ -171,15 +177,28 @@ function start_loop( elt, state ) {
 		case 39: // RIGHT
 			state = make_a_move( state, direction.RIGHT );
 			break;
-		case 32: //SPACE
+		case 32: // SPACE
 			state = switch_actor( state );
+			break;
+		case 78: // n
+			if ( state.level < levels.length - 1 ) {
+				state = load_level( levels, state.level + 1 )
+			}
+			break;
+		case 80: // p
+			if ( state.level > 0 ) {
+				state = load_level( levels, state.level - 1 )
+			}
 			break;
 		default:
 			break;
 		}
 		
-		if ( won_or_not( state ) ) {
+		if ( won_or_not( state ) && state.level < levels.length - 1 ) {
 			state = load_level( levels, state.level + 1 )
+		}
+		else {
+			alert( "You won!" );
 		}
 
 		display_level( elt, state );
