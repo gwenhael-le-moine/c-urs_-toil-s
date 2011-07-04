@@ -436,7 +436,7 @@ void make_a_move( struct state *s, direction where )
 {
      int motion[ 2 ] = { 0, 0 };
      int item_coord[ 2 ];
-     get_pos( s, &item_coord, s->moving ); /* get the coordinates of the moving actor */
+     get_pos( s, item_coord, s->moving ); /* get the coordinates of the moving actor */
 
      /* Setup the motion vector according to direction.*/
      switch( where ) {
@@ -555,6 +555,10 @@ int main( int argc, char* argv[] )
      struct state *s = malloc( sizeof( struct state ) );
      struct options *o = malloc( sizeof( struct options ) );
 
+     if ( s == NULL || o == NULL ) {
+          return 1;               /* Guys, we're out of memory */
+     }
+          
      /* trick to count how many levels we have */
      s->nb_levels = sizeof( levels ) / sizeof( levels[ 0 ] );
    
