@@ -635,7 +635,7 @@ int main( int argc, char* argv[] )
      free( s );
      free( o );
 
-     /* Clean ncurses mess */
+     /* Clean ncurses' mess */
      echo();
      nocbreak();
      endwin();
