@@ -147,13 +147,6 @@ function make_a_move( state, where ) {
           item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
           
           state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
-
-          /*
-            We could update the display here, but in practice it all happen so fast
-            that the move isn't noticeable. So it's commented.
-            (maybe on a very slow machine it adds beauty?...)
-          */
-          /* display_level( s ); */
      }
 
      state.moves++;                /* increment moves' counter */
