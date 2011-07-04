@@ -363,63 +363,6 @@ int won_or_not( struct state *s )
      return( count_gifts( s ) == 0 );
 }
 
-/* Move the current actor towards direction in the current level,
-   eating gifts on the way if the moving actor is the ball
-
-   FIXME: more documentation
-*/
-void make_a_move( struct state *s, direction where )
-{
-     int dx = 0, dy = 0, tmpx, tmpy, *item_coord;
-     item_coord = malloc( sizeof( int ) * 2 );
-     get_pos( s, item_coord, s->moving );
-     tmpx = item_coord[ 0 ];
-     tmpy = item_coord[ 1 ];
-
-     switch( where ) {
-          case UP:
-               dy--;
-               break;
-          case DOWN:
-               dy++;
-               break;
-          case LEFT:
-               dx--;
-               break;
-          case RIGHT:
-               dx++;
-               break;
-          default: break;
-     }
-
-     /* Calculating arrival coordinates */
-     while (                      /* Hairy conditions ahead */
-          /* target cell is within level's boundaries */
-          ( ( tmpx + dx >= 0 ) && ( tmpx + dx < LEVEL_WIDTH ) ) &&
-          ( ( tmpy + dy >= 0 ) && ( tmpy + dy < LEVEL_HEIGHT ) ) &&
-          /* and target cell is empty */
-          ( get_cell( s, tmpx + dx, tmpy + dy ) == VOID )
-          /* or, in case the ball is moving, target cell can be a gift (which we'll eat) */
-          || ( s->moving == BALL && ( get_cell( s, tmpx + dx, tmpy + dy ) == GIFT ) )
-          )
-     {
-          tmpx += dx;
-          tmpy += dy;
-
-          if ( s->moving == BALL && get_cell( s, tmpx, tmpy ) == GIFT ) {
-               set_cell( s, tmpx, tmpy, VOID );
-          }
-     }
-
-     /* Moving to arrival coordinates */
-     set_cell( s, item_coord[ 0 ], item_coord[ 1 ], VOID );
-     set_cell( s, tmpx, tmpy, s->moving );
-
-     s->moves++;
-   
-     free( item_coord );
-}
-
 /* display the current level (with Ncurses)
  */
 void display_level( struct state *s )
@@ -484,6 +427,64 @@ void display_level( struct state *s )
      mvprintw( 3, 35, "%i moves made", s->moves );
 
      refresh();
+}
+
+/* Move the current actor towards direction in the current level,
+   eating gifts on the way if the moving actor is the ball
+*/
+void make_a_move( struct state *s, direction where )
+{
+     int motion[ 2 ] = { 0, 0 };
+     int *item_coord;
+     item_coord = malloc( sizeof( int ) * 2 );
+     get_pos( s, item_coord, s->moving ); /* get the coordinates of the moving actor */
+
+     /* Setup the motion vector according to direction.*/
+     switch( where ) {
+          case UP:
+               motion[ 1 ]--;
+               break;
+          case DOWN:
+               motion[ 1 ]++;
+               break;
+          case LEFT:
+               motion[ 0 ]--;
+               break;
+          case RIGHT:
+               motion[ 0 ]++;
+               break;
+          default: break;
+     }
+
+     /* Calculating arrival coordinates */
+     while (                      /* Hairy conditions ahead */
+          /* target cell is within level's boundaries */
+          ( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < LEVEL_WIDTH ) ) &&
+          ( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < LEVEL_HEIGHT ) ) &&
+          /* and target cell is empty */
+          ( get_cell( s, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == VOID )
+          /* or, the ball will eat gifts so we can move it on one */
+          || ( s->moving == BALL && ( get_cell( s, item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == GIFT ) )
+          )
+     {
+          set_cell( s, item_coord[ 0 ], item_coord[ 1 ], VOID ); /* void the origin cell */
+
+          item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
+          item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
+          
+          set_cell( s, item_coord[ 0 ], item_coord[ 1 ], s->moving ); /* move actor into target cell */
+
+          /*
+            We could update the display here, but in practice it all happen so fast
+            that the move isn't noticeable. So it's commented.
+            (maybe on a very slow machine it adds beauty?...)
+          */
+          /* display_level( s ); */
+     }
+
+     s->moves++;                /* increment moves' counter */
+
+     free( item_coord );        /* we don't need item_coord anymore */
 }
 
 /* Parse the --arguments, if any, to populate options
