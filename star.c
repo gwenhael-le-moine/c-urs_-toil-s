@@ -435,9 +435,8 @@ void display_level( struct state *s )
 void make_a_move( struct state *s, direction where )
 {
      int motion[ 2 ] = { 0, 0 };
-     int *item_coord;
-     item_coord = malloc( sizeof( int ) * 2 );
-     get_pos( s, item_coord, s->moving ); /* get the coordinates of the moving actor */
+     int item_coord[ 2 ];
+     get_pos( s, &item_coord, s->moving ); /* get the coordinates of the moving actor */
 
      /* Setup the motion vector according to direction.*/
      switch( where ) {
@@ -483,8 +482,6 @@ void make_a_move( struct state *s, direction where )
      }
 
      s->moves++;                /* increment moves' counter */
-
-     free( item_coord );        /* we don't need item_coord anymore */
 }
 
 /* Parse the --arguments, if any, to populate options
