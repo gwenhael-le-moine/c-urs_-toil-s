@@ -2,33 +2,33 @@ var LEVEL_HEIGHT = 9;
 var LEVEL_WIDTH = 16;
 
 var cell= {
-	WALL: '#',
-	BALL: '@',
-	CUBE: 'H',
-	VOID: ' ',
-	GIFT: 'x'
+	WALL				: '#',
+	BALL				: '@',
+	CUBE				: 'H',
+	VOID				: ' ',
+	GIFT				: 'x'
 };
 var direction = {
-	UP: 'u',
-	DOWN: 'd',
-	LEFT: 'l',
-	RIGHT: 'r'
+	UP					: 'u',
+	DOWN				: 'd',
+	LEFT				: 'l',
+	RIGHT				: 'r'
 };
 var css_classes = {
-	"@": "ball",
-	"H": "cube",
-	"#": "wall",
-	" ": "void",
-	"x": "gift"
+	"@"					: "ball",
+	"H"					: "cube",
+	"#"					: "wall",
+	" "					: "void",
+	"x"					: "gift"
 };
 var options = {
-	starting_level: 0
+	starting_level		: 0
 };
 var state = {
-	moving: cell.BALL,
-	moves: 0,
-	level: 0,
-	board: ""
+	moving				: cell.BALL,
+	moves				: 0,
+	level				: 0,
+	board				: ""
 };
 
 var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
