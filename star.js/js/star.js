@@ -82,7 +82,7 @@ function get_cell( state, x, y ) {
 
 function set_cell( state, x, y, value ) {
 	p = x + ( y * LEVEL_WIDTH );
-	state.board = state.board.substring( 0, p ) + value + state.board.substring( p+1, state.board.length );
+	state.board = [ state.board.substring( 0, p ), value, state.board.substring( p+1, state.board.length ) ].join( '' );
 	return state;
 }
 
@@ -99,11 +99,11 @@ function format_level( state ) {
 	dl = "";
 	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
 		c = state.board[ i ];
-		classes = "starcell " + css_classes[ c ];
+		classes = [ "starcell ", css_classes[ c ] ].join( '' );
 		if ( state.moving == c) {
-			classes = classes + " selected ";
+			classes = [ classes, " selected " ].join( '' );
 		}
-		dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
+		dl = [ dl, "<span class=\"", classes, "\">", c, "</span>"].join( '' );
 	}
 	return dl;
 }
