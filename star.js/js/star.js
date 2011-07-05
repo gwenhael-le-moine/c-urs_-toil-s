@@ -96,15 +96,36 @@ function won_or_not( state ) {
 }
 
 function format_level( state ) {
-	var dl = "";
-	for each ( c in state.board ) {
-		var classes = [ "starcell ", css_classes[ c ] ].join( '' );
-		if ( state.moving == c) {
-			classes = [ classes, " selected " ].join( '' );
+	function Replacer( conversionObject ) {
+
+        var regexpStr = '';
+        for ( var k in conversionObject ) {
+            regexpStr += ( regexpStr.length ? '|' : '' ) + k;
 		}
-		dl = [ dl, "<span class=\"", classes, "\">", c, "</span>"].join( '' );
+        var regexpr = new RegExp( regexpStr, 'mig' ); // g: global, m:multi-line i: ignore case
+        return function(s) {
+			return s.replace( regexpr, function(str, p1, p2, offset, s) {
+								 var a = conversionObject[ str ];
+								 return a == undefined ? str : a;
+							 } );
+		};
 	}
-	return dl;
+
+	var substitutions = {
+		'#': '<span class="starcell wall">#</span>',
+		'x': '<span class="starcell gift">x</span>',
+		' ': '<span class="starcell void"> </span>'
+		};
+	if ( state.moving == cell.BALL ) {
+		substitutions[ '@' ] = '<span class="starcell ball selected">@</span>';
+		substitutions[ 'H' ] = '<span class="starcell cube">H</span>';
+	}
+	else {
+		substitutions[ '@' ] = '<span class="starcell ball">@</span>';
+		substitutions[ 'H' ] = '<span class="starcell cube selected">H</span>';
+	}
+	var myReplacer = Replacer( substitutions );
+	return myReplacer( state.board );
 }
 
 function load_level( levelset, nb ) {
