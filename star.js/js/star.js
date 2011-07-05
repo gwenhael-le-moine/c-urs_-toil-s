@@ -1,37 +1,37 @@
-LEVEL_HEIGHT = 9;
-LEVEL_WIDTH = 16;
+var LEVEL_HEIGHT = 9;
+var LEVEL_WIDTH = 16;
 
-cell= {
+var cell= {
 	WALL: '#',
 	BALL: '@',
 	CUBE: 'H',
 	VOID: ' ',
 	GIFT: 'x'
 };
-direction = {
+var direction = {
 	UP: 'u',
 	DOWN: 'd',
 	LEFT: 'l',
 	RIGHT: 'r'
 };
-css_classes = {
+var css_classes = {
 	"@": "ball",
 	"H": "cube",
 	"#": "wall",
 	" ": "void",
 	"x": "gift"
 };
-options = {
+var options = {
 	starting_level: 0
 };
-state = {
+var state = {
 	moving: cell.BALL,
 	moves: 0,
 	level: 0,
 	board: ""
 };
 
-levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
+var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
            " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
            "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
            "#################            #H##     #        ###x#x x#x#x#x#x## # #x x# # # ####x#x#x x#x#x#x##     #        ##   #       #@ #################",
@@ -58,7 +58,7 @@ levels = [ "#################@##        x#H##          x ####       ##x    ##   
            "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ];
 
 function count_gifts( state ) {
-	n = 0;
+	var n = 0;
 	for each ( c in state.board ) {
 		if ( c == cell.GIFT ) {
 			n++;
@@ -68,8 +68,8 @@ function count_gifts( state ) {
 }
 
 function get_pos( state, actor ) {
-	p = state.board.indexOf( actor, state.board );
-	pos = {};
+	var p = state.board.indexOf( actor, state.board );
+	var pos = {};
     pos[ 1 ] = Math.floor( p / LEVEL_WIDTH ); /* y */
     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
 
@@ -81,7 +81,7 @@ function get_cell( state, x, y ) {
 }
 
 function set_cell( state, x, y, value ) {
-	p = x + ( y * LEVEL_WIDTH );
+	var p = x + ( y * LEVEL_WIDTH );
 	state.board = [ state.board.substring( 0, p ), value, state.board.substring( p+1, state.board.length ) ].join( '' );
 	return state;
 }
@@ -96,9 +96,9 @@ function won_or_not( state ) {
 }
 
 function format_level( state ) {
-	dl = "";
+	var dl = "";
 	for each ( c in state.board ) {
-		classes = [ "starcell ", css_classes[ c ] ].join( '' );
+		var classes = [ "starcell ", css_classes[ c ] ].join( '' );
 		if ( state.moving == c) {
 			classes = [ classes, " selected " ].join( '' );
 		}
@@ -121,8 +121,8 @@ function display_level( state, elt ) {
 
 
 function make_a_move( state, where ) {
-	motion = [ 0, 0 ];
-	item_coord = get_pos( state, state.moving );
+	var motion = [ 0, 0 ];
+	var item_coord = get_pos( state, state.moving );
 
     /* Setup the motion vector according to direction.*/
     switch( where ) {
