@@ -59,8 +59,8 @@ levels = [ "#################@##        x#H##          x ####       ##x    ##   
 
 function count_gifts( state ) {
 	n = 0;
-	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
-		if ( state.board[ i ] == cell.GIFT ) {
+	for each ( c in state.board ) {
+		if ( c == cell.GIFT ) {
 			n++;
 		}
 	}
@@ -97,8 +97,7 @@ function won_or_not( state ) {
 
 function format_level( state ) {
 	dl = "";
-	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
-		c = state.board[ i ];
+	for each ( c in state.board ) {
 		classes = [ "starcell ", css_classes[ c ] ].join( '' );
 		if ( state.moving == c) {
 			classes = [ classes, " selected " ].join( '' );
