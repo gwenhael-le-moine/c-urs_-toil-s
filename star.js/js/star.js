@@ -97,16 +97,13 @@ function won_or_not( state ) {
 
 function format_level( state ) {
 	dl = "";
-	for ( i = 0 ; i < LEVEL_HEIGHT ; i++ ) {
-		for ( j = 0 ; j < LEVEL_WIDTH ; j++ ) {
-			c = get_cell( state, j, i );
-			classes = "starcell " + css_classes[ c ];
-			if ( state.moving == c) {
-				classes = classes + " selected ";
-			}
-			dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
+	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
+		c = state.board[ i ];
+		classes = "starcell " + css_classes[ c ];
+		if ( state.moving == c) {
+			classes = classes + " selected ";
 		}
-		dl = dl + "<br />";
+		dl = dl + "<span class=\"" + classes + "\">" + c + "</span>";
 	}
 	return dl;
 }
