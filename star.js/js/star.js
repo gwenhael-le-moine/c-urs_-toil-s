@@ -60,7 +60,7 @@ levels = [ "#################@##        x#H##          x ####       ##x    ##   
 function count_gifts( state ) {
 	n = 0;
 	for ( i = 0 ; i < LEVEL_HEIGHT * LEVEL_WIDTH ; i++ ) {
-		if ( state.board.charAt( i ) == cell.GIFT ) {
+		if ( state.board[ i ] == cell.GIFT ) {
 			n++;
 		}
 	}
@@ -77,7 +77,7 @@ function get_pos( state, actor ) {
 }
 
 function get_cell( state, x, y ) {
-	return( state.board.charAt( x + ( y * LEVEL_WIDTH ) ) );
+	return state.board[ x + ( y * LEVEL_WIDTH ) ];
 }
 
 function set_cell( state, x, y, value ) {
