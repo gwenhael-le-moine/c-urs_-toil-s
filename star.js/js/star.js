@@ -59,8 +59,8 @@ var levels = [ "#################@##        x#H##          x ####       ##x    #
 
 function count_gifts( state ) {
 	var n = 0;
-	for each ( var c in state.board ) {
-		if ( c == cell.GIFT ) {
+	for ( var i = LEVEL_HEIGHT * LEVEL_WIDTH ; i-- ; ) {
+		if ( state.board[ i ] == cell.GIFT ) {
 			n++;
 		}
 	}
