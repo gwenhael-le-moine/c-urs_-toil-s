@@ -114,16 +114,11 @@ function format_level( state ) {
 	var substitutions = {
 		'#': '<span class="starcell wall">#</span>',
 		'x': '<span class="starcell gift">x</span>',
-		' ': '<span class="starcell void"> </span>'
+		' ': '<span class="starcell void"> </span>',
+		'H': '<span class="starcell cube">H</span>',
+		'@': '<span class="starcell ball">@</span>'
 		};
-	if ( state.moving == cell.BALL ) {
-		substitutions[ '@' ] = '<span class="starcell ball selected">@</span>';
-		substitutions[ 'H' ] = '<span class="starcell cube">H</span>';
-	}
-	else {
-		substitutions[ '@' ] = '<span class="starcell ball">@</span>';
-		substitutions[ 'H' ] = '<span class="starcell cube selected">H</span>';
-	}
+	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', ' selected">' );
 	var myReplacer = Replacer( substitutions );
 	return myReplacer( state.board );
 }
