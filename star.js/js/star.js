@@ -59,7 +59,7 @@ var levels = [ "#################@##        x#H##          x ####       ##x    #
 
 function count_gifts( state ) {
 	var n = 0;
-	for each ( c in state.board ) {
+	for each ( var c in state.board ) {
 		if ( c == cell.GIFT ) {
 			n++;
 		}
@@ -92,7 +92,7 @@ function switch_actor( state ) {
 }
 
 function won_or_not( state ) {
-	return count_gifts( state ) == 0;
+	return count_gifts( state ) === 0;
 }
 
 function format_level( state ) {
