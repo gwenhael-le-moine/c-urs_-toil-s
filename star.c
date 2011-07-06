@@ -480,7 +480,7 @@ void make_a_move( struct state *s, direction where )
           */
           /* display_level( s ); */
 
-          s->distance_travelled++;                /* increment distance_travelled's counter */
+          s->distance_travelled++;                /* increment distance_travelled */
      }
 }
 
