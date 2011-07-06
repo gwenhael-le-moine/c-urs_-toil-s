@@ -128,6 +128,14 @@ function format_level( state, text ) {
 	return myReplacer( state.board );
 }
 
+function format_infos( state ) {
+	var infos = "<h1>Star5</h1><br />";
+	infos += "Level " + (state.level+1) + " of " + levels.length + "<br />";
+	infos += count_gifts( state ) + " gifts left<br />";
+	infos += state.distance_travelled + " meters travelled";
+	return infos;
+}
+
 function load_level( levelset, nb ) {
 	state.level = nb;
 	state.board = levelset[ state.level ];
@@ -137,7 +145,7 @@ function load_level( levelset, nb ) {
 }
 
 function display_level( state, elt ) {
-	var starhtml = '<div class="gstar"><p id="blackboard">' + format_level( state, false ) + '</p></div>';
+	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside></div>';
 	$( elt ).html( starhtml );
 }
 

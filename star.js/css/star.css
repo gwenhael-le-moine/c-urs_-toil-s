@@ -8,4 +8,4 @@
 .gstar #blackboard .cube_selected{background-image:url(../themes/HP48/tex_cube_selected.png);color:red}
 .gstar #blackboard .gift{background-image:url(../themes/HP48/tex_gift.png);color:yellow}
 .gstar #blackboard .void{background-image:url(../themes/HP48/tex_empty.png);}
-
+.gstar aside{float:left;height:140px;padding:20px;background:#ddd}
