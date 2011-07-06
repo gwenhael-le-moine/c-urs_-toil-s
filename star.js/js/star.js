@@ -118,7 +118,7 @@ function format_level( state ) {
 		'H': '<span class="starcell cube">H</span>',
 		'@': '<span class="starcell ball">@</span>'
 		};
-	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', ' selected">' );
+	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', '_selected">' );
 	var myReplacer = Replacer( substitutions );
 	return myReplacer( state.board );
 }
