@@ -137,7 +137,8 @@ function load_level( levelset, nb ) {
 }
 
 function display_level( state, elt ) {
-	$( elt ).html( '<p id="blackboard">' + format_level( state, false ) + '</p>' );
+	var starhtml = '<div class="gstar"><p id="blackboard">' + format_level( state, false ) + '</p></div>';
+	$( elt ).html( starhtml );
 }
 
 
