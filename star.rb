@@ -84,6 +84,8 @@ p (coord[ 'x' ] + d[ 'x' ]).to_s + ", " + (coord[ 'y' ] + d[ 'y' ]).to_s + ": " 
          coord[ 'y' ] = coord[ 'y' ] + d[ 'y' ]
 
          set_cell( coord[ 'x' ], coord[ 'y' ], @whats_moving )
+
+         @distance = @distance + 1
       end
    end
 
