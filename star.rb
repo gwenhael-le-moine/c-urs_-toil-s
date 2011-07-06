@@ -70,14 +70,12 @@ class Star
 
       coord = get_pos( @whats_moving )
 
-p (coord[ 'x' ] + d[ 'x' ]).to_s + ", " + (coord[ 'y' ] + d[ 'y' ]).to_s + ": " + get_cell( coord[ 'x' ] + d[ 'x' ], coord[ 'y' ] + d[ 'y' ] )
       while ( 0 <= coord[ 'y' ] + d[ 'y' ] && coord[ 'y' ] + d[ 'y' ] < LEVEL_HEIGHT ) &&
             ( 0 <= coord[ 'x' ] + d[ 'x' ] && coord[ 'x' ] + d[ 'x' ] < LEVEL_WIDTH ) &&
             ( get_cell( coord[ 'x' ] + d[ 'x' ], coord[ 'y' ] + d[ 'y' ] ) == " " )  ||
             ( @whats_moving == "@" &&
               get_cell( coord[ 'x' ] + d[ 'x' ], coord[ 'y' ] + d[ 'y' ] ) == "x" )
 
-         p "moving"
          set_cell( coord[ 'x' ], coord[ 'y' ], ' ' )
 
          coord[ 'x' ] = coord[ 'x' ] + d[ 'x' ]
@@ -111,7 +109,7 @@ p (coord[ 'x' ] + d[ 'x' ]).to_s + ", " + (coord[ 'y' ] + d[ 'y' ]).to_s + ": " 
          |y|
          LEVEL_WIDTH.times do
             |x|
-            s = s + @elements[ @board[ y * LEVEL_WIDTH + x ] ][ :text ]
+            s = s + @elements[ get_cell( x, y ) ][ :text ]
          end
          s = s + "\n"
       end
