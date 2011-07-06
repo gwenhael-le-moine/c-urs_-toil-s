@@ -95,7 +95,7 @@ function won_or_not( state ) {
 	return count_gifts( state ) === 0;
 }
 
-function format_level( state ) {
+function format_level( state, text ) {
 	function Replacer( conversionObject ) {
 
         var regexpStr = '';
@@ -119,6 +119,11 @@ function format_level( state ) {
 		'@': '<span class="starcell ball">@</span>'
 		};
 	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', '_selected">' );
+	if ( text == false ) {
+		for ( var c in substitutions ) {
+			substitutions[ c ] = substitutions[ c ].replace( />.</, '><' );
+		}
+	}
 	var myReplacer = Replacer( substitutions );
 	return myReplacer( state.board );
 }
@@ -132,7 +137,7 @@ function load_level( levelset, nb ) {
 }
 
 function display_level( state, elt ) {
-	$( elt ).html( format_level( state ) );
+	$( elt ).html( format_level( state, false ) );
 }
 
 
