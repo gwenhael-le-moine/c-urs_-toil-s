@@ -315,7 +315,7 @@ int count_gifts( struct state *s )
 
 /* Write the position of actor into pos
  */
-void get_pos( struct state *s, int* pos, cell actor )
+void get_pos( struct state *s, cell actor, int* pos )
 {
      int p;
 
@@ -436,7 +436,7 @@ void make_a_move( struct state *s, direction where )
 {
      int motion[ 2 ] = { 0, 0 };
      int item_coord[ 2 ];
-     get_pos( s, item_coord, s->moving ); /* get the coordinates of the moving actor */
+     get_pos( s, s->moving, item_coord ); /* get the coordinates of the moving actor */
 
      /* Setup the motion vector according to direction.*/
      switch( where ) {
