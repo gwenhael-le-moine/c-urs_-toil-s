@@ -137,7 +137,7 @@ function load_level( levelset, nb ) {
 }
 
 function display_level( state, elt ) {
-	$( elt ).html( format_level( state, false ) );
+	$( elt ).html( '<p id="blackboard">' + format_level( state, false ) + '</p>' );
 }
 
 
