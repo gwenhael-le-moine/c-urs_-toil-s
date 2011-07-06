@@ -295,7 +295,7 @@ struct options {                /* store how the game is started (controlled by 
 struct state {                  /* current state of the game at an instant T */
      char board[ LEVEL_HEIGHT * LEVEL_WIDTH ];
      char moving;
-     int  moves;
+     int  distance_travelled;
      int  level;
      int  nb_levels;
 };
@@ -346,7 +346,7 @@ void load_level( struct state *s, char* levels[], int nb )
      strncpy( s->board, levels[ nb ], LEVEL_HEIGHT * LEVEL_WIDTH );
      s->level = nb;
      s->moving = BALL;
-     s->moves = 0;
+     s->distance_travelled = 0;
 }
 
 /* Swicth the currently moving actor between BALL and CUBE
@@ -424,7 +424,7 @@ void display_level( struct state *s )
 
      mvprintw( 1, 35, "level %i of %i", s->level + 1, s->nb_levels );
      mvprintw( 2, 35, "%i gifts left", count_gifts( s ) );
-     mvprintw( 3, 35, "%i moves made", s->moves );
+     mvprintw( 3, 35, "%i meter%s traveled", s->distance_travelled, ( s->distance_travelled > 1 ) ? "s" : "" );
 
      refresh();
 }
@@ -479,9 +479,9 @@ void make_a_move( struct state *s, direction where )
             (maybe on a very slow machine it adds beauty?...)
           */
           /* display_level( s ); */
-     }
 
-     s->moves++;                /* increment moves' counter */
+          s->distance_travelled++;                /* increment distance_travelled's counter */
+     }
 }
 
 /* Parse the --arguments, if any, to populate options
