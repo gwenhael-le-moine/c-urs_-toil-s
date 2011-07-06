@@ -26,7 +26,7 @@ var options = {
 };
 var state = {
 	moving				: cell.BALL,
-	moves				: 0,
+	distance_travelled				: 0,
 	level				: 0,
 	board				: ""
 };
@@ -126,7 +126,7 @@ function format_level( state ) {
 function load_level( levelset, nb ) {
 	state.level = nb;
 	state.board = levelset[ state.level ];
-	state.moves = 0;
+	state.distance_travelled = 0;
 	state.moving = cell.BALL;
 	return state;
 }
@@ -174,9 +174,9 @@ function make_a_move( state, where ) {
         item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
         
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
-    }
 
-    state.moves++;                /* increment moves' counter */
+		state.distance_travelled++;                /* increment distance_travelled */
+    }
 	return state;
 }
 
