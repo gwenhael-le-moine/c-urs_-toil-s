@@ -1,3 +1,5 @@
+require 'test/unit'
+
 class Star
    def initialize
       @levelsets = {
@@ -263,7 +265,7 @@ class Star
       }
       @counters = {
          :gifts => 0,
-         :moves => 0,
+         :distance => 0,
       }
       @level = {
          :width => 16,
@@ -282,44 +284,58 @@ class Star
 
       load_level
    end
+   def positions()
+      @positions
+   end
 
+   def move_1_step( direction, objectToMove)
+      dx = { :left => -1, :right => 1 }[ direction ]
+      dy = { :down => 1, :up => -1 }[ direction ]
+      dx = 0 unless dx
+      dy = 0 unless dy
+      new_x = @positions[ objectToMove ][ :x ] + dx 
+      new_y = @positions[ objectToMove ][ :y ] + dy 
+      { :x => new_x, :y => new_y }
+      
+   end
 
-
-   def move( direction )
+   def move( direction, objectToMove )
+      
       d = { :h => 0, :v => 0 }
       d[ :h ] = -1 if direction == :left
       d[ :h ] = 1 if direction == :right
       d[ :v ] = -1 if direction == :up
       d[ :v ] = 1 if direction == :down
 
-      tmp = { :x => 0, :y => 0 }
-      tmp[ :x ] = @positions[ @whats_moving ][ :x ]
-      tmp[ :y ] = @positions[ @whats_moving ][ :y ]
+      newpos = { :x => 0, :y => 0 }
+      newpos[ :x ] = @positions[ objectToMove ][ :x ]
+      newpos[ :y ] = @positions[ objectToMove ][ :y ]
 
-      while ( 0 <= tmp[ :y ] + d[ :v ] && tmp[ :y ] + d[ :v ] < @level[ :height ] ) &&
-              ( 0 <= tmp[ :x ] + d[ :h ] && tmp[ :x ] + d[ :h ] < @level[ :width ] ) &&
-              ( @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'V' ) ||
-              ( @whats_moving == :ball &&
-                @board[ tmp[ :y ] + d[ :v ] ][ tmp[ :x ] + d[ :h ] ] == 'G' )
-         tmp[ :x ] = tmp[ :x ] + d[ :h ]
-         tmp[ :y ] = tmp[ :y ] + d[ :v ]
+      while ( 0 <= newpos[ :y ] + d[ :v ] && newpos[ :y ] + d[ :v ] < @level[ :height ] ) &&
+              ( 0 <= newpos[ :x ] + d[ :h ] && newpos[ :x ] + d[ :h ] < @level[ :width ] ) &&
+              ( @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'V' ) ||
+              ( objectToMove == :ball &&
+                @board[ newpos[ :y ] + d[ :v ] ][ newpos[ :x ] + d[ :h ] ] == 'G' )
+         
+         newpos[ :x ] = newpos[ :x ] + d[ :h ]
+         newpos[ :y ] = newpos[ :y ] + d[ :v ]
 
-         if @whats_moving == :ball && @board[ tmp[ :y ] ][ tmp[ :x ] ] == 'G'
+         if objectToMove == :ball && @board[ newpos[ :y ] ][ newpos[ :x ] ] == 'G'
          then
-            @board[ tmp[ :y ] ][ tmp[ :x ] ] = 'V'
+            @board[ newpos[ :y ] ][ newpos[ :x ] ] = 'V'
             @counters[ :gifts ] = @counters[ :gifts ] - 1
          end
       end
 
-      if tmp[ :x ] != @positions[ @whats_moving][ :x ] ||
-            tmp[ :y ] != @positions[ @whats_moving][ :y ]
+      if newpos[ :x ] != @positions[ objectToMove][ :x ] ||
+            newpos[ :y ] != @positions[ objectToMove][ :y ]
       then
-         @board[ @positions[ @whats_moving][ :y ] ][ @positions[ @whats_moving][ :x ] ] = 'V'
-         @positions[ @whats_moving][ :x ] = tmp[ :x ]
-         @positions[ @whats_moving][ :y ] = tmp[ :y ]
+         @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = 'V'
+         @positions[ objectToMove][ :x ] = newpos[ :x ]
+         @positions[ objectToMove][ :y ] = newpos[ :y ]
 
-         @board[ @positions[ @whats_moving][ :y ] ][ @positions[ @whats_moving][ :x ] ] = @whats_moving == :ball ? 'B' : 'C'
-         @counters[ :moves ] = @counters[ :moves ] + 1
+         @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = objectToMove == :ball ? 'B' : 'C'
+         @counters[ :distance ] = @counters[ :distance ] + 1
       end
    end
 
@@ -366,7 +382,7 @@ class Star
       s = @elements[ 'G' ][ :text ] + ":" + @counters[ :gifts ].to_s + " "
       s = s + @elements[ 'B' ][ :text ] + ":(" + @positions[ :ball ][ :x ].to_s + "," + @positions[ :ball ][ :y ].to_s + ") "
       s = s + @elements[ 'C' ][ :text ] + ":(" + @positions[ :cube ][ :x ].to_s + "," + @positions[ :cube ][ :y ].to_s + ") "
-      s = s + "m:" + @counters[ :moves ].to_s + "\n"
+      s = s + "m:" + @counters[ :distance ].to_s + "\n"
       @level[ :height ].times do
          |y|
          @level[ :width ].times do
@@ -379,15 +395,31 @@ class Star
    end
 end
 
-st = Star.new
-puts st.to_s
 
-moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+class TestBla < Test::Unit::TestCase
+   def test_level_completion
+      st = Star.new
+      puts st.to_s
 
-moves.each do
-   |direction|
-   st.move( direction )
-   # puts st.is_it_over? ? "YES \o/" : "not yet"
+      moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+
+      moves.each do
+         |direction|
+         st.move( direction, :ball )
+         # puts st.is_it_over? ? "YES \o/" : "not yet"
+      end
+
+      puts st.to_s
+      assert_equal( true, st.is_it_over? )
+   end
+
+   def test_move_1_step
+      st = Star.new
+      puts st.to_s
+
+      result = st.move_1_step( :down, :ball )
+      
+      assert_equal( 1, result[ :x ] )
+      assert_equal( 2, result[ :y ] )
+   end
 end
-
-puts st.to_s
