@@ -265,7 +265,7 @@ class Star
       }
       @counters = {
          :gifts => 0,
-         :moves => 0,
+         :distance => 0,
       }
       @level = {
          :width => 16,
@@ -335,7 +335,7 @@ class Star
          @positions[ objectToMove][ :y ] = newpos[ :y ]
 
          @board[ @positions[ objectToMove][ :y ] ][ @positions[ objectToMove][ :x ] ] = objectToMove == :ball ? 'B' : 'C'
-         @counters[ :moves ] = @counters[ :moves ] + 1
+         @counters[ :distance ] = @counters[ :distance ] + 1
       end
    end
 
@@ -382,7 +382,7 @@ class Star
       s = @elements[ 'G' ][ :text ] + ":" + @counters[ :gifts ].to_s + " "
       s = s + @elements[ 'B' ][ :text ] + ":(" + @positions[ :ball ][ :x ].to_s + "," + @positions[ :ball ][ :y ].to_s + ") "
       s = s + @elements[ 'C' ][ :text ] + ":(" + @positions[ :cube ][ :x ].to_s + "," + @positions[ :cube ][ :y ].to_s + ") "
-      s = s + "m:" + @counters[ :moves ].to_s + "\n"
+      s = s + "m:" + @counters[ :distance ].to_s + "\n"
       @level[ :height ].times do
          |y|
          @level[ :width ].times do
