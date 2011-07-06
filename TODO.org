@@ -1,0 +1,19 @@
+* DONE C (reference version)
+** DONE engine
+** DONE UI
+
+* DOING Javascript
+** DONE engine
+** DOING
+
+* DOING Ruby
+** DOING engine
+** TODO UI
+
+* DOING Lua
+** DOING engine
+** TODO UI
+
+* TODO Python
+** TODO engine
+** TODO UI
