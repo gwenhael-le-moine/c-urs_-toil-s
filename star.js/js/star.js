@@ -26,7 +26,7 @@ var options = {
 };
 var state = {
 	moving				: cell.BALL,
-	distance_travelled				: 0,
+	distance_travelled	: 0,
 	level				: 0,
 	board				: ""
 };
