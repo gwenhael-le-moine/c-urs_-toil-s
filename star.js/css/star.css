@@ -1,0 +1,9 @@
+#blackboard{width:16em;background:#333;float:left}
+.starcell{width:1em;height:1em;display:block;float:left;text-align:center}
+.selected{font-weight:bold}
+.wall{color:#000}
+.ball{color:#99f}
+.cube{color:red}
+.gift{color:yellow}
+.void{}
+.selected{background:#555}
