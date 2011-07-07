@@ -136,9 +136,17 @@ function format_infos( state ) {
 	infos += state.distance_travelled + " meters travelled";
 	return infos;
 }
+function format_help(  ) {
+	var help = "←↑→↓ to move around<br />";
+	help += "Space to switch actor<br />";
+	help += "'r' to reload<br />";
+	help += "'n' to pass to the next level<br />";
+	help += "'p' to go back to the previous level<br />";
+	return help;
+}
 
 function display_level( state, elt ) {
-	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside></div>';
+	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside><aside id="help">' + format_help( state ) + '</aside></div>';
 	$( elt ).html( starhtml );
 }
 
