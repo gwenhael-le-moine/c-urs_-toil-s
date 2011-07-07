@@ -225,6 +225,9 @@ function start_loop( state, elt ) {
 				state = load_level( levels, state.level - 1 );
 			}
 			break;
+		case 82: // r
+			state = load_level( levels, state.level );
+			break;
 		default:
 			break;
 		}
