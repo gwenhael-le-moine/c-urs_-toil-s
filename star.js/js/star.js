@@ -146,7 +146,11 @@ function format_help(  ) {
 }
 
 function display_level( state, elt ) {
-	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside><aside id="help">' + format_help( state ) + '</aside></div>';
+	var starhtml = '<div class="gstar">';
+	starhtml +=	'<div id="blackboard">' + format_level( state, false ) + '</div>';
+	starhtml +=	'<aside id="infos">' + format_infos( state ) + '</aside>';
+	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
+	starhtml +=	'</div>';
 	$( elt ).html( starhtml );
 }
 
