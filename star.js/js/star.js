@@ -22,7 +22,8 @@ var css_classes = {
 	"x"					: "gift"
 };
 var options = {
-	starting_level		: 0
+	starting_level		: 0,
+	dom_place           : ""
 };
 var state = {
 	moving				: cell.BALL,
@@ -136,6 +137,11 @@ function format_infos( state ) {
 	return infos;
 }
 
+function display_level( state, elt ) {
+	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside></div>';
+	$( elt ).html( starhtml );
+}
+
 function load_level( levelset, nb ) {
 	state.level = nb;
 	state.board = levelset[ state.level ];
@@ -143,12 +149,6 @@ function load_level( levelset, nb ) {
 	state.moving = cell.BALL;
 	return state;
 }
-
-function display_level( state, elt ) {
-	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside></div>';
-	$( elt ).html( starhtml );
-}
-
 
 function make_a_move( state, where ) {
 	var motion = [ 0, 0 ];
@@ -195,7 +195,8 @@ function make_a_move( state, where ) {
 }
 
 function start_loop( state, elt ) {
-	display_level( state, elt );
+	options.dom_place = elt;
+	display_level( state, options.dom_place );
 
 	$( document ).keydown( function( e ) {
 		switch( e.keyCode ) {
@@ -230,13 +231,13 @@ function start_loop( state, elt ) {
 		
 		if ( won_or_not( state ) ) {
 			if ( state.level < levels.length - 1 ) {
-			state = load_level( levels, state.level + 1 );
+				state = load_level( levels, state.level + 1 );
 			}
 			else {
 				alert( "You won!" );
 			}
 		}
 
-		display_level( state, elt );
+		display_level( state, options.dom_place );
 	});
 }
