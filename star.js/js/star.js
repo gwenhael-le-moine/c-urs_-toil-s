@@ -147,9 +147,9 @@ function format_help(  ) {
 
 function display_level( state, elt ) {
 	var starhtml = '<div class="gstar">';
+	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
 	starhtml +=	'<div id="blackboard">' + format_level( state, false ) + '</div>';
 	starhtml +=	'<aside id="infos">' + format_infos( state ) + '</aside>';
-	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
 	starhtml +=	'</div>';
 	$( elt ).html( starhtml );
 }
