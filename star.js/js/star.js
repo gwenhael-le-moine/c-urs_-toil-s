@@ -26,7 +26,7 @@ var options = {
 };
 var state = {
 	moving				: cell.BALL,
-	distance_travelled				: 0,
+	distance_travelled	: 0,
 	level				: 0,
 	board				: ""
 };
@@ -95,7 +95,7 @@ function won_or_not( state ) {
 	return count_gifts( state ) === 0;
 }
 
-function format_level( state ) {
+function format_level( state, text ) {
 	function Replacer( conversionObject ) {
 
         var regexpStr = '';
@@ -118,9 +118,22 @@ function format_level( state ) {
 		'H': '<span class="starcell cube">H</span>',
 		'@': '<span class="starcell ball">@</span>'
 		};
-	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', ' selected">' );
+	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', '_selected">' );
+	if ( text == false ) {
+		for ( var c in substitutions ) {
+			substitutions[ c ] = substitutions[ c ].replace( />.</, '><' );
+		}
+	}
 	var myReplacer = Replacer( substitutions );
 	return myReplacer( state.board );
+}
+
+function format_infos( state ) {
+	var infos = "<h1>Star5</h1><br />";
+	infos += "Level " + (state.level+1) + " of " + levels.length + "<br />";
+	infos += count_gifts( state ) + " gifts left<br />";
+	infos += state.distance_travelled + " meters travelled";
+	return infos;
 }
 
 function load_level( levelset, nb ) {
@@ -132,7 +145,8 @@ function load_level( levelset, nb ) {
 }
 
 function display_level( state, elt ) {
-	$( elt ).html( format_level( state ) );
+	var starhtml = '<div class="gstar"><div id="blackboard">' + format_level( state, false ) + '</div><aside id="infos">' + format_infos( state ) + '</aside></div>';
+	$( elt ).html( starhtml );
 }
 
 

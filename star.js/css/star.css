@@ -1,0 +1,11 @@
+.gstar{float:left;width:100%}
+.gstar #blackboard{width:320px;height:180px;background:#333;float:left}
+.gstar #blackboard .starcell{width:20px;height:20px;display:block;float:left;text-align:center}
+.gstar #blackboard .wall{background-image:url(../themes/HP48/tex_wall.png);color:#000}
+.gstar #blackboard .ball{background-image:url(../themes/HP48/tex_ball.png);color:#99f}
+.gstar #blackboard .cube{background-image:url(../themes/HP48/tex_cube.png);color:red}
+.gstar #blackboard .ball_selected{background-image:url(../themes/HP48/tex_ball_selected.png);color:#99f}
+.gstar #blackboard .cube_selected{background-image:url(../themes/HP48/tex_cube_selected.png);color:red}
+.gstar #blackboard .gift{background-image:url(../themes/HP48/tex_gift.png);color:yellow}
+.gstar #blackboard .void{background-image:url(../themes/HP48/tex_empty.png);}
+.gstar aside{float:left;height:140px;width:120px;padding:20px;background:#ddd}
