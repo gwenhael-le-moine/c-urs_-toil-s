@@ -137,11 +137,11 @@ function format_infos( state ) {
 	return infos;
 }
 function format_help(  ) {
-	var help = "←↑→↓ to move around<br />";
-	help += "Space to switch actor<br />";
-	help += "'r' to reload<br />";
-	help += "'n' to pass to the next level<br />";
-	help += "'p' to go back to the previous level<br />";
+	var help = "<em>←↑→↓</em> to move around<br />";
+	help += "<em>Space</em> to switch actor<br />";
+	help += "<em>r</em> to reload<br />";
+	help += "<em>n</em> to pass to the next level<br />";
+	help += "<em>p</em> to go back to the previous level<br />";
 	return help;
 }
 

@@ -1,4 +1,5 @@
 .gstar{float:left;width:100%}
+.gstar em{font-weight:bold}
 .gstar #blackboard{width:320px;height:180px;background:#333;float:left}
 .gstar #blackboard .starcell{width:20px;height:20px;display:block;float:left;text-align:center}
 .gstar #blackboard .wall{color:#000}
