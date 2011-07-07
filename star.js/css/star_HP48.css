@@ -1,0 +1,7 @@
+.gstar #blackboard .wall{background-image:url(../themes/HP48/tex_wall.png);}
+.gstar #blackboard .ball{background-image:url(../themes/HP48/tex_ball.png);}
+.gstar #blackboard .cube{background-image:url(../themes/HP48/tex_cube.png);}
+.gstar #blackboard .ball_selected{background-image:url(../themes/HP48/tex_ball_selected.png);}
+.gstar #blackboard .cube_selected{background-image:url(../themes/HP48/tex_cube_selected.png);}
+.gstar #blackboard .gift{background-image:url(../themes/HP48/tex_gift.png);}
+.gstar #blackboard .void{background-image:url(../themes/HP48/tex_empty.png);}
