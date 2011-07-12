@@ -222,11 +222,11 @@ function start_loop( state, elt ) {
 			board_infos.cell_dimensions = {};
 			board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
 			board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
-			var movingpos		= get_pos( state, state.moving );
-			var notmovingpos	= get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
-			var click			= {};
-			click.x				= e.pageX - board_infos.position.left;
-			click.y				= e.pageY - board_infos.position.top;
+			var movingpos = get_pos( state, state.moving );
+			var notmovingpos = get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
+			var click = {};
+			click.x = e.pageX - board_infos.position.left;
+			click.y = e.pageY - board_infos.position.top;
 
 			if ( ( 0 <= click.x && click.x < board_infos.dimensions.width )
 				&& ( 0 <= click.y && click.y < board_infos.dimensions.height ) ) {
