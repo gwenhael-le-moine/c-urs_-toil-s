@@ -213,44 +213,39 @@ function start_loop( state, elt ) {
 	$(document).focus(  );
 	$(document).click(
 		function( e ) {
-			var bpos = $("#blackboard").offset();
-			var bdim = {};
-			bdim.width = $("#blackboard").width();
-			bdim.height = $("#blackboard").height();
-			var celldim = {};
-			celldim.width = bdim.width / LEVEL_WIDTH;
-			celldim.height = bdim.height / LEVEL_HEIGHT;
-			var click = {};
-			click.x = Math.floor( ( e.pageX - bpos.left ) / celldim.width );
-			click.y = Math.floor( ( e.pageY - bpos.top ) / celldim.height );
+			var bpos			= $("#blackboard").offset();
+			var bdim			= {};
+			var celldim			= {};
+			var click			= {};
+			var movingpos		= get_pos( state, state.moving );
+			var notmovingpos	= get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
+			bdim.width			= $("#blackboard").width();
+			bdim.height			= $("#blackboard").height();
+			celldim.width		= bdim.width / LEVEL_WIDTH;
+			celldim.height		= bdim.height / LEVEL_HEIGHT;
+			click.x				= e.pageX - bpos.left;
+			click.y				= e.pageY - bpos.top;
 
 			if ( ( 0 <= click.x && click.x < bdim.width )
 				&& ( 0 <= click.y && click.y < bdim.height ) ) {
-					var ballpos = get_pos( state, cell.BALL );
-					var cubepos = get_pos( state, cell.CUBE );
+					// coordinates in cell indexes
+					click.x	= Math.floor( click.x / celldim.width );
+					click.y	= Math.floor( click.y / celldim.height );
 
-					if ( click.x == ballpos[0] && click.y == ballpos[1] ) {
-						state.moving = cell.BALL;
-					} else {
-						if ( click.x == cubepos[0] && click.y == cubepos[1] ) {
-							state.moving = cell.CUBE;
+					// We're inside the board
+					if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
+						state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
+					} else if ( click.x == movingpos[0] ) {
+						if ( click.y > movingpos[1] ) {
+							state = make_a_move( state, direction.DOWN );
+						} else if ( click.y < movingpos[1] ) {
+							state = make_a_move( state, direction.UP );
+						}
+					} else if ( click.y == movingpos[1] ) {
+						if ( click.x > movingpos[0] ) {
+							state = make_a_move( state, direction.RIGHT );
 						} else {
-							var movingpos = ( state.moving == cell.BALL ) ? ballpos : cubepos;
-							if ( click.x == movingpos[0] ) {
-								if ( click.y > movingpos[1] ) {
-									state = make_a_move( state, direction.DOWN );
-								} else {
-									state = make_a_move( state, direction.UP );
-								}
-							} else {
-								if ( click.y == movingpos[1] ) {
-									if ( click.x > movingpos[0] ) {
-										state = make_a_move( state, direction.RIGHT );
-									} else {
-										state = make_a_move( state, direction.LEFT );
-									}
-								}
-							}
+							state = make_a_move( state, direction.LEFT );
 						}
 					}
 
