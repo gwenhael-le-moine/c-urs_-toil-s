@@ -208,29 +208,31 @@ function make_a_move( state, where ) {
 
 function start_loop( state, elt ) {
 	options.dom_place = elt;
+
 	display_level( state, options.dom_place );
 
 	$(document).focus(  );
 	$(document).click(
 		function( e ) {
-			var bpos			= $("#blackboard").offset();
-			var bdim			= {};
-			var celldim			= {};
-			var click			= {};
+			var board_infos = {};
+			board_infos.position = $("#blackboard").offset();
+			board_infos.dimensions = {};
+			board_infos.dimensions.width = $("#blackboard").width();
+			board_infos.dimensions.height = $("#blackboard").height();
+			board_infos.cell_dimensions = {};
+			board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
+			board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
 			var movingpos		= get_pos( state, state.moving );
 			var notmovingpos	= get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
-			bdim.width			= $("#blackboard").width();
-			bdim.height			= $("#blackboard").height();
-			celldim.width		= bdim.width / LEVEL_WIDTH;
-			celldim.height		= bdim.height / LEVEL_HEIGHT;
-			click.x				= e.pageX - bpos.left;
-			click.y				= e.pageY - bpos.top;
+			var click			= {};
+			click.x				= e.pageX - board_infos.position.left;
+			click.y				= e.pageY - board_infos.position.top;
 
-			if ( ( 0 <= click.x && click.x < bdim.width )
-				&& ( 0 <= click.y && click.y < bdim.height ) ) {
+			if ( ( 0 <= click.x && click.x < board_infos.dimensions.width )
+				&& ( 0 <= click.y && click.y < board_infos.dimensions.height ) ) {
 					// coordinates in cell indexes
-					click.x	= Math.floor( click.x / celldim.width );
-					click.y	= Math.floor( click.y / celldim.height );
+					click.x	= Math.floor( click.x / board_infos.cell_dimensions.width );
+					click.y	= Math.floor( click.y / board_infos.cell_dimensions.height );
 
 					// We're inside the board
 					if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
