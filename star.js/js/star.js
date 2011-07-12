@@ -210,7 +210,8 @@ function start_loop( state, elt ) {
 	options.dom_place = elt;
 	display_level( state, options.dom_place );
 
-	$( document ).keydown( function( e ) {
+	$(document).focus(  );
+	$(document).keydown( function( e ) {
 		switch( e.keyCode ) {
 		case 38: // UP
 			state = make_a_move( state, direction.UP );
