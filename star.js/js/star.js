@@ -251,6 +251,15 @@ function start_loop( state, elt ) {
 						}
 					}
 
+					if ( won_or_not( state ) ) {
+						if ( state.level < levels.length - 1 ) {
+							state = load_level( levels, state.level + 1 );
+						}
+						else {
+							alert( "You won!" );
+						}
+					}
+
 					display_level( state, options.dom_place );
 				}
 		});
