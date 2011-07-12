@@ -211,49 +211,96 @@ function start_loop( state, elt ) {
 	display_level( state, options.dom_place );
 
 	$(document).focus(  );
-	$(document).keydown( function( e ) {
-		switch( e.keyCode ) {
-		case 38: // UP
-			state = make_a_move( state, direction.UP );
-			break;
-		case 40: // DOWN
-			state = make_a_move( state, direction.DOWN );
-			break;
-		case 37: // LEFT
-			state = make_a_move( state, direction.LEFT );
-			break;
-		case 39: // RIGHT
-			state = make_a_move( state, direction.RIGHT );
-			break;
-		case 32: // SPACE
-			state = switch_actor( state );
-			break;
-		case 78: // n
-			if ( state.level < levels.length - 1 ) {
-				state = load_level( levels, state.level + 1 );
-			}
-			break;
-		case 80: // p
-			if ( state.level > 0 ) {
-				state = load_level( levels, state.level - 1 );
-			}
-			break;
-		case 82: // r
-			state = load_level( levels, state.level );
-			break;
-		default:
-			break;
-		}
-		
-		if ( won_or_not( state ) ) {
-			if ( state.level < levels.length - 1 ) {
-				state = load_level( levels, state.level + 1 );
-			}
-			else {
-				alert( "You won!" );
-			}
-		}
+	$(document).click(
+		function( e ) {
+			var bpos = $("#blackboard").offset();
+			var bdim = {};
+			bdim.width = $("#blackboard").width();
+			bdim.height = $("#blackboard").height();
+			var celldim = {};
+			celldim.width = bdim.width / LEVEL_WIDTH;
+			celldim.height = bdim.height / LEVEL_HEIGHT;
+			var click = {};
+			click.x = Math.floor( ( e.pageX - bpos.left ) / celldim.width );
+			click.y = Math.floor( ( e.pageY - bpos.top ) / celldim.height );
 
-		display_level( state, options.dom_place );
-	});
+			if ( ( 0 <= click.x && click.x < bdim.width )
+				&& ( 0 <= click.y && click.y < bdim.height ) ) {
+					var ballpos = get_pos( state, cell.BALL );
+					var cubepos = get_pos( state, cell.CUBE );
+
+					if ( click.x == ballpos[0] && click.y == ballpos[1] ) {
+						state.moving = cell.BALL;
+					} else {
+						if ( click.x == cubepos[0] && click.y == cubepos[1] ) {
+							state.moving = cell.CUBE;
+						} else {
+							var movingpos = ( state.moving == cell.BALL ) ? ballpos : cubepos;
+							if ( click.x == movingpos[0] ) {
+								if ( click.y > movingpos[1] ) {
+									state = make_a_move( state, direction.DOWN );
+								} else {
+									state = make_a_move( state, direction.UP );
+								}
+							} else {
+								if ( click.y == movingpos[1] ) {
+									if ( click.x > movingpos[0] ) {
+										state = make_a_move( state, direction.RIGHT );
+									} else {
+										state = make_a_move( state, direction.LEFT );
+									}
+								}
+							}
+						}
+					}
+
+					display_level( state, options.dom_place );
+				}
+		});
+	$(document).keydown(
+		function( e ) {
+			switch( e.keyCode ) {
+			case 38: // UP
+				state = make_a_move( state, direction.UP );
+				break;
+			case 40: // DOWN
+				state = make_a_move( state, direction.DOWN );
+				break;
+			case 37: // LEFT
+				state = make_a_move( state, direction.LEFT );
+				break;
+			case 39: // RIGHT
+				state = make_a_move( state, direction.RIGHT );
+				break;
+			case 32: // SPACE
+				state = switch_actor( state );
+				break;
+			case 78: // n
+				if ( state.level < levels.length - 1 ) {
+					state = load_level( levels, state.level + 1 );
+				}
+				break;
+			case 80: // p
+				if ( state.level > 0 ) {
+					state = load_level( levels, state.level - 1 );
+				}
+				break;
+			case 82: // r
+				state = load_level( levels, state.level );
+				break;
+			default:
+				break;
+			}
+			
+			if ( won_or_not( state ) ) {
+				if ( state.level < levels.length - 1 ) {
+					state = load_level( levels, state.level + 1 );
+				}
+				else {
+					alert( "You won!" );
+				}
+			}
+
+			display_level( state, options.dom_place );
+		});
 }
