@@ -1,34 +1,36 @@
+require 'ncursesw'
+
 LEVEL_HEIGHT = 9
 LEVEL_WIDTH = 16
 
 class Star
    def initialize
       @levels = [
-         '#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################',
-         ' #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ',
-         '#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################',
-         '#################            #H##     #        ###x#x x#x#x#x#x## # #x x# # # ####x#x#x x#x#x#x##     #        ##   #       #@ #################',
-         ' ############## #@  #   #  #   ##  #x # x  x # ###      #  #   ##x #x#        ####     # x #   ##x#  # # #   #H##   #    x#  #x# ############## ',
-         '    ############   #   x   #x x#  #    x    # ## #     x       ##@     x       ###     x  #   ###      x    #  ##H #   x  ##x  #################',
-         '#################              # ## ###  #x ##x# #x  #x # # # #   #  #  ### ##   ##  #  #x# #x# #              ##  @#x    H  #x#################',
-         '############### #  x##        ###  #x  ## x    ##  x## # #x    ###     ##  #x# ### #       x#x ##xHx#   x  #@# ###             # ###############',
-         '  # ###########  #x#x      #  @##x x#    x    #  # #  x##  x#  ##  #x #xHx    x##     x##     # #x#x         #  #           #   ############    ',
-         '    ########### #### x         ##   H ###x x# x## x   #x #x   # #     #  x  # x##x#x  # x#  #@#  #x   ###  ###  #         # # #  #########  #  #',
-         '#################      #      @##  #xx     xx ####   x   ##   x##x    #x#xx  ##### ##    ##    ##x  x# x    H x###x###    #   ## ## ########### ',
-         '##     ##  #### #@#####x ### x###    xx     x  ## ##  ##x  #x# ## # x ###x ##  ## ##  ##   #H# ##     x        ##        x     #################',
-         ' ############## # @#        x ### #   #x   x## ##       x    # ## x          #x## #      x     ###      x x  #x##H  #    x # # # ############## ',
-         '#################x#x        x#x## x#@      ##  ## H        x   ##        x#    ##      x       ## x#        #  ##x#x        x#x#################',
-         ' ###### ####### #     x#     x ## # x #  #   x ##  @#   #xx #x # # #   # x  H# ##x       #  #x # #      x     # #x            x# ############## ',
-         '################## H#x x      x##x @x#x       #### ###    x   ####     x#x#    ##xx       x#x  ### x    ####x  ###x#  #        #################',
-         '################# x#        #@ ## #  x#xx#x  # ##    #x##x# x  ## x#       x#  ##  x#x    x#   ## #  # ##x#  # ##    x #x   H  #################',
-         '################# x    x  H#   ##  #x#x   #x   ##   #x#    #x  ##   x  #   x#x ## #x#   # x#   ## x#x # x #    ##x#@  #     #  #################',
-         '#################x   ##     ##x## #  #      #x ## x#   x##  x  ## #    #x      ##    #   x#    ## ## x# ##x  #H## x# #x     ##@#################',
-         '#################   x#x        ###x  x# ##x   ### # # x   #  # ## H #  ##  # @x## #  #   x # # ###   x## #x  x###        x#x   #################',
-         '################# ###     x   ###   #       # ###   ##x      x ##  x    x   x ###    #    ###x ##  x x @ H x xx#################                ',
-         '#################x#  #x# #x  # ##    #         ##x   #  #x  x  ### #x      x #### x #   ###x   ##     #@#H  x  #################                ',
-         ' ############## # #  #x# #x  # ##    x  #      ###   #   x #x  ##  #x  #  xx x ###x #   ## x   ##     #@#H  x  # ##############                 ',
-         '#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ',
-         '#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                ' ]
+                 '#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################',
+                 ' #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ',
+                 '#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################',
+                 '#################            #H##     #        ###x#x x#x#x#x#x## # #x x# # # ####x#x#x x#x#x#x##     #        ##   #       #@ #################',
+                 ' ############## #@  #   #  #   ##  #x # x  x # ###      #  #   ##x #x#        ####     # x #   ##x#  # # #   #H##   #    x#  #x# ############## ',
+                 '    ############   #   x   #x x#  #    x    # ## #     x       ##@     x       ###     x  #   ###      x    #  ##H #   x  ##x  #################',
+                 '#################              # ## ###  #x ##x# #x  #x # # # #   #  #  ### ##   ##  #  #x# #x# #              ##  @#x    H  #x#################',
+                 '############### #  x##        ###  #x  ## x    ##  x## # #x    ###     ##  #x# ### #       x#x ##xHx#   x  #@# ###             # ###############',
+                 '  # ###########  #x#x      #  @##x x#    x    #  # #  x##  x#  ##  #x #xHx    x##     x##     # #x#x         #  #           #   ############    ',
+                 '    ########### #### x         ##   H ###x x# x## x   #x #x   # #     #  x  # x##x#x  # x#  #@#  #x   ###  ###  #         # # #  #########  #  #',
+                 '#################      #      @##  #xx     xx ####   x   ##   x##x    #x#xx  ##### ##    ##    ##x  x# x    H x###x###    #   ## ## ########### ',
+                 '##     ##  #### #@#####x ### x###    xx     x  ## ##  ##x  #x# ## # x ###x ##  ## ##  ##   #H# ##     x        ##        x     #################',
+                 ' ############## # @#        x ### #   #x   x## ##       x    # ## x          #x## #      x     ###      x x  #x##H  #    x # # # ############## ',
+                 '#################x#x        x#x## x#@      ##  ## H        x   ##        x#    ##      x       ## x#        #  ##x#x        x#x#################',
+                 ' ###### ####### #     x#     x ## # x #  #   x ##  @#   #xx #x # # #   # x  H# ##x       #  #x # #      x     # #x            x# ############## ',
+                 '################## H#x x      x##x @x#x       #### ###    x   ####     x#x#    ##xx       x#x  ### x    ####x  ###x#  #        #################',
+                 '################# x#        #@ ## #  x#xx#x  # ##    #x##x# x  ## x#       x#  ##  x#x    x#   ## #  # ##x#  # ##    x #x   H  #################',
+                 '################# x    x  H#   ##  #x#x   #x   ##   #x#    #x  ##   x  #   x#x ## #x#   # x#   ## x#x # x #    ##x#@  #     #  #################',
+                 '#################x   ##     ##x## #  #      #x ## x#   x##  x  ## #    #x      ##    #   x#    ## ## x# ##x  #H## x# #x     ##@#################',
+                 '#################   x#x        ###x  x# ##x   ### # # x   #  # ## H #  ##  # @x## #  #   x # # ###   x## #x  x###        x#x   #################',
+                 '################# ###     x   ###   #       # ###   ##x      x ##  x    x   x ###    #    ###x ##  x x @ H x xx#################                ',
+                 '#################x#  #x# #x  # ##    #         ##x   #  #x  x  ### #x      x #### x #   ###x   ##     #@#H  x  #################                ',
+                 ' ############## # #  #x# #x  # ##    x  #      ###   #   x #x  ##  #x  #  xx x ###x #   ## x   ##     #@#H  x  # ##############                 ',
+                 '#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ',
+                 '#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                ' ]
       @elements = {
          '@' => { :text => "()", :fg => "#0000ff", :bg => "#000000" },
          'H' => { :text => "[]", :fg => "#ff0000", :bg => "#000000" },
@@ -115,17 +117,73 @@ class Star
       end
       return s
    end
+
+   def nc_display(  )
+      LEVEL_HEIGHT.times do
+         |y|
+         LEVEL_WIDTH.times do
+            |x|
+            Ncurses.stdscr.mvprintw( y+1, x*2, @elements[ get_cell( x, y ) ][ :text ] )
+         end
+      end
+   end
 end
 
-st = Star.new
-puts st.to_s
+Ncurses.initscr
+begin
+   # if (Ncurses.has_colors?)
+   #    bg = Ncurses::COLOR_BLACK
+   #    Ncurses.start_color
+   #    if (Ncurses.respond_to?("use_default_colors"))
+   #       if (Ncurses.use_default_colors == Ncurses::OK)
+   #          bg = -1
+   #       end
+   #    end
+   #    Ncurses.init_pair(1, Ncurses::COLOR_BLUE, bg);
+   #    Ncurses.init_pair(2, Ncurses::COLOR_CYAN, bg);
+   # end
+   Ncurses.nl()
+   Ncurses.noecho()
+   Ncurses.curs_set(0)
+   Ncurses.stdscr.nodelay(true)
 
-moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+   st = Star.new
 
-moves.each do
-   |direction|
-   st.move( direction )
-   puts st.is_it_over? ? "YES \o/" : "not yet"
+   begin
+      case(Ncurses.getch())
+      when 'q'[0], 'Q'[0]
+         Ncurses.curs_set(1)
+         Ncurses.endwin()
+         exit
+      when 'h'
+         st.move( :left )
+         st.nc_display(  )
+      when 'j'[0]
+         st.move( :down )
+         st.nc_display(  )
+      when 'k'[0]
+         st.move( :up )
+         st.nc_display(  )
+      when 'l'[0]
+         st.move( :right )
+         st.nc_display(  )
+      end
+
+      st.nc_display(  )
+      Ncurses.refresh
+   end while true
+ensure
+   Ncurses.curs_set(1)
+   Ncurses.endwin()
 end
 
-puts st.to_s
+
+# moves = [ :down, :right, :down, :left, :up, :right, :up, :left, :down, :right, :down, :left, :right, :up, :left, :up, :right, :up, :down, :left, :up, :right, :down, :up, :left, ]
+
+# moves.each do
+#    |direction|
+#    st.move( direction )
+#    puts st.is_it_over? ? "YES \o/" : "not yet"
+# end
+
+#puts st.to_s
