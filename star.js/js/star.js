@@ -14,7 +14,7 @@ var direction = {
 	LEFT				: 'l',
 	RIGHT				: 'r'
 };
-var sprites = {  };
+
 var state = {
 	moving				: cell.BALL,
 	distance_travelled	: 0,
@@ -86,13 +86,13 @@ function switch_actor( state ) {
 	var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 
 	// redraw ball
-	ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball,
+	ctx.drawImage( ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.ball,
 				   ball_pos[ 0 ] * state.board_infos.cell_dimensions.width,
 				   ball_pos[ 1 ] * state.board_infos.cell_dimensions.height,
 				   state.board_infos.cell_dimensions.width,
 				   state.board_infos.cell_dimensions.height );
 	// redraw cube
-	ctx.drawImage( ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube,
+	ctx.drawImage( ( state.moving == cell.CUBE ) ? state.board_infos.sprites.cube_selected : state.board_infos.sprites.cube,
 				   cube_pos[ 0 ] * state.board_infos.cell_dimensions.width,
 				   cube_pos[ 1 ] * state.board_infos.cell_dimensions.height,
 				   state.board_infos.cell_dimensions.width,
@@ -111,11 +111,11 @@ function full_display_on_canvas( state, canvas_elt ) {
 			var c = get_cell( state, j, i );
 			var sprite;
 			switch( c ) {
-				case "@": sprite = ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball; break;
-				case "H": sprite = ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube; break;
-				case "#": sprite = sprites.wall; break;
-				case "x": sprite = sprites.gift; break;
-				case " ": sprite = sprites.void; break;
+				case "@": sprite = ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.ball; break;
+				case "H": sprite = ( state.moving == cell.CUBE ) ? state.board_infos.sprites.cube_selected : state.board_infos.sprites.cube; break;
+				case "#": sprite = state.board_infos.sprites.wall; break;
+				case "x": sprite = state.board_infos.sprites.gift; break;
+				case " ": sprite = state.board_infos.sprites.void; break;
 			}
 			ctx.drawImage( sprite,
 						   j * state.board_infos.cell_dimensions.width,
@@ -194,7 +194,7 @@ function make_a_move( state, elt, where ) {
     {
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 		// voiding origin cell on canvas
-		ctx.drawImage( sprites.void,
+		ctx.drawImage( state.board_infos.sprites.void,
 					   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
 					   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
 					   state.board_infos.cell_dimensions.width,
@@ -205,7 +205,7 @@ function make_a_move( state, elt, where ) {
         
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 		// drawing target cell on canvas
-		ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.cube_selected,
+		ctx.drawImage( ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.cube_selected,
 					   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
 					   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
 					   state.board_infos.cell_dimensions.width,
@@ -313,23 +313,27 @@ function start_loop( state, elt ) {
 		});
 }
 
-function initialize_a_star( elt ) {
-	// load sprites
+function load_sprites( theme ) {
+	var sprites = {  };
 	sprites.ball = new Image();
-	sprites.ball.src = "themes/HP48/tex_ball.png";
+	sprites.ball.src = "themes/" + theme + "/tex_ball.png";
 	sprites.ball_selected = new Image();
-	sprites.ball_selected.src = "themes/HP48/tex_ball_selected.png";
+	sprites.ball_selected.src = "themes/" + theme + "/tex_ball_selected.png";
 	sprites.cube = new Image();
-	sprites.cube.src = "themes/HP48/tex_cube.png";
+	sprites.cube.src = "themes/" + theme + "/tex_cube.png";
 	sprites.cube_selected = new Image();
-	sprites.cube_selected.src = "themes/HP48/tex_cube_selected.png";
+	sprites.cube_selected.src = "themes/" + theme + "/tex_cube_selected.png";
 	sprites.wall = new Image();
-	sprites.wall.src = "themes/HP48/tex_wall.png";
+	sprites.wall.src = "themes/" + theme + "/tex_wall.png";
 	sprites.void = new Image();
-	sprites.void.src = "themes/HP48/tex_empty.png";
+	sprites.void.src = "themes/" + theme + "/tex_empty.png";
 	sprites.gift = new Image();
-	sprites.gift.src = "themes/HP48/tex_gift.png";
+	sprites.gift.src = "themes/" + theme + "/tex_gift.png";
+	
+	return sprites;
+}
 
+function initialize_a_star( elt ) {
 	var starhtml = '<div class="gstar">';
 	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
 	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
@@ -337,6 +341,8 @@ function initialize_a_star( elt ) {
 	starhtml +=	'</div>';
 
 	$( elt ).html( starhtml );
+
+	state.board_infos.sprites = load_sprites( "HP48" );
 
 	state.board_infos.canvas = $( elt + " #starboard" )[ 0 ];
 	state.board_infos.offset = $( elt + " #starboard" ).offset();
