@@ -83,6 +83,23 @@ function set_cell( state, x, y, value ) {
 
 function switch_actor( state ) {
 	state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
+	var ball_pos = get_pos( state, cell.BALL );
+	var cube_pos = get_pos( state, cell.CUBE );
+	// we're going to update the canvas right here and there so we need it
+	var ctx= board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
+
+	// redraw ball
+	ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball,
+				   ball_pos[ 0 ] * board_infos.cell_dimensions.width,
+				   ball_pos[ 1 ] * board_infos.cell_dimensions.height,
+				   board_infos.cell_dimensions.width,
+				   board_infos.cell_dimensions.height );
+	// redraw cube
+	ctx.drawImage( ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube,
+				   cube_pos[ 0 ] * board_infos.cell_dimensions.width,
+				   cube_pos[ 1 ] * board_infos.cell_dimensions.height,
+				   board_infos.cell_dimensions.width,
+				   board_infos.cell_dimensions.height );
 	return state;
 }
 
@@ -90,7 +107,7 @@ function won_or_not( state ) {
 	return count_gifts( state ) === 0;
 }
 
-function display_on_canvas( state, canvas_elt ) {
+function full_display_on_canvas( state, canvas_elt ) {
 	var ctx= $( canvas_elt )[ 0 ].getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
@@ -112,13 +129,15 @@ function display_on_canvas( state, canvas_elt ) {
 	}
 }
 
-function format_infos( state ) {
+function update_infos( state, elt ) {
 	var infos = "<h1>Star5</h1><br />";
 	infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
 	infos += "<em>" + count_gifts( state ) + "</em> gifts left<br />";
 	infos += "<em>" + state.distance_travelled + "</em> meters travelled";
-	return infos;
+
+	$( elt + " .gstar #infos" ).html( infos );
 }
+
 function format_help(  ) {
 	var help = "<em>←↑→↓</em> to move around<br />";
 	help += "<em>Space</em> to switch actor<br />";
@@ -129,19 +148,19 @@ function format_help(  ) {
 }
 
 function display_level( state, elt ) {
-	$( elt + " .gstar #infos" ).html( format_infos( state ) );
-	display_on_canvas( state, elt + " #starboard" );
+	update_infos( state, elt );
+	full_display_on_canvas( state, elt + " #starboard" );
 }
 
-function load_level( levelset, nb ) {
-	state.level = nb;
+function load_level( levelset, index ) {
+	state.level = index;
 	state.board = levelset[ state.level ];
 	state.distance_travelled = 0;
 	state.moving = cell.BALL;
 	return state;
 }
 
-function make_a_move( state, where ) {
+function make_a_move( state, elt, where ) {
 	var motion = [ 0, 0 ];
 	var item_coord = get_pos( state, state.moving );
 
@@ -162,6 +181,9 @@ function make_a_move( state, where ) {
     default: break;
     }
 
+	// we're going to update the canvas right here and there so we need it
+	var ctx= board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
+
 	/* Calculating arrival coordinates */
     while (                      /* Hairy conditions ahead */
         /* target cell is within level's boundaries */
@@ -174,18 +196,31 @@ function make_a_move( state, where ) {
     )
     {
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
-
+		// voiding origin cell on canvas
+		ctx.drawImage( sprites.void,
+					   item_coord[ 0 ] * board_infos.cell_dimensions.width,
+					   item_coord[ 1 ] * board_infos.cell_dimensions.height,
+					   board_infos.cell_dimensions.width,
+					   board_infos.cell_dimensions.height );
+		
         item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
         item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
         
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
+		// drawing target cell on canvas
+		ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.cube_selected,
+					   item_coord[ 0 ] * board_infos.cell_dimensions.width,
+					   item_coord[ 1 ] * board_infos.cell_dimensions.height,
+					   board_infos.cell_dimensions.width,
+					   board_infos.cell_dimensions.height );
 
 		state.distance_travelled++;                /* increment distance_travelled */
     }
+	update_infos( state, elt );
 	return state;
 }
 
-function start_loop( state, elt, board_infos ) {
+function start_loop( state, elt ) {
 	display_level( state, elt );
 
 	$(document).focus(  );
@@ -208,44 +243,43 @@ function start_loop( state, elt, board_infos ) {
 						state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
 					} else if ( click.x == movingpos[0] ) {
 						if ( click.y > movingpos[1] ) {
-							state = make_a_move( state, direction.DOWN );
+							state = make_a_move( state, elt, direction.DOWN );
 						} else if ( click.y < movingpos[1] ) {
-							state = make_a_move( state, direction.UP );
+							state = make_a_move( state, elt, direction.UP );
 						}
 					} else if ( click.y == movingpos[1] ) {
 						if ( click.x > movingpos[0] ) {
-							state = make_a_move( state, direction.RIGHT );
+							state = make_a_move( state, elt, direction.RIGHT );
 						} else {
-							state = make_a_move( state, direction.LEFT );
+							state = make_a_move( state, elt, direction.LEFT );
 						}
 					}
 
 					if ( won_or_not( state ) ) {
 						if ( state.level < levels.length - 1 ) {
 							state = load_level( levels, state.level + 1 );
+							display_level( state, elt );
 						}
 						else {
 							alert( "You won!" );
 						}
 					}
-
-					display_level( state, elt );
 				}
 		});
 	$(document).keydown(
 		function( e ) {
 			switch( e.keyCode ) {
 			case 38: // UP
-				state = make_a_move( state, direction.UP );
+				state = make_a_move( state, elt, direction.UP );
 				break;
 			case 40: // DOWN
-				state = make_a_move( state, direction.DOWN );
+				state = make_a_move( state, elt, direction.DOWN );
 				break;
 			case 37: // LEFT
-				state = make_a_move( state, direction.LEFT );
+				state = make_a_move( state, elt, direction.LEFT );
 				break;
 			case 39: // RIGHT
-				state = make_a_move( state, direction.RIGHT );
+				state = make_a_move( state, elt, direction.RIGHT );
 				break;
 			case 32: // SPACE
 				state = switch_actor( state );
@@ -253,15 +287,18 @@ function start_loop( state, elt, board_infos ) {
 			case 78: // n
 				if ( state.level < levels.length - 1 ) {
 					state = load_level( levels, state.level + 1 );
+					display_level( state, elt );
 				}
 				break;
 			case 80: // p
 				if ( state.level > 0 ) {
 					state = load_level( levels, state.level - 1 );
+					display_level( state, elt );
 				}
 				break;
 			case 82: // r
 				state = load_level( levels, state.level );
+				display_level( state, elt );
 				break;
 			default:
 				break;
@@ -270,13 +307,12 @@ function start_loop( state, elt, board_infos ) {
 			if ( won_or_not( state ) ) {
 				if ( state.level < levels.length - 1 ) {
 					state = load_level( levels, state.level + 1 );
+					display_level( state, elt );
 				}
 				else {
 					alert( "You won!" );
 				}
 			}
-
-			display_level( state, elt );
 		});
 }
 
@@ -305,6 +341,7 @@ function initialize_a_star( elt ) {
 
 	$( elt ).html( starhtml );
 
+	board_infos.canvas = $(elt + " #starboard")[ 0 ];
 	board_infos.offset = $(elt + " #starboard").offset();
 	board_infos.dimensions = {};
 	board_infos.dimensions.width = $(elt + " #starboard").width();
@@ -315,5 +352,9 @@ function initialize_a_star( elt ) {
 
 	state = load_level( levels, options.starting_level );
 
-	start_loop( state, elt, board_infos );
+	start_loop( state, elt );
+
+	// kinda ugly workaround around a bug causing the canvas
+	// not to refresh the first time (before any event)
+	setTimeout( function(){ display_level( state, elt ); }, 1 );
 }
