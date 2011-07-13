@@ -1,0 +1,5 @@
+body{background-color:#baddad}
+#container header, #container #main, #container footer{float:left;width:100%}
+#container header{font-size:3em;text-align:center}
+#container footer{font-size:0.8em;color:#555;text-align:right;background:#a9cc9c;border-top:1px solid #98bb8b;position:fixed;bottom:0}
+#container .gstar{margin:128px auto 0;border:2px solid #98bb8b}
