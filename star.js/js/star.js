@@ -15,15 +15,12 @@ var direction = {
 	RIGHT				: 'r'
 };
 var sprites = {  };
-var board_infos = {  };
-var options = {
-	starting_level		: 0
-};
 var state = {
 	moving				: cell.BALL,
 	distance_travelled	: 0,
 	level				: 0,
-	board				: ""
+	board				: "",
+	board_infos         : {  }
 };
 
 var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
@@ -86,20 +83,20 @@ function switch_actor( state ) {
 	var ball_pos = get_pos( state, cell.BALL );
 	var cube_pos = get_pos( state, cell.CUBE );
 	// we're going to update the canvas right here and there so we need it
-	var ctx= board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
+	var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 
 	// redraw ball
 	ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball,
-				   ball_pos[ 0 ] * board_infos.cell_dimensions.width,
-				   ball_pos[ 1 ] * board_infos.cell_dimensions.height,
-				   board_infos.cell_dimensions.width,
-				   board_infos.cell_dimensions.height );
+				   ball_pos[ 0 ] * state.board_infos.cell_dimensions.width,
+				   ball_pos[ 1 ] * state.board_infos.cell_dimensions.height,
+				   state.board_infos.cell_dimensions.width,
+				   state.board_infos.cell_dimensions.height );
 	// redraw cube
 	ctx.drawImage( ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube,
-				   cube_pos[ 0 ] * board_infos.cell_dimensions.width,
-				   cube_pos[ 1 ] * board_infos.cell_dimensions.height,
-				   board_infos.cell_dimensions.width,
-				   board_infos.cell_dimensions.height );
+				   cube_pos[ 0 ] * state.board_infos.cell_dimensions.width,
+				   cube_pos[ 1 ] * state.board_infos.cell_dimensions.height,
+				   state.board_infos.cell_dimensions.width,
+				   state.board_infos.cell_dimensions.height );
 	return state;
 }
 
@@ -121,10 +118,10 @@ function full_display_on_canvas( state, canvas_elt ) {
 				case " ": sprite = sprites.void; break;
 			}
 			ctx.drawImage( sprite,
-						   j * board_infos.cell_dimensions.width,
-						   i * board_infos.cell_dimensions.height,
-						   board_infos.cell_dimensions.width,
-						   board_infos.cell_dimensions.height );
+						   j * state.board_infos.cell_dimensions.width,
+						   i * state.board_infos.cell_dimensions.height,
+						   state.board_infos.cell_dimensions.width,
+						   state.board_infos.cell_dimensions.height );
 		}
 	}
 }
@@ -182,7 +179,7 @@ function make_a_move( state, elt, where ) {
     }
 
 	// we're going to update the canvas right here and there so we need it
-	var ctx= board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
+	var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 
 	/* Calculating arrival coordinates */
     while (                      /* Hairy conditions ahead */
@@ -198,10 +195,10 @@ function make_a_move( state, elt, where ) {
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 		// voiding origin cell on canvas
 		ctx.drawImage( sprites.void,
-					   item_coord[ 0 ] * board_infos.cell_dimensions.width,
-					   item_coord[ 1 ] * board_infos.cell_dimensions.height,
-					   board_infos.cell_dimensions.width,
-					   board_infos.cell_dimensions.height );
+					   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
+					   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
+					   state.board_infos.cell_dimensions.width,
+					   state.board_infos.cell_dimensions.height );
 		
         item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
         item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
@@ -209,10 +206,10 @@ function make_a_move( state, elt, where ) {
         state = set_cell( state, item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 		// drawing target cell on canvas
 		ctx.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.cube_selected,
-					   item_coord[ 0 ] * board_infos.cell_dimensions.width,
-					   item_coord[ 1 ] * board_infos.cell_dimensions.height,
-					   board_infos.cell_dimensions.width,
-					   board_infos.cell_dimensions.height );
+					   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
+					   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
+					   state.board_infos.cell_dimensions.width,
+					   state.board_infos.cell_dimensions.height );
 
 		state.distance_travelled++;                /* increment distance_travelled */
     }
@@ -229,14 +226,14 @@ function start_loop( state, elt ) {
 			var movingpos = get_pos( state, state.moving );
 			var notmovingpos = get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
 			var click = {  };
-			click.x = e.pageX - board_infos.offset.left;
-			click.y = e.pageY - board_infos.offset.top;
+			click.x = e.pageX - state.board_infos.offset.left;
+			click.y = e.pageY - state.board_infos.offset.top;
 
-			if ( ( 0 <= click.x && click.x < board_infos.dimensions.width )
-				&& ( 0 <= click.y && click.y < board_infos.dimensions.height ) ) {
+			if ( ( 0 <= click.x && click.x < state.board_infos.dimensions.width )
+				&& ( 0 <= click.y && click.y < state.board_infos.dimensions.height ) ) {
 					// coordinates in cell indexes
-					click.x	= Math.floor( click.x / board_infos.cell_dimensions.width );
-					click.y	= Math.floor( click.y / board_infos.cell_dimensions.height );
+					click.x	= Math.floor( click.x / state.board_infos.cell_dimensions.width );
+					click.y	= Math.floor( click.y / state.board_infos.cell_dimensions.height );
 
 					// We're inside the board
 					if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
@@ -341,16 +338,16 @@ function initialize_a_star( elt ) {
 
 	$( elt ).html( starhtml );
 
-	board_infos.canvas = $( elt + " #starboard" )[ 0 ];
-	board_infos.offset = $( elt + " #starboard" ).offset();
-	board_infos.dimensions = {  };
-	board_infos.dimensions.width = $( elt + " #starboard" ).width();
-	board_infos.dimensions.height = $( elt + " #starboard" ).height();
-	board_infos.cell_dimensions = {  };
-	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
-	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
+	state.board_infos.canvas = $( elt + " #starboard" )[ 0 ];
+	state.board_infos.offset = $( elt + " #starboard" ).offset();
+	state.board_infos.dimensions = {  };
+	state.board_infos.dimensions.width = $( elt + " #starboard" ).width();
+	state.board_infos.dimensions.height = $( elt + " #starboard" ).height();
+	state.board_infos.cell_dimensions = {  };
+	state.board_infos.cell_dimensions.width = state.board_infos.dimensions.width / LEVEL_WIDTH;
+	state.board_infos.cell_dimensions.height = state.board_infos.dimensions.height / LEVEL_HEIGHT;
 
-	state = load_level( levels, options.starting_level );
+	state = load_level( levels, 0 );
 
 	start_loop( state, elt );
 
