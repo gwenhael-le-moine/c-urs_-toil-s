@@ -146,12 +146,8 @@ function format_help(  ) {
 }
 
 function display_level( state, elt ) {
-	var starhtml = '<div class="gstar">';
-	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
-	starhtml +=	'<div id="blackboard">' + format_level( state, false ) + '</div>';
-	starhtml +=	'<aside id="infos">' + format_infos( state ) + '</aside>';
-	starhtml +=	'</div>';
-	$( elt ).html( starhtml );
+	$( elt + " .gstar #blackboard" ).html( format_level( state, false ) );
+	$( elt + " .gstar #infos" ).html( format_infos( state ) );
 }
 
 function load_level( levelset, nb ) {
@@ -312,6 +308,13 @@ function start_loop( state, elt ) {
 }
 
 function initialize_a_star( elt ) {
+	var starhtml = '<div class="gstar">';
+	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
+	starhtml +=	'<div id="blackboard"></div>';
+	starhtml +=	'<aside id="infos"></aside>';
+	starhtml +=	'</div>';
+	$( elt ).html( starhtml );
+
 	state = load_level( levels, 0 );
 	start_loop( state, elt );
 }
