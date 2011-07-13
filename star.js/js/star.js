@@ -356,5 +356,5 @@ function initialize_a_star( elt ) {
 
 	// kinda ugly workaround around a bug causing the canvas
 	// not to refresh the first time (before any event)
-	setTimeout( function(){ display_level( state, elt ); }, 1 );
+	setTimeout( function(){ display_level( state, elt ); }, 100 ); // 1/10 second
 }
