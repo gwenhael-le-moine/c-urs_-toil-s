@@ -21,6 +21,8 @@ var css_classes = {
 	" "					: "void",
 	"x"					: "gift"
 };
+var sprites = {};
+var board_infos = {};
 var options = {
 	starting_level		: 0,
 	dom_place           : ""
@@ -128,7 +130,12 @@ function format_level( state, text ) {
 	var myReplacer = Replacer( substitutions );
 	return myReplacer( state.board );
 }
-
+function display_on_canvas( state, canvas_elt ) {
+	var ctx= document.getElementById( canvas_elt ).getContext( '2d' );
+	
+		ctx.translate( 100, 100 );
+        ctx.drawImage( sprites.ball, -3.5, -3.5 );
+}
 function format_infos( state ) {
 	var infos = "<h1>Star5</h1><br />";
 	infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
@@ -148,6 +155,7 @@ function format_help(  ) {
 function display_level( state, elt ) {
 	$( elt + " .gstar #blackboard" ).html( format_level( state, false ) );
 	$( elt + " .gstar #infos" ).html( format_infos( state ) );
+	display_on_canvas( state, "starboard" );
 }
 
 function load_level( levelset, nb ) {
@@ -210,14 +218,6 @@ function start_loop( state, elt ) {
 	$(document).focus(  );
 	$(document).click(
 		function( e ) {
-			var board_infos = {};
-			board_infos.position = $("#blackboard").offset();
-			board_infos.dimensions = {};
-			board_infos.dimensions.width = $("#blackboard").width();
-			board_infos.dimensions.height = $("#blackboard").height();
-			board_infos.cell_dimensions = {};
-			board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
-			board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
 			var movingpos = get_pos( state, state.moving );
 			var notmovingpos = get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
 			var click = {};
@@ -312,7 +312,30 @@ function initialize_a_star( elt ) {
 	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
 	starhtml +=	'<div id="blackboard"></div>';
 	starhtml +=	'<aside id="infos"></aside>';
-	starhtml +=	'</div>';
+	starhtml +=	'</div><canvas id="starboard" width="320" height="180"></canvass>';
+
+	board_infos.position = $("#blackboard").offset();
+	board_infos.dimensions = {};
+	board_infos.dimensions.width = $("#blackboard").width();
+	board_infos.dimensions.height = $("#blackboard").height();
+	board_infos.cell_dimensions = {};
+	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
+	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
+
+	sprites.ball = new Image();
+	sprites.ball.src = "themes/HP48/tex_ball.png";
+	sprites.ball_selected = new Image();
+	sprites.ball_selected.src = "themes/HP48/tex_ball_selected.png";
+	sprites.cube = new Image();
+	sprites.cube.src = "themes/HP48/tex_cube.png";
+	sprites.cube_selected = new Image();
+	sprites.cube_selected.src = "themes/HP48/tex_cube_selected.png";
+	sprites.wall = new Image();
+	sprites.wall.src = "themes/HP48/tex_wall.png";
+	sprites.void = new Image();
+	sprites.void.src = "themes/HP48/tex_empty.png";
+	sprites.gift = new Image();
+	sprites.gift.src = "themes/HP48/tex_gift.png";
 	$( elt ).html( starhtml );
 
 	state = load_level( levels, 0 );
