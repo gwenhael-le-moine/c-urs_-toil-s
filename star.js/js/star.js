@@ -322,5 +322,8 @@ function initialize_a_star( elt ) {
 	$( elt ).html( starhtml );
 
 	state = load_level( levels, 0 );
+//	display_level( state, options.dom_place );
+	display_on_canvas( state, "starboard" );
+
 	start_loop( state, elt );
 }
