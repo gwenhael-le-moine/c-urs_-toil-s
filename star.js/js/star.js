@@ -310,3 +310,8 @@ function start_loop( state, elt ) {
 			display_level( state, options.dom_place );
 		});
 }
+
+function initialize_a_star( elt ) {
+	state = load_level( levels, 0 );
+	start_loop( state, elt );
+}
