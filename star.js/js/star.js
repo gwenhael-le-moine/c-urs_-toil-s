@@ -91,10 +91,6 @@ function won_or_not( state ) {
 }
 
 function display_on_canvas( state, canvas_elt ) {
-	board_infos = {};
-	board_infos.cell_dimensions = {};
-	board_infos.cell_dimensions.width = 20;
-	board_infos.cell_dimensions.height = 20;
 	var ctx= document.getElementById( canvas_elt ).getContext( '2d' );
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
