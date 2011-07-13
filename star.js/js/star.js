@@ -24,8 +24,7 @@ var css_classes = {
 var sprites = {};
 var board_infos = {};
 var options = {
-	starting_level		: 0,
-	dom_place           : ""
+	starting_level		: 0
 };
 var state = {
 	moving				: cell.BALL,
@@ -194,9 +193,7 @@ function make_a_move( state, where ) {
 }
 
 function start_loop( state, elt, board_infos ) {
-	options.dom_place = elt;
-
-	display_level( state, options.dom_place );
+	display_level( state, elt );
 
 	$(document).focus(  );
 	$(document).click(
@@ -239,7 +236,7 @@ function start_loop( state, elt, board_infos ) {
 						}
 					}
 
-					display_level( state, options.dom_place );
+					display_level( state, elt );
 				}
 		});
 	$(document).keydown(
@@ -286,28 +283,12 @@ function start_loop( state, elt, board_infos ) {
 				}
 			}
 
-			display_level( state, options.dom_place );
+			display_level( state, elt );
 		});
 }
 
 function initialize_a_star( elt ) {
-	var starhtml = '<div class="gstar">';
-	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
-	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
-	starhtml +=	'<aside id="infos"></aside>';
-	starhtml +=	'</div>';
-
-	$( elt ).html( starhtml );
-
-	var board_infos = {};
-	board_infos.offset = $(elt + " #starboard").offset();
-	board_infos.dimensions = {};
-	board_infos.dimensions.width = $(elt + " #starboard").width();
-	board_infos.dimensions.height = $(elt + " #starboard").height();
-	board_infos.cell_dimensions = {};
-	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
-	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
-
+	// load sprites
 	sprites.ball = new Image();
 	sprites.ball.src = "themes/HP48/tex_ball.png";
 	sprites.ball_selected = new Image();
@@ -323,9 +304,23 @@ function initialize_a_star( elt ) {
 	sprites.gift = new Image();
 	sprites.gift.src = "themes/HP48/tex_gift.png";
 
-	state = load_level( levels, 0 );
-//	display_level( state, options.dom_place );
-	display_on_canvas( state, "starboard" );
+	var starhtml = '<div class="gstar">';
+	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
+	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
+	starhtml +=	'<aside id="infos"></aside>';
+	starhtml +=	'</div>';
+
+	$( elt ).html( starhtml );
+
+	board_infos.offset = $(elt + " #starboard").offset();
+	board_infos.dimensions = {};
+	board_infos.dimensions.width = $(elt + " #starboard").width();
+	board_infos.dimensions.height = $(elt + " #starboard").height();
+	board_infos.cell_dimensions = {};
+	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
+	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
+
+	state = load_level( levels, options.starting_level );
 
 	start_loop( state, elt, board_infos );
 }
