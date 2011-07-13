@@ -193,7 +193,7 @@ function make_a_move( state, where ) {
 	return state;
 }
 
-function start_loop( state, elt ) {
+function start_loop( state, elt, board_infos ) {
 	options.dom_place = elt;
 
 	display_level( state, options.dom_place );
@@ -204,8 +204,8 @@ function start_loop( state, elt ) {
 			var movingpos = get_pos( state, state.moving );
 			var notmovingpos = get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
 			var click = {};
-			click.x = e.pageX - board_infos.position.left;
-			click.y = e.pageY - board_infos.position.top;
+			click.x = e.pageX - board_infos.offset.left;
+			click.y = e.pageY - board_infos.offset.top;
 
 			if ( ( 0 <= click.x && click.x < board_infos.dimensions.width )
 				&& ( 0 <= click.y && click.y < board_infos.dimensions.height ) ) {
@@ -297,10 +297,13 @@ function initialize_a_star( elt ) {
 	starhtml +=	'<aside id="infos"></aside>';
 	starhtml +=	'</div>';
 
-	board_infos.position = $(elt + "#starboard").offset();
+	$( elt ).html( starhtml );
+
+	var board_infos = {};
+	board_infos.offset = $(elt + " #starboard").offset();
 	board_infos.dimensions = {};
-	board_infos.dimensions.width = $(elt + "#starboard").width();
-	board_infos.dimensions.height = $(elt + "#starboard").height();
+	board_infos.dimensions.width = $(elt + " #starboard").width();
+	board_infos.dimensions.height = $(elt + " #starboard").height();
 	board_infos.cell_dimensions = {};
 	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
 	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
@@ -319,11 +322,10 @@ function initialize_a_star( elt ) {
 	sprites.void.src = "themes/HP48/tex_empty.png";
 	sprites.gift = new Image();
 	sprites.gift.src = "themes/HP48/tex_gift.png";
-	$( elt ).html( starhtml );
 
 	state = load_level( levels, 0 );
 //	display_level( state, options.dom_place );
 	display_on_canvas( state, "starboard" );
 
-	start_loop( state, elt );
+	start_loop( state, elt, board_infos );
 }
