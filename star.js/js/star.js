@@ -98,44 +98,25 @@ function won_or_not( state ) {
 	return count_gifts( state ) === 0;
 }
 
-function format_level( state, text ) {
-	function Replacer( conversionObject ) {
-
-        var regexpStr = '';
-        for ( var k in conversionObject ) {
-            regexpStr += ( regexpStr.length ? '|' : '' ) + k;
-		}
-        var regexpr = new RegExp( regexpStr, 'mig' ); // g: global, m:multi-line i: ignore case
-        return function(s) {
-			return s.replace( regexpr, function(str, p1, p2, offset, s) {
-								 var a = conversionObject[ str ];
-								 return a == undefined ? str : a;
-							 } );
-		};
-	}
-
-	var substitutions = {
-		'#': '<span class="starcell wall">#</span>',
-		'x': '<span class="starcell gift">x</span>',
-		' ': '<span class="starcell void"> </span>',
-		'H': '<span class="starcell cube">H</span>',
-		'@': '<span class="starcell ball">@</span>'
-		};
-	substitutions[ state.moving ] = substitutions[ state.moving ].replace( '">', '_selected">' );
-	if ( text == false ) {
-		for ( var c in substitutions ) {
-			substitutions[ c ] = substitutions[ c ].replace( />.</, '><' );
-		}
-	}
-	var myReplacer = Replacer( substitutions );
-	return myReplacer( state.board );
-}
 function display_on_canvas( state, canvas_elt ) {
+	board_infos = {};
+	board_infos.cell_dimensions = {};
+	board_infos.cell_dimensions.width = 20;
+	board_infos.cell_dimensions.height = 20;
 	var ctx= document.getElementById( canvas_elt ).getContext( '2d' );
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
-			ctx.translate( j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height );
-			ctx.drawImage( sprites.ball, j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height );
+			var c = get_cell( state, j, i );
+			var sprite = "bla";
+			switch( c ) {
+				case "@": sprite = ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball; break;
+				case "H": sprite = ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube; break;
+				case "#": sprite = sprites.wall; break;
+				case "x": sprite = sprites.gift; break;
+				case " ": sprite = sprites.void; break;
+			}
+			ctx.drawImage( sprite, j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height, board_infos.cell_dimensions.width, board_infos.cell_dimensions.height
+						 );
 		}
 	}
 }
@@ -156,7 +137,6 @@ function format_help(  ) {
 }
 
 function display_level( state, elt ) {
-	$( elt + " .gstar #blackboard" ).html( format_level( state, false ) );
 	$( elt + " .gstar #infos" ).html( format_infos( state ) );
 	display_on_canvas( state, "starboard" );
 }
@@ -313,14 +293,14 @@ function start_loop( state, elt ) {
 function initialize_a_star( elt ) {
 	var starhtml = '<div class="gstar">';
 	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
-	starhtml +=	'<div id="blackboard"></div>';
+	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
 	starhtml +=	'<aside id="infos"></aside>';
-	starhtml +=	'</div><canvas id="starboard" width="320" height="180"></canvass>';
+	starhtml +=	'</div>';
 
-	board_infos.position = $("#blackboard").offset();
+	board_infos.position = $(elt + "#starboard").offset();
 	board_infos.dimensions = {};
-	board_infos.dimensions.width = $("#blackboard").width();
-	board_infos.dimensions.height = $("#blackboard").height();
+	board_infos.dimensions.width = $(elt + "#starboard").width();
+	board_infos.dimensions.height = $(elt + "#starboard").height();
 	board_infos.cell_dimensions = {};
 	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
 	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;

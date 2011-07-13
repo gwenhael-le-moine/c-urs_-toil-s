@@ -1,12 +1,4 @@
 .gstar{width:660px;height:180px}
 .gstar em{font-weight:bold}
-.gstar #blackboard{width:320px;height:180px;background:#333;float:left}
-.gstar #blackboard .starcell{width:20px;height:20px;display:block;float:left;text-align:center}
-.gstar #blackboard .wall{color:#000}
-.gstar #blackboard .ball{color:#99f}
-.gstar #blackboard .cube{color:red}
-.gstar #blackboard .ball_selected{color:#99f}
-.gstar #blackboard .cube_selected{color:red}
-.gstar #blackboard .gift{color:yellow}
-.gstar #blackboard .void{}
+.gstar #starboard{width:320px;height:180px;background:#333;float:left}
 .gstar aside{float:left;height:140px;width:130px;padding:20px;background:#ddd}
