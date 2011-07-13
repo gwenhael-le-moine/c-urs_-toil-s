@@ -278,8 +278,6 @@ function start_loop( state, elt, board_infos ) {
 
 			display_level( state, elt );
 		});
-
-	display_level( state, elt );
 }
 
 function initialize_a_star( elt ) {
