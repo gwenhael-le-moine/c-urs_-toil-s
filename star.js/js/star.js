@@ -91,7 +91,7 @@ function won_or_not( state ) {
 }
 
 function display_on_canvas( state, canvas_elt ) {
-	var ctx= $( canvas_elt )[ 0 ].getContext( '2d' );
+	var ctx= $( canvas_elt )[ 0 ].getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
 			var c = get_cell( state, j, i );
