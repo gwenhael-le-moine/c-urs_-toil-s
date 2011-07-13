@@ -16,6 +16,15 @@ function initialize_a_star( dom_container ) {
 		RIGHT				: 'r'
 	};
 
+	var state = {
+		moving				: cell.BALL,
+		distance_travelled	: 0,
+		level				: 0,
+		board				: "",
+		board_infos         : {  },
+		dom_container       : dom_container
+	};
+
 	var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
 				   " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
 				   "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -325,15 +334,6 @@ function initialize_a_star( dom_container ) {
 		
 		return sprites;
 	}
-
-	var state = {
-		moving				: cell.BALL,
-		distance_travelled	: 0,
-		level				: 0,
-		board				: "",
-		board_infos         : {  },
-		dom_container : dom_container
-	};
 
 	var starhtml = '<div class="gstar">';
 	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
