@@ -103,8 +103,11 @@ function display_on_canvas( state, canvas_elt ) {
 				case "x": sprite = sprites.gift; break;
 				case " ": sprite = sprites.void; break;
 			}
-			ctx.drawImage( sprite, j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height, board_infos.cell_dimensions.width, board_infos.cell_dimensions.height
-						 );
+			ctx.drawImage( sprite,
+						   j * board_infos.cell_dimensions.width,
+						   i * board_infos.cell_dimensions.height,
+						   board_infos.cell_dimensions.width,
+						   board_infos.cell_dimensions.height );
 		}
 	}
 }
