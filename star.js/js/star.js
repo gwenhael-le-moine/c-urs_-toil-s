@@ -131,9 +131,9 @@ function format_level( state, text ) {
 
 function format_infos( state ) {
 	var infos = "<h1>Star5</h1><br />";
-	infos += "Level " + (state.level+1) + " of " + levels.length + "<br />";
-	infos += count_gifts( state ) + " gifts left<br />";
-	infos += state.distance_travelled + " meters travelled";
+	infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
+	infos += "<em>" + count_gifts( state ) + "</em> gifts left<br />";
+	infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 	return infos;
 }
 function format_help(  ) {
