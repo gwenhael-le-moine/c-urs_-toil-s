@@ -14,8 +14,8 @@ var direction = {
 	LEFT				: 'l',
 	RIGHT				: 'r'
 };
-var sprites = {};
-var board_infos = {};
+var sprites = {  };
+var board_infos = {  };
 var options = {
 	starting_level		: 0
 };
@@ -64,7 +64,7 @@ function count_gifts( state ) {
 
 function get_pos( state, actor ) {
 	var p = state.board.indexOf( actor, state.board );
-	var pos = {};
+	var pos = {  };
     pos[ 1 ] = Math.floor( p / LEVEL_WIDTH ); /* y */
     pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
 
@@ -228,7 +228,7 @@ function start_loop( state, elt ) {
 		function( e ) {
 			var movingpos = get_pos( state, state.moving );
 			var notmovingpos = get_pos( state, ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
-			var click = {};
+			var click = {  };
 			click.x = e.pageX - board_infos.offset.left;
 			click.y = e.pageY - board_infos.offset.top;
 
@@ -341,12 +341,12 @@ function initialize_a_star( elt ) {
 
 	$( elt ).html( starhtml );
 
-	board_infos.canvas = $(elt + " #starboard")[ 0 ];
-	board_infos.offset = $(elt + " #starboard").offset();
-	board_infos.dimensions = {};
-	board_infos.dimensions.width = $(elt + " #starboard").width();
-	board_infos.dimensions.height = $(elt + " #starboard").height();
-	board_infos.cell_dimensions = {};
+	board_infos.canvas = $( elt + " #starboard" )[ 0 ];
+	board_infos.offset = $( elt + " #starboard" ).offset();
+	board_infos.dimensions = {  };
+	board_infos.dimensions.width = $( elt + " #starboard" ).width();
+	board_infos.dimensions.height = $( elt + " #starboard" ).height();
+	board_infos.cell_dimensions = {  };
 	board_infos.cell_dimensions.width = board_infos.dimensions.width / LEVEL_WIDTH;
 	board_infos.cell_dimensions.height = board_infos.dimensions.height / LEVEL_HEIGHT;
 
