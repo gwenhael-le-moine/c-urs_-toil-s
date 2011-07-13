@@ -14,13 +14,6 @@ var direction = {
 	LEFT				: 'l',
 	RIGHT				: 'r'
 };
-var css_classes = {
-	"@"					: "ball",
-	"H"					: "cube",
-	"#"					: "wall",
-	" "					: "void",
-	"x"					: "gift"
-};
 var sprites = {};
 var board_infos = {};
 var options = {
@@ -119,6 +112,7 @@ function display_on_canvas( state, canvas_elt ) {
 		}
 	}
 }
+
 function format_infos( state ) {
 	var infos = "<h1>Star5</h1><br />";
 	infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
@@ -285,6 +279,8 @@ function start_loop( state, elt, board_infos ) {
 
 			display_level( state, elt );
 		});
+
+	display_level( state, elt );
 }
 
 function initialize_a_star( elt ) {
