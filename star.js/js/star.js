@@ -95,7 +95,7 @@ function display_on_canvas( state, canvas_elt ) {
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
 			var c = get_cell( state, j, i );
-			var sprite = "bla";
+			var sprite;
 			switch( c ) {
 				case "@": sprite = ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball; break;
 				case "H": sprite = ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube; break;
