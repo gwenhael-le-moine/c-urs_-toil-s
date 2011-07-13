@@ -15,14 +15,6 @@ var direction = {
 	RIGHT				: 'r'
 };
 
-var state = {
-	moving				: cell.BALL,
-	distance_travelled	: 0,
-	level				: 0,
-	board				: "",
-	board_infos         : {  }
-};
-
 var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
 			   " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
 			   "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -104,8 +96,8 @@ function won_or_not( state ) {
 	return count_gifts( state ) === 0;
 }
 
-function full_display_on_canvas( state, canvas_elt ) {
-	var ctx= $( canvas_elt )[ 0 ].getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
+function full_display_on_canvas( state ) {
+	var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
 			var c = get_cell( state, j, i );
@@ -126,13 +118,13 @@ function full_display_on_canvas( state, canvas_elt ) {
 	}
 }
 
-function update_infos( state, elt ) {
+function update_infos( state ) {
 	var infos = "<h1>Star5</h1><br />";
 	infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
 	infos += "<em>" + count_gifts( state ) + "</em> gifts left<br />";
 	infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 
-	$( elt + " .gstar #infos" ).html( infos );
+	$( state.dom_container + " .gstar #infos" ).html( infos );
 }
 
 function format_help(  ) {
@@ -144,12 +136,12 @@ function format_help(  ) {
 	return help;
 }
 
-function display_level( state, elt ) {
-	update_infos( state, elt );
-	full_display_on_canvas( state, elt + " #starboard" );
+function display_level( state ) {
+	update_infos( state );
+	full_display_on_canvas( state, state.dom_container + " #starboard" );
 }
 
-function load_level( levelset, index ) {
+function load_level( state, levelset, index ) {
 	state.level = index;
 	state.board = levelset[ state.level ];
 	state.distance_travelled = 0;
@@ -157,7 +149,7 @@ function load_level( levelset, index ) {
 	return state;
 }
 
-function make_a_move( state, elt, where ) {
+function make_a_move( state, where ) {
 	var motion = [ 0, 0 ];
 	var item_coord = get_pos( state, state.moving );
 
@@ -213,12 +205,12 @@ function make_a_move( state, elt, where ) {
 
 		state.distance_travelled++;                /* increment distance_travelled */
     }
-	update_infos( state, elt );
+	update_infos( state );
 	return state;
 }
 
-function start_loop( state, elt ) {
-	display_level( state, elt );
+function start_loop( state ) {
+	display_level( state );
 
 	$(document).focus(  );
 	$(document).click(
@@ -240,22 +232,22 @@ function start_loop( state, elt ) {
 						state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
 					} else if ( click.x == movingpos[0] ) {
 						if ( click.y > movingpos[1] ) {
-							state = make_a_move( state, elt, direction.DOWN );
+							state = make_a_move( state, direction.DOWN );
 						} else if ( click.y < movingpos[1] ) {
-							state = make_a_move( state, elt, direction.UP );
+							state = make_a_move( state, direction.UP );
 						}
 					} else if ( click.y == movingpos[1] ) {
 						if ( click.x > movingpos[0] ) {
-							state = make_a_move( state, elt, direction.RIGHT );
+							state = make_a_move( state, direction.RIGHT );
 						} else {
-							state = make_a_move( state, elt, direction.LEFT );
+							state = make_a_move( state, direction.LEFT );
 						}
 					}
 
 					if ( won_or_not( state ) ) {
 						if ( state.level < levels.length - 1 ) {
-							state = load_level( levels, state.level + 1 );
-							display_level( state, elt );
+							state = load_level( state, levels, state.level + 1 );
+							display_level( state );
 						}
 						else {
 							alert( "You won!" );
@@ -267,35 +259,35 @@ function start_loop( state, elt ) {
 		function( e ) {
 			switch( e.keyCode ) {
 			case 38: // UP
-				state = make_a_move( state, elt, direction.UP );
+				state = make_a_move( state, direction.UP );
 				break;
 			case 40: // DOWN
-				state = make_a_move( state, elt, direction.DOWN );
+				state = make_a_move( state, direction.DOWN );
 				break;
 			case 37: // LEFT
-				state = make_a_move( state, elt, direction.LEFT );
+				state = make_a_move( state, direction.LEFT );
 				break;
 			case 39: // RIGHT
-				state = make_a_move( state, elt, direction.RIGHT );
+				state = make_a_move( state, direction.RIGHT );
 				break;
 			case 32: // SPACE
 				state = switch_actor( state );
 				break;
 			case 78: // n
 				if ( state.level < levels.length - 1 ) {
-					state = load_level( levels, state.level + 1 );
-					display_level( state, elt );
+					state = load_level( state, levels, state.level + 1 );
+					display_level( state );
 				}
 				break;
 			case 80: // p
 				if ( state.level > 0 ) {
-					state = load_level( levels, state.level - 1 );
-					display_level( state, elt );
+					state = load_level( state, levels, state.level - 1 );
+					display_level( state );
 				}
 				break;
 			case 82: // r
-				state = load_level( levels, state.level );
-				display_level( state, elt );
+				state = load_level( state, levels, state.level );
+				display_level( state );
 				break;
 			default:
 				break;
@@ -303,8 +295,8 @@ function start_loop( state, elt ) {
 			
 			if ( won_or_not( state ) ) {
 				if ( state.level < levels.length - 1 ) {
-					state = load_level( levels, state.level + 1 );
-					display_level( state, elt );
+					state = load_level( state, levels, state.level + 1 );
+					display_level( state );
 				}
 				else {
 					alert( "You won!" );
@@ -333,31 +325,40 @@ function load_sprites( theme ) {
 	return sprites;
 }
 
-function initialize_a_star( elt ) {
+function initialize_a_star( dom_container ) {
+	var state = {
+		moving				: cell.BALL,
+		distance_travelled	: 0,
+		level				: 0,
+		board				: "",
+		board_infos         : {  },
+		dom_container : dom_container
+	};
+
 	var starhtml = '<div class="gstar">';
 	starhtml +=	'<aside id="help">' + format_help( state ) + '</aside>';
 	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
 	starhtml +=	'<aside id="infos"></aside>';
 	starhtml +=	'</div>';
 
-	$( elt ).html( starhtml );
+	$( state.dom_container ).html( starhtml );
 
 	state.board_infos.sprites = load_sprites( "HP48" );
 
-	state.board_infos.canvas = $( elt + " #starboard" )[ 0 ];
-	state.board_infos.offset = $( elt + " #starboard" ).offset();
+	state.board_infos.canvas = $( state.dom_container + " #starboard" )[ 0 ];
+	state.board_infos.offset = $( state.dom_container + " #starboard" ).offset();
 	state.board_infos.dimensions = {  };
-	state.board_infos.dimensions.width = $( elt + " #starboard" ).width();
-	state.board_infos.dimensions.height = $( elt + " #starboard" ).height();
+	state.board_infos.dimensions.width = $( state.dom_container + " #starboard" ).width();
+	state.board_infos.dimensions.height = $( state.dom_container + " #starboard" ).height();
 	state.board_infos.cell_dimensions = {  };
 	state.board_infos.cell_dimensions.width = state.board_infos.dimensions.width / LEVEL_WIDTH;
 	state.board_infos.cell_dimensions.height = state.board_infos.dimensions.height / LEVEL_HEIGHT;
 
-	state = load_level( levels, 0 );
+	state = load_level( state, levels, 0 );
 
-	start_loop( state, elt );
+	start_loop( state );
 
 	// kinda ugly workaround around a bug causing the canvas
 	// not to refresh the first time (before any event)
-	setTimeout( function(){ display_level( state, elt ); }, 100 ); // 1/10 second
+	setTimeout( function(){ display_level( state ); }, 100 ); // 1/10 second
 }
