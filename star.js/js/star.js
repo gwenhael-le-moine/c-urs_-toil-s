@@ -132,9 +132,12 @@ function format_level( state, text ) {
 }
 function display_on_canvas( state, canvas_elt ) {
 	var ctx= document.getElementById( canvas_elt ).getContext( '2d' );
-	
-		ctx.translate( 100, 100 );
-        ctx.drawImage( sprites.ball, -3.5, -3.5 );
+	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
+		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
+			ctx.translate( j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height );
+			ctx.drawImage( sprites.ball, j * board_infos.cell_dimensions.width, i * board_infos.cell_dimensions.height );
+		}
+	}
 }
 function format_infos( state ) {
 	var infos = "<h1>Star5</h1><br />";
