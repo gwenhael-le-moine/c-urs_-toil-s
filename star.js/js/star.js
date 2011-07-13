@@ -91,7 +91,7 @@ function won_or_not( state ) {
 }
 
 function display_on_canvas( state, canvas_elt ) {
-	var ctx= document.getElementById( canvas_elt ).getContext( '2d' );
+	var ctx= $( canvas_elt )[ 0 ].getContext( '2d' );
 	for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
 		for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
 			var c = get_cell( state, j, i );
@@ -130,7 +130,7 @@ function format_help(  ) {
 
 function display_level( state, elt ) {
 	$( elt + " .gstar #infos" ).html( format_infos( state ) );
-	display_on_canvas( state, "starboard" );
+	display_on_canvas( state, elt + " #starboard" );
 }
 
 function load_level( levelset, nb ) {
