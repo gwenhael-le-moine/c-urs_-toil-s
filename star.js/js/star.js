@@ -164,9 +164,9 @@ function initialize_a_star( dom_container ) {
 		full_display_on_canvas( DOM_infos.container + " #starboard" );
 	}
 
-	function load_level( levelset, index ) {
+	function load_level( index ) {
 		state.level = index;
-		state.board = levelset[ state.level ];
+		state.board = levels[ state.level ];
 		state.distance_travelled = 0;
 		state.moving = cell.BALL;
 		return state;
@@ -346,7 +346,7 @@ function initialize_a_star( dom_container ) {
 	}
 
 	////// MAIN (so to speak) //////
-	state = load_level( levels, 0 );
+	state = load_level( 0 );
 
 	start_loop(  );
 
