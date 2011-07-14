@@ -319,8 +319,6 @@ function initialize_a_star( dom_container ) {
 
 
 	function start_loop(  ) {
-		display_level(  );
-
 		$(document).focus(  );
 		$(document).click( event_handler );
 		$(document).keydown( event_handler );
