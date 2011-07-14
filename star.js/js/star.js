@@ -7,6 +7,18 @@ function initialize_a_star( dom_container ) {
 	starhtml +=	'</div>';
 	$( dom_container ).html( starhtml );
 
+	// Now we can collect some informations about this DOM branch we have
+	var DOM_infos = {
+		container: dom_container,
+		canvas: {
+			//$() returns a jquery object, [0] to get the canvas itself
+			context: $( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
+			offset: $( dom_container + " #starboard" ).offset(),
+			width: $( dom_container + " #starboard" ).width(),
+			height: $( dom_container + " #starboard" ).height()
+		}
+	};
+
 	var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
 				   " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
 				   "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -33,6 +45,7 @@ function initialize_a_star( dom_container ) {
 				   "#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ",
 				   "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ];
 
+	// kinda enums
 	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
 	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
 
@@ -44,16 +57,6 @@ function initialize_a_star( dom_container ) {
 		level				: 0,
 		board				: ""
 	};
-	var DOM_infos = {
-		container: dom_container,
-		canvas: {
-			//$() returns a jquery object, [0] to get the canvas itself
-			context: $( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
-			offset: $( dom_container + " #starboard" ).offset(),
-			width: $( dom_container + " #starboard" ).width(),
-			height: $( dom_container + " #starboard" ).height()
-		}
-	};
 	var level_infos = {
 		height: 9,
 		width:16,
@@ -63,6 +66,7 @@ function initialize_a_star( dom_container ) {
 		}
 	};
 
+	////// FUNCTIONS //////
 	function count_gifts(  ) {
 		var n = 0;
 		for ( var i = level_infos.height * level_infos.width ; i-- ; ) {
@@ -341,6 +345,7 @@ function initialize_a_star( dom_container ) {
 		return sprites;
 	}
 
+	////// MAIN (so to speak) //////
 	state = load_level( levels, 0 );
 
 	start_loop(  );
