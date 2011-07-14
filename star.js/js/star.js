@@ -329,7 +329,7 @@ function initialize_a_star( dom_container ) {
 
 	start_loop(  );
 
-	// kinda ugly workaround around a bug causing the canvas
+	// kinda ugly workaround around a mysterious bug causing the canvas
 	// not to refresh the first time (before any event)
 	setTimeout( function(){ display_level(  ); }, 100 ); // 1/10 second
 }
