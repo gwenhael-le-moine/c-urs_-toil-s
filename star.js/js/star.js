@@ -1,4 +1,12 @@
 function initialize_a_star( dom_container ) {
+	// First of all, setup our little DOM branch
+	var starhtml = '<div class="gstar">';
+	starhtml +=	'<aside id="help">' + format_help(  ) + '</aside>';
+	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
+	starhtml +=	'<aside id="infos"></aside>';
+	starhtml +=	'</div>';
+	$( dom_container ).html( starhtml );
+
 	var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
 				   " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
 				   "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -25,24 +33,39 @@ function initialize_a_star( dom_container ) {
 				   "#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ",
 				   "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ];
 
-	var LEVEL_HEIGHT = 9;
-	var LEVEL_WIDTH = 16;
-
 	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
 	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
+
+	var sprites = load_sprites( "HP48" );
 
 	var state = {
 		moving				: cell.BALL,
 		distance_travelled	: 0,
 		level				: 0,
-		board				: "",
-		board_infos         : {  },
-		dom_container       : dom_container
+		board				: ""
+	};
+	var DOM_infos = {
+		container: dom_container,
+		canvas: {
+			//$() returns a jquery object, [0] to get the canvas itself
+			context: $( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
+			offset: $( dom_container + " #starboard" ).offset(),
+			width: $( dom_container + " #starboard" ).width(),
+			height: $( dom_container + " #starboard" ).height()
+		}
+	};
+	var level_infos = {
+		height: 9,
+		width:16,
+		cell: {
+			width: DOM_infos.canvas.width / 16,
+			height: DOM_infos.canvas.height / 9
+		}
 	};
 
 	function count_gifts(  ) {
 		var n = 0;
-		for ( var i = LEVEL_HEIGHT * LEVEL_WIDTH ; i-- ; ) {
+		for ( var i = level_infos.height * level_infos.width ; i-- ; ) {
 			if ( state.board[ i ] == cell.GIFT ) {
 				n++;
 			}
@@ -53,18 +76,18 @@ function initialize_a_star( dom_container ) {
 	function get_pos( actor ) {
 		var p = state.board.indexOf( actor, state.board );
 		var pos = {  };
-		pos[ 1 ] = Math.floor( p / LEVEL_WIDTH ); /* y */
-		pos[ 0 ] = p - ( pos[ 1 ] * LEVEL_WIDTH ); /* x */
+		pos[ 1 ] = Math.floor( p / level_infos.width ); /* y */
+		pos[ 0 ] = p - ( pos[ 1 ] * level_infos.width ); /* x */
 
 		return pos;
 	}
 
 	function get_cell( x, y ) {
-		return state.board[ x + ( y * LEVEL_WIDTH ) ];
+		return state.board[ x + ( y * level_infos.width ) ];
 	}
 
 	function set_cell( x, y, value ) {
-		var p = x + ( y * LEVEL_WIDTH );
+		var p = x + ( y * level_infos.width );
 		state.board = [ state.board.substring( 0, p ), value, state.board.substring( p+1, state.board.length ) ].join( '' );
 		return state;
 	}
@@ -73,21 +96,19 @@ function initialize_a_star( dom_container ) {
 		state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
 		var ball_pos = get_pos( cell.BALL );
 		var cube_pos = get_pos( cell.CUBE );
-		// we're going to update the canvas right here and there so we need it
-		var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
 
 		// redraw ball
-		ctx.drawImage( ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.ball,
-					   ball_pos[ 0 ] * state.board_infos.cell_dimensions.width,
-					   ball_pos[ 1 ] * state.board_infos.cell_dimensions.height,
-					   state.board_infos.cell_dimensions.width,
-					   state.board_infos.cell_dimensions.height );
+		DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball,
+					   ball_pos[ 0 ] * level_infos.cell.width,
+					   ball_pos[ 1 ] * level_infos.cell.height,
+					   level_infos.cell.width,
+					   level_infos.cell.height );
 		// redraw cube
-		ctx.drawImage( ( state.moving == cell.CUBE ) ? state.board_infos.sprites.cube_selected : state.board_infos.sprites.cube,
-					   cube_pos[ 0 ] * state.board_infos.cell_dimensions.width,
-					   cube_pos[ 1 ] * state.board_infos.cell_dimensions.height,
-					   state.board_infos.cell_dimensions.width,
-					   state.board_infos.cell_dimensions.height );
+		DOM_infos.canvas.context.drawImage( ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube,
+					   cube_pos[ 0 ] * level_infos.cell.width,
+					   cube_pos[ 1 ] * level_infos.cell.height,
+					   level_infos.cell.width,
+					   level_infos.cell.height );
 		return state;
 	}
 
@@ -96,23 +117,22 @@ function initialize_a_star( dom_container ) {
 	}
 
 	function full_display_on_canvas(  ) {
-		var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
-		for ( var i=0 ; i < LEVEL_HEIGHT ; i++ ) {
-			for ( var j=0 ; j < LEVEL_WIDTH ; j++ ) {
+		for ( var i=0 ; i < level_infos.height ; i++ ) {
+			for ( var j=0 ; j < level_infos.width ; j++ ) {
 				var c = get_cell( j, i );
 				var sprite;
 				switch( c ) {
-				case "@": sprite = ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.ball; break;
-				case "H": sprite = ( state.moving == cell.CUBE ) ? state.board_infos.sprites.cube_selected : state.board_infos.sprites.cube; break;
-				case "#": sprite = state.board_infos.sprites.wall; break;
-				case "x": sprite = state.board_infos.sprites.gift; break;
-				case " ": sprite = state.board_infos.sprites.void; break;
+				case "@": sprite = ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball; break;
+				case "H": sprite = ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube; break;
+				case "#": sprite = sprites.wall; break;
+				case "x": sprite = sprites.gift; break;
+				case " ": sprite = sprites.void; break;
 				}
-				ctx.drawImage( sprite,
-							   j * state.board_infos.cell_dimensions.width,
-							   i * state.board_infos.cell_dimensions.height,
-							   state.board_infos.cell_dimensions.width,
-							   state.board_infos.cell_dimensions.height );
+				DOM_infos.canvas.context.drawImage( sprite,
+							   j * level_infos.cell.width,
+							   i * level_infos.cell.height,
+							   level_infos.cell.width,
+							   level_infos.cell.height );
 			}
 		}
 	}
@@ -123,7 +143,7 @@ function initialize_a_star( dom_container ) {
 		infos += "<em>" + count_gifts(  ) + "</em> gifts left<br />";
 		infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 
-		$( state.dom_container + " .gstar #infos" ).html( infos );
+		$( DOM_infos.container + " .gstar #infos" ).html( infos );
 	}
 
 	function format_help(  ) {
@@ -137,7 +157,7 @@ function initialize_a_star( dom_container ) {
 
 	function display_level(  ) {
 		update_infos(  );
-		full_display_on_canvas( state.dom_container + " #starboard" );
+		full_display_on_canvas( DOM_infos.container + " #starboard" );
 	}
 
 	function load_level( levelset, index ) {
@@ -169,14 +189,11 @@ function initialize_a_star( dom_container ) {
 		default: break;
 		}
 
-		// we're going to update the canvas right here and there so we need it
-		var ctx= state.board_infos.canvas.getContext( '2d' ); //$() returns a jquery object, [0] to get the canvas itself
-
 		/* Calculating arrival coordinates */
 		while (                      /* Hairy conditions ahead */
 			/* target cell is within level's boundaries */
-			( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < LEVEL_WIDTH ) ) &&
-				( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < LEVEL_HEIGHT ) ) &&
+			( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < level_infos.width ) ) &&
+				( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < level_infos.height ) ) &&
 				/* and target cell is empty */
 			( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.VOID )
 			/* or, the ball will eat gifts so we can move it on one */
@@ -185,22 +202,22 @@ function initialize_a_star( dom_container ) {
 		{
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 			// voiding origin cell on canvas
-			ctx.drawImage( state.board_infos.sprites.void,
-						   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
-						   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
-						   state.board_infos.cell_dimensions.width,
-						   state.board_infos.cell_dimensions.height );
+			DOM_infos.canvas.context.drawImage( sprites.void,
+						   item_coord[ 0 ] * level_infos.cell.width,
+						   item_coord[ 1 ] * level_infos.cell.height,
+						   level_infos.cell.width,
+						   level_infos.cell.height );
 			
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 			// drawing target cell on canvas
-			ctx.drawImage( ( state.moving == cell.BALL ) ? state.board_infos.sprites.ball_selected : state.board_infos.sprites.cube_selected,
-						   item_coord[ 0 ] * state.board_infos.cell_dimensions.width,
-						   item_coord[ 1 ] * state.board_infos.cell_dimensions.height,
-						   state.board_infos.cell_dimensions.width,
-						   state.board_infos.cell_dimensions.height );
+			DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.cube_selected,
+						   item_coord[ 0 ] * level_infos.cell.width,
+						   item_coord[ 1 ] * level_infos.cell.height,
+						   level_infos.cell.width,
+						   level_infos.cell.height );
 
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
@@ -217,14 +234,14 @@ function initialize_a_star( dom_container ) {
 				var movingpos = get_pos( state.moving );
 				var notmovingpos = get_pos( ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
 				var click = {  };
-				click.x = e.pageX - state.board_infos.offset.left;
-				click.y = e.pageY - state.board_infos.offset.top;
+				click.x = e.pageX - DOM_infos.canvas.offset.left;
+				click.y = e.pageY - DOM_infos.canvas.offset.top;
 
-				if ( ( 0 <= click.x && click.x < state.board_infos.dimensions.width )
-					&& ( 0 <= click.y && click.y < state.board_infos.dimensions.height ) ) {
+				if ( ( 0 <= click.x && click.x < DOM_infos.canvas.width )
+					&& ( 0 <= click.y && click.y < DOM_infos.canvas.height ) ) {
 						// coordinates in cell indexes
-						click.x	= Math.floor( click.x / state.board_infos.cell_dimensions.width );
-						click.y	= Math.floor( click.y / state.board_infos.cell_dimensions.height );
+						click.x	= Math.floor( click.x / level_infos.cell.width );
+						click.y	= Math.floor( click.y / level_infos.cell.height );
 
 						// We're inside the board
 						if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
@@ -323,25 +340,6 @@ function initialize_a_star( dom_container ) {
 		
 		return sprites;
 	}
-
-	var starhtml = '<div class="gstar">';
-	starhtml +=	'<aside id="help">' + format_help(  ) + '</aside>';
-	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
-	starhtml +=	'<aside id="infos"></aside>';
-	starhtml +=	'</div>';
-
-	$( state.dom_container ).html( starhtml );
-
-	state.board_infos.sprites = load_sprites( "HP48" );
-
-	state.board_infos.canvas = $( state.dom_container + " #starboard" )[ 0 ];
-	state.board_infos.offset = $( state.dom_container + " #starboard" ).offset();
-	state.board_infos.dimensions = {  };
-	state.board_infos.dimensions.width = $( state.dom_container + " #starboard" ).width();
-	state.board_infos.dimensions.height = $( state.dom_container + " #starboard" ).height();
-	state.board_infos.cell_dimensions = {  };
-	state.board_infos.cell_dimensions.width = state.board_infos.dimensions.width / LEVEL_WIDTH;
-	state.board_infos.cell_dimensions.height = state.board_infos.dimensions.height / LEVEL_HEIGHT;
 
 	state = load_level( levels, 0 );
 
