@@ -65,7 +65,8 @@ function initialize_a_star( dom_container ) {
 		moving:             cell.BALL,
 		distance_travelled: 0,
 		level:              0,
-		board:              ""
+		board:              "",
+		it_s_over:          false
 	};
 
 	////// FUNCTIONS //////
@@ -238,81 +239,84 @@ function initialize_a_star( dom_container ) {
 	}
 
 	function event_handler( e ) {
-		if ( e.type === "click" ) {
-			var movingpos = get_pos( state.moving );
-			var notmovingpos = get_pos( ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
-			var click = {  };
-			click.x = e.pageX - DOM_infos.canvas.offset.left;
-			click.y = e.pageY - DOM_infos.canvas.offset.top;
+		if ( !state.it_s_over ) {
+			if ( e.type === "click" ) {
+				var movingpos = get_pos( state.moving );
+				var notmovingpos = get_pos( ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE );
+				var click = {  };
+				click.x = e.pageX - DOM_infos.canvas.offset.left;
+				click.y = e.pageY - DOM_infos.canvas.offset.top;
 
-			if ( ( 0 <= click.x && click.x < DOM_infos.canvas.width )
-				&& ( 0 <= click.y && click.y < DOM_infos.canvas.height ) ) {
-					// coordinates in cell indexes
-					click.x	= Math.floor( click.x / level_infos.cell.width );
-					click.y	= Math.floor( click.y / level_infos.cell.height );
+				if ( ( 0 <= click.x && click.x < DOM_infos.canvas.width )
+					&& ( 0 <= click.y && click.y < DOM_infos.canvas.height ) ) {
+						// coordinates in cell indexes
+						click.x	= Math.floor( click.x / level_infos.cell.width );
+						click.y	= Math.floor( click.y / level_infos.cell.height );
 
-					// We're inside the board
-					if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
-						state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
-					} else if ( click.x == movingpos[0] ) {
-						if ( click.y > movingpos[1] ) {
-							state = make_a_move( direction.DOWN );
-						} else if ( click.y < movingpos[1] ) {
-							state = make_a_move( direction.UP );
-						}
-					} else if ( click.y == movingpos[1] ) {
-						if ( click.x > movingpos[0] ) {
-							state = make_a_move( direction.RIGHT );
-						} else {
-							state = make_a_move( direction.LEFT );
+						// We're inside the board
+						if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
+							state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
+						} else if ( click.x == movingpos[0] ) {
+							if ( click.y > movingpos[1] ) {
+								state = make_a_move( direction.DOWN );
+							} else if ( click.y < movingpos[1] ) {
+								state = make_a_move( direction.UP );
+							}
+						} else if ( click.y == movingpos[1] ) {
+							if ( click.x > movingpos[0] ) {
+								state = make_a_move( direction.RIGHT );
+							} else {
+								state = make_a_move( direction.LEFT );
+							}
 						}
 					}
+			} else if ( e.type === "keydown" ) {
+				switch( e.keyCode ) {
+				case 38: // UP
+					state = make_a_move( direction.UP );
+					break;
+				case 40: // DOWN
+					state = make_a_move( direction.DOWN );
+					break;
+				case 37: // LEFT
+					state = make_a_move( direction.LEFT );
+					break;
+				case 39: // RIGHT
+					state = make_a_move( direction.RIGHT );
+					break;
+				case 32: // SPACE
+					state = switch_actor(  );
+					break;
+				case 78: // n
+					if ( state.level < assets.levels.length - 1 ) {
+						state = load_level( state.level + 1 );
+						display_level(  );
+					}
+					break;
+				case 80: // p
+					if ( state.level > 0 ) {
+						state = load_level( state.level - 1 );
+						display_level(  );
+					}
+					break;
+				case 82: // r
+					state = load_level( state.level );
+					display_level(  );
+					break;
+				default:
+					break;
 				}
-		} else if ( e.type === "keydown" ) {
-			switch( e.keyCode ) {
-			case 38: // UP
-				state = make_a_move( direction.UP );
-				break;
-			case 40: // DOWN
-				state = make_a_move( direction.DOWN );
-				break;
-			case 37: // LEFT
-				state = make_a_move( direction.LEFT );
-				break;
-			case 39: // RIGHT
-				state = make_a_move( direction.RIGHT );
-				break;
-			case 32: // SPACE
-				state = switch_actor(  );
-				break;
-			case 78: // n
+			}
+
+			if ( won_or_not(  ) ) {
 				if ( state.level < assets.levels.length - 1 ) {
 					state = load_level( state.level + 1 );
 					display_level(  );
 				}
-				break;
-			case 80: // p
-				if ( state.level > 0 ) {
-					state = load_level( state.level - 1 );
-					display_level(  );
+				else {
+					state.it_s_over = true;
+					alert( "You won!" );
 				}
-				break;
-			case 82: // r
-				state = load_level( state.level );
-				display_level(  );
-				break;
-			default:
-				break;
-			}
-		}
-
-		if ( won_or_not(  ) ) {
-			if ( state.level < assets.levels.length - 1 ) {
-				state = load_level( state.level + 1 );
-				display_level(  );
-			}
-			else {
-				alert( "You won!" );
 			}
 		}
 	}
