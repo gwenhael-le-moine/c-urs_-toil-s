@@ -118,23 +118,23 @@ function initialize_a_star( dom_container ) {
 		return state;
 	}
 
+	function draw_cell( sprite, x, y ) {
+		DOM_infos.canvas.context.drawImage( sprite,
+											x * level_infos.cell.width,
+											y * level_infos.cell.height,
+											level_infos.cell.width,
+											level_infos.cell.height );		
+	}
+
 	function switch_actor(  ) {
 		state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
 		var ball_pos = get_pos( cell.BALL );
 		var cube_pos = get_pos( cell.CUBE );
 
 		// redraw ball
-		DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball,
-											ball_pos[ 0 ] * level_infos.cell.width,
-											ball_pos[ 1 ] * level_infos.cell.height,
-											level_infos.cell.width,
-											level_infos.cell.height );
+		draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball, ball_pos[ 0 ], ball_pos[ 1 ] );
 		// redraw cube
-		DOM_infos.canvas.context.drawImage( ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube,
-											cube_pos[ 0 ] * level_infos.cell.width,
-											cube_pos[ 1 ] * level_infos.cell.height,
-											level_infos.cell.width,
-											level_infos.cell.height );
+		draw_cell( ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube, cube_pos[ 0 ], cube_pos[ 1 ] );
 		return state;
 	}
 
@@ -154,11 +154,7 @@ function initialize_a_star( dom_container ) {
 				case "x": sprite = assets.sprites.gift; break;
 				case " ": sprite = assets.sprites.void; break;
 				}
-				DOM_infos.canvas.context.drawImage( sprite,
-													j * level_infos.cell.width,
-													i * level_infos.cell.height,
-													level_infos.cell.width,
-													level_infos.cell.height );
+				draw_cell( sprite, j, i );
 			}
 		}
 	}
@@ -228,22 +224,14 @@ function initialize_a_star( dom_container ) {
 		{
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 			// voiding origin cell on canvas
-			DOM_infos.canvas.context.drawImage( assets.sprites.void,
-												item_coord[ 0 ] * level_infos.cell.width,
-												item_coord[ 1 ] * level_infos.cell.height,
-												level_infos.cell.width,
-												level_infos.cell.height );
+			draw_cell( assets.sprites.void, item_coord[ 0 ], item_coord[ 1 ] );
 			
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 			// drawing target cell on canvas
-			DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected,
-												item_coord[ 0 ] * level_infos.cell.width,
-												item_coord[ 1 ] * level_infos.cell.height,
-												level_infos.cell.width,
-												level_infos.cell.height );
+			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected, item_coord[ 0 ], item_coord[ 1 ] );
 
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
