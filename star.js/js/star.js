@@ -4,6 +4,7 @@ function initialize_a_star( dom_container ) {
 	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
 
 	var assets = {
+		sprites: load_sprites( "HP48" ),
 		levels: [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
 				  " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
 				  "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -28,8 +29,7 @@ function initialize_a_star( dom_container ) {
 				  "#################x#  #x# #x  # ##    #         ##x   #  #x  x  ### #x      x #### x #   ###x   ##     #@#H  x  #################                ",
 				  " ############## # #  #x# #x  # ##    x  #      ###   #   x #x  ##  #x  #  xx x ###x #   ## x   ##     #@#H  x  # ##############                 ",
 				  "#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ",
-				  "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ],
-		sprites: load_sprites( "HP48" )
+				  "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ]
 	};
 
 	// First of all, setup our little DOM branch
@@ -46,26 +46,26 @@ function initialize_a_star( dom_container ) {
 		canvas: {
 			//$() returns a jquery object, [0] to get the canvas itself
 			context: $( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
-			offset: $( dom_container + " #starboard" ).offset(),
-			width: $( dom_container + " #starboard" ).width(),
-			height: $( dom_container + " #starboard" ).height()
+			offset:  $( dom_container + " #starboard" ).offset(),
+			width:   $( dom_container + " #starboard" ).width(),
+			height:  $( dom_container + " #starboard" ).height()
 		}
 	};
 
 	var level_infos = {
 		height: 9,
-		width:16,
+		width:  16,
 		cell: {
-			width: DOM_infos.canvas.width / 16,
+			width:  DOM_infos.canvas.width / 16,
 			height: DOM_infos.canvas.height / 9
 		}
 	};
 
 	var state = {
-		moving				: cell.BALL,
-		distance_travelled	: 0,
-		level				: 0,
-		board				: ""
+		moving:             cell.BALL,
+		distance_travelled: 0,
+		level:              0,
+		board:              ""
 	};
 
 	////// FUNCTIONS //////
