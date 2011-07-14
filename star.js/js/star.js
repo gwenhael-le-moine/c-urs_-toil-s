@@ -266,7 +266,7 @@ function initialize_a_star( dom_container ) {
 
 						if ( won_or_not(  ) ) {
 							if ( state.level < levels.length - 1 ) {
-								state = load_level( levels, state.level + 1 );
+								state = load_level( state.level + 1 );
 								display_level(  );
 							}
 							else {
@@ -295,18 +295,18 @@ function initialize_a_star( dom_container ) {
 					break;
 				case 78: // n
 					if ( state.level < levels.length - 1 ) {
-						state = load_level( levels, state.level + 1 );
+						state = load_level( state.level + 1 );
 						display_level(  );
 					}
 					break;
 				case 80: // p
 					if ( state.level > 0 ) {
-						state = load_level( levels, state.level - 1 );
+						state = load_level( state.level - 1 );
 						display_level(  );
 					}
 					break;
 				case 82: // r
-					state = load_level( levels, state.level );
+					state = load_level( state.level );
 					display_level(  );
 					break;
 				default:
@@ -315,7 +315,7 @@ function initialize_a_star( dom_container ) {
 				
 				if ( won_or_not(  ) ) {
 					if ( state.level < levels.length - 1 ) {
-						state = load_level( levels, state.level + 1 );
+						state = load_level( state.level + 1 );
 						display_level(  );
 					}
 					else {
