@@ -1,4 +1,37 @@
 function initialize_a_star( dom_container ) {
+	// kinda enums
+	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
+	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
+
+	var assets = {
+		levels: [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
+				  " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
+				  "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
+				  "#################            #H##     #        ###x#x x#x#x#x#x## # #x x# # # ####x#x#x x#x#x#x##     #        ##   #       #@ #################",
+				  " ############## #@  #   #  #   ##  #x # x  x # ###      #  #   ##x #x#        ####     # x #   ##x#  # # #   #H##   #    x#  #x# ############## ",
+				  "    ############   #   x   #x x#  #    x    # ## #     x       ##@     x       ###     x  #   ###      x    #  ##H #   x  ##x  #################",
+				  "#################              # ## ###  #x ##x# #x  #x # # # #   #  #  ### ##   ##  #  #x# #x# #              ##  @#x    H  #x#################",
+				  "############### #  x##        ###  #x  ## x    ##  x## # #x    ###     ##  #x# ### #       x#x ##xHx#   x  #@# ###             # ###############",
+				  "  # ###########  #x#x      #  @##x x#    x    #  # #  x##  x#  ##  #x #xHx    x##     x##     # #x#x         #  #           #   ############    ",
+				  "    ########### #### x         ##   H ###x x# x## x   #x #x   # #     #  x  # x##x#x  # x#  #@#  #x   ###  ###  #         # # #  #########  #  #",
+				  "#################      #      @##  #xx     xx ####   x   ##   x##x    #x#xx  ##### ##    ##    ##x  x# x    H x###x###    #   ## ## ########### ",
+				  "##     ##  #### #@#####x ### x###    xx     x  ## ##  ##x  #x# ## # x ###x ##  ## ##  ##   #H# ##     x        ##        x     #################",
+				  " ############## # @#        x ### #   #x   x## ##       x    # ## x          #x## #      x     ###      x x  #x##H  #    x # # # ############## ",
+				  "#################x#x        x#x## x#@      ##  ## H        x   ##        x#    ##      x       ## x#        #  ##x#x        x#x#################",
+				  " ###### ####### #     x#     x ## # x #  #   x ##  @#   #xx #x # # #   # x  H# ##x       #  #x # #      x     # #x            x# ############## ",
+				  "################## H#x x      x##x @x#x       #### ###    x   ####     x#x#    ##xx       x#x  ### x    ####x  ###x#  #        #################",
+				  "################# x#        #@ ## #  x#xx#x  # ##    #x##x# x  ## x#       x#  ##  x#x    x#   ## #  # ##x#  # ##    x #x   H  #################",
+				  "################# x    x  H#   ##  #x#x   #x   ##   #x#    #x  ##   x  #   x#x ## #x#   # x#   ## x#x # x #    ##x#@  #     #  #################",
+				  "#################x   ##     ##x## #  #      #x ## x#   x##  x  ## #    #x      ##    #   x#    ## ## x# ##x  #H## x# #x     ##@#################",
+				  "#################   x#x        ###x  x# ##x   ### # # x   #  # ## H #  ##  # @x## #  #   x # # ###   x## #x  x###        x#x   #################",
+				  "################# ###     x   ###   #       # ###   ##x      x ##  x    x   x ###    #    ###x ##  x x @ H x xx#################                ",
+				  "#################x#  #x# #x  # ##    #         ##x   #  #x  x  ### #x      x #### x #   ###x   ##     #@#H  x  #################                ",
+				  " ############## # #  #x# #x  # ##    x  #      ###   #   x #x  ##  #x  #  xx x ###x #   ## x   ##     #@#H  x  # ##############                 ",
+				  "#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ",
+				  "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ],
+		sprites: load_sprites( "HP48" )
+	};
+
 	// First of all, setup our little DOM branch
 	var starhtml = '<div class="gstar">';
 	starhtml +=	'<aside id="help">' + format_help(  ) + '</aside>';
@@ -19,44 +52,6 @@ function initialize_a_star( dom_container ) {
 		}
 	};
 
-	var levels = [ "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
-				   " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
-				   "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
-				   "#################            #H##     #        ###x#x x#x#x#x#x## # #x x# # # ####x#x#x x#x#x#x##     #        ##   #       #@ #################",
-				   " ############## #@  #   #  #   ##  #x # x  x # ###      #  #   ##x #x#        ####     # x #   ##x#  # # #   #H##   #    x#  #x# ############## ",
-				   "    ############   #   x   #x x#  #    x    # ## #     x       ##@     x       ###     x  #   ###      x    #  ##H #   x  ##x  #################",
-				   "#################              # ## ###  #x ##x# #x  #x # # # #   #  #  ### ##   ##  #  #x# #x# #              ##  @#x    H  #x#################",
-				   "############### #  x##        ###  #x  ## x    ##  x## # #x    ###     ##  #x# ### #       x#x ##xHx#   x  #@# ###             # ###############",
-				   "  # ###########  #x#x      #  @##x x#    x    #  # #  x##  x#  ##  #x #xHx    x##     x##     # #x#x         #  #           #   ############    ",
-				   "    ########### #### x         ##   H ###x x# x## x   #x #x   # #     #  x  # x##x#x  # x#  #@#  #x   ###  ###  #         # # #  #########  #  #",
-				   "#################      #      @##  #xx     xx ####   x   ##   x##x    #x#xx  ##### ##    ##    ##x  x# x    H x###x###    #   ## ## ########### ",
-				   "##     ##  #### #@#####x ### x###    xx     x  ## ##  ##x  #x# ## # x ###x ##  ## ##  ##   #H# ##     x        ##        x     #################",
-				   " ############## # @#        x ### #   #x   x## ##       x    # ## x          #x## #      x     ###      x x  #x##H  #    x # # # ############## ",
-				   "#################x#x        x#x## x#@      ##  ## H        x   ##        x#    ##      x       ## x#        #  ##x#x        x#x#################",
-				   " ###### ####### #     x#     x ## # x #  #   x ##  @#   #xx #x # # #   # x  H# ##x       #  #x # #      x     # #x            x# ############## ",
-				   "################## H#x x      x##x @x#x       #### ###    x   ####     x#x#    ##xx       x#x  ### x    ####x  ###x#  #        #################",
-				   "################# x#        #@ ## #  x#xx#x  # ##    #x##x# x  ## x#       x#  ##  x#x    x#   ## #  # ##x#  # ##    x #x   H  #################",
-				   "################# x    x  H#   ##  #x#x   #x   ##   #x#    #x  ##   x  #   x#x ## #x#   # x#   ## x#x # x #    ##x#@  #     #  #################",
-				   "#################x   ##     ##x## #  #      #x ## x#   x##  x  ## #    #x      ##    #   x#    ## ## x# ##x  #H## x# #x     ##@#################",
-				   "#################   x#x        ###x  x# ##x   ### # # x   #  # ## H #  ##  # @x## #  #   x # # ###   x## #x  x###        x#x   #################",
-				   "################# ###     x   ###   #       # ###   ##x      x ##  x    x   x ###    #    ###x ##  x x @ H x xx#################                ",
-				   "#################x#  #x# #x  # ##    #         ##x   #  #x  x  ### #x      x #### x #   ###x   ##     #@#H  x  #################                ",
-				   " ############## # #  #x# #x  # ##    x  #      ###   #   x #x  ##  #x  #  xx x ###x #   ## x   ##     #@#H  x  # ##############                 ",
-				   "#################     #       ### ##x x    ##x### #x     x#  #### xx  x# ##    ## #x x #    ## ## ##   @#H###xx#################                ",
-				   "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ];
-
-	// kinda enums
-	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
-	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
-
-	var sprites = load_sprites( "HP48" );
-
-	var state = {
-		moving				: cell.BALL,
-		distance_travelled	: 0,
-		level				: 0,
-		board				: ""
-	};
 	var level_infos = {
 		height: 9,
 		width:16,
@@ -66,7 +61,34 @@ function initialize_a_star( dom_container ) {
 		}
 	};
 
+	var state = {
+		moving				: cell.BALL,
+		distance_travelled	: 0,
+		level				: 0,
+		board				: ""
+	};
+
 	////// FUNCTIONS //////
+	function load_sprites( theme ) {
+		var sprites = {  };
+		sprites.ball = new Image();
+		sprites.ball.src = "themes/" + theme + "/tex_ball.png";
+		sprites.ball_selected = new Image();
+		sprites.ball_selected.src = "themes/" + theme + "/tex_ball_selected.png";
+		sprites.cube = new Image();
+		sprites.cube.src = "themes/" + theme + "/tex_cube.png";
+		sprites.cube_selected = new Image();
+		sprites.cube_selected.src = "themes/" + theme + "/tex_cube_selected.png";
+		sprites.wall = new Image();
+		sprites.wall.src = "themes/" + theme + "/tex_wall.png";
+		sprites.void = new Image();
+		sprites.void.src = "themes/" + theme + "/tex_empty.png";
+		sprites.gift = new Image();
+		sprites.gift.src = "themes/" + theme + "/tex_gift.png";
+		
+		return sprites;
+	}
+
 	function count_gifts(  ) {
 		var n = 0;
 		for ( var i = level_infos.height * level_infos.width ; i-- ; ) {
@@ -102,17 +124,17 @@ function initialize_a_star( dom_container ) {
 		var cube_pos = get_pos( cell.CUBE );
 
 		// redraw ball
-		DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball,
-					   ball_pos[ 0 ] * level_infos.cell.width,
-					   ball_pos[ 1 ] * level_infos.cell.height,
-					   level_infos.cell.width,
-					   level_infos.cell.height );
+		DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball,
+											ball_pos[ 0 ] * level_infos.cell.width,
+											ball_pos[ 1 ] * level_infos.cell.height,
+											level_infos.cell.width,
+											level_infos.cell.height );
 		// redraw cube
-		DOM_infos.canvas.context.drawImage( ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube,
-					   cube_pos[ 0 ] * level_infos.cell.width,
-					   cube_pos[ 1 ] * level_infos.cell.height,
-					   level_infos.cell.width,
-					   level_infos.cell.height );
+		DOM_infos.canvas.context.drawImage( ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube,
+											cube_pos[ 0 ] * level_infos.cell.width,
+											cube_pos[ 1 ] * level_infos.cell.height,
+											level_infos.cell.width,
+											level_infos.cell.height );
 		return state;
 	}
 
@@ -126,24 +148,24 @@ function initialize_a_star( dom_container ) {
 				var c = get_cell( j, i );
 				var sprite;
 				switch( c ) {
-				case "@": sprite = ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.ball; break;
-				case "H": sprite = ( state.moving == cell.CUBE ) ? sprites.cube_selected : sprites.cube; break;
-				case "#": sprite = sprites.wall; break;
-				case "x": sprite = sprites.gift; break;
-				case " ": sprite = sprites.void; break;
+				case "@": sprite = ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball; break;
+				case "H": sprite = ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube; break;
+				case "#": sprite = assets.sprites.wall; break;
+				case "x": sprite = assets.sprites.gift; break;
+				case " ": sprite = assets.sprites.void; break;
 				}
 				DOM_infos.canvas.context.drawImage( sprite,
-							   j * level_infos.cell.width,
-							   i * level_infos.cell.height,
-							   level_infos.cell.width,
-							   level_infos.cell.height );
+													j * level_infos.cell.width,
+													i * level_infos.cell.height,
+													level_infos.cell.width,
+													level_infos.cell.height );
 			}
 		}
 	}
 
 	function update_infos(  ) {
 		var infos = "<h1>Star5</h1><br />";
-		infos += "Level <em>" + (state.level+1) + "</em> of <em>" + levels.length + "</em><br />";
+		infos += "Level <em>" + (state.level+1) + "</em> of <em>" + assets.levels.length + "</em><br />";
 		infos += "<em>" + count_gifts(  ) + "</em> gifts left<br />";
 		infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 
@@ -166,7 +188,7 @@ function initialize_a_star( dom_container ) {
 
 	function load_level( index ) {
 		state.level = index;
-		state.board = levels[ state.level ];
+		state.board = assets.levels[ state.level ];
 		state.distance_travelled = 0;
 		state.moving = cell.BALL;
 		return state;
@@ -206,22 +228,22 @@ function initialize_a_star( dom_container ) {
 		{
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
 			// voiding origin cell on canvas
-			DOM_infos.canvas.context.drawImage( sprites.void,
-						   item_coord[ 0 ] * level_infos.cell.width,
-						   item_coord[ 1 ] * level_infos.cell.height,
-						   level_infos.cell.width,
-						   level_infos.cell.height );
+			DOM_infos.canvas.context.drawImage( assets.sprites.void,
+												item_coord[ 0 ] * level_infos.cell.width,
+												item_coord[ 1 ] * level_infos.cell.height,
+												level_infos.cell.width,
+												level_infos.cell.height );
 			
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
 			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 			// drawing target cell on canvas
-			DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? sprites.ball_selected : sprites.cube_selected,
-						   item_coord[ 0 ] * level_infos.cell.width,
-						   item_coord[ 1 ] * level_infos.cell.height,
-						   level_infos.cell.width,
-						   level_infos.cell.height );
+			DOM_infos.canvas.context.drawImage( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected,
+												item_coord[ 0 ] * level_infos.cell.width,
+												item_coord[ 1 ] * level_infos.cell.height,
+												level_infos.cell.width,
+												level_infos.cell.height );
 
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
@@ -265,7 +287,7 @@ function initialize_a_star( dom_container ) {
 						}
 
 						if ( won_or_not(  ) ) {
-							if ( state.level < levels.length - 1 ) {
+							if ( state.level < assets.levels.length - 1 ) {
 								state = load_level( state.level + 1 );
 								display_level(  );
 							}
@@ -294,7 +316,7 @@ function initialize_a_star( dom_container ) {
 					state = switch_actor(  );
 					break;
 				case 78: // n
-					if ( state.level < levels.length - 1 ) {
+					if ( state.level < assets.levels.length - 1 ) {
 						state = load_level( state.level + 1 );
 						display_level(  );
 					}
@@ -314,7 +336,7 @@ function initialize_a_star( dom_container ) {
 				}
 				
 				if ( won_or_not(  ) ) {
-					if ( state.level < levels.length - 1 ) {
+					if ( state.level < assets.levels.length - 1 ) {
 						state = load_level( state.level + 1 );
 						display_level(  );
 					}
@@ -323,26 +345,6 @@ function initialize_a_star( dom_container ) {
 					}
 				}
 			});
-	}
-
-	function load_sprites( theme ) {
-		var sprites = {  };
-		sprites.ball = new Image();
-		sprites.ball.src = "themes/" + theme + "/tex_ball.png";
-		sprites.ball_selected = new Image();
-		sprites.ball_selected.src = "themes/" + theme + "/tex_ball_selected.png";
-		sprites.cube = new Image();
-		sprites.cube.src = "themes/" + theme + "/tex_cube.png";
-		sprites.cube_selected = new Image();
-		sprites.cube_selected.src = "themes/" + theme + "/tex_cube_selected.png";
-		sprites.wall = new Image();
-		sprites.wall.src = "themes/" + theme + "/tex_wall.png";
-		sprites.void = new Image();
-		sprites.void.src = "themes/" + theme + "/tex_empty.png";
-		sprites.gift = new Image();
-		sprites.gift.src = "themes/" + theme + "/tex_gift.png";
-		
-		return sprites;
 	}
 
 	////// MAIN (so to speak) //////
