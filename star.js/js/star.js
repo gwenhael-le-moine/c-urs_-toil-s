@@ -1,4 +1,4 @@
-function initialize_a_star( dom_container ) {
+function initialize_a_star( dom_container, level_index ) {
 	// kinda enums
 	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
 	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
@@ -329,7 +329,10 @@ function initialize_a_star( dom_container ) {
 	}
 
 	////// MAIN (so to speak) //////
-	state = load_level( 0 );
+	state = load_level( ( level_index === undefined ) ? 0 : 
+						( level_index >= assets.levels.length ) ? assets.levels.length - 1 :
+						( level_index < 0 ) ? 0 : level_index
+					  );
 
 	start_loop(  );
 
