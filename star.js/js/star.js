@@ -148,11 +148,11 @@ function initialize_a_star( dom_container, level_index ) {
 	}
 
 	function load_level( index ) {
-		state.level = index;
-		state.board = assets.levels[ state.level ];
-		state.distance_travelled = 0;
-		state.moving = cell.BALL;
-		return state;
+		return( { moving:             cell.BALL,
+				  distance_travelled: 0,
+				  level:              index,
+				  board:              assets.levels[ index ],
+				  it_s_over:          false } );
 	}
 
 	function make_a_move( where ) {
@@ -279,13 +279,6 @@ function initialize_a_star( dom_container, level_index ) {
 		}
 	}
 
-
-	function start_loop(  ) {
-		jQuery(document).focus(  );
-		jQuery(document).click( event_handler );
-		jQuery(document).keydown( event_handler );
-	}
-
 	////// MAIN (so to speak) //////
 
 	// First of all, setup our little DOM branch
@@ -317,22 +310,16 @@ function initialize_a_star( dom_container, level_index ) {
 		}
 	};
 
-	var state = {
-		moving:             cell.BALL,
-		distance_travelled: 0,
-		level:              0,
-		board:              "",
-		it_s_over:          false
-	};
-
-	state = load_level( ( level_index === undefined ) ? 0 : 
-						( level_index >= assets.levels.length ) ? assets.levels.length - 1 :
-						( level_index < 0 ) ? 0 : level_index
-					  );
-
-	start_loop(  );
+	var state = load_level( ( level_index === undefined ) ? 0 : 
+							( level_index >= assets.levels.length ) ? assets.levels.length - 1 :
+							( level_index < 0 ) ? 0 : level_index );
 
 	// kinda ugly workaround around a mysterious bug causing the canvas
 	// not to refresh the first time (before any event)
 	setTimeout( function(){ display_level(  ); }, 100 ); // 1/10 second
+
+	// Start main "loop"
+	jQuery(document).focus(  );
+	jQuery(document).click( event_handler );
+	jQuery(document).keydown( event_handler );
 }
