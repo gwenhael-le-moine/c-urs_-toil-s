@@ -154,6 +154,7 @@ function initialize_a_star( dom_container, level_index ) {
 				case "#": sprite = assets.sprites.wall; break;
 				case "x": sprite = assets.sprites.gift; break;
 				case " ": sprite = assets.sprites.void; break;
+				default: break;
 				}
 				draw_cell( sprite, j, i );
 			}
