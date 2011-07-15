@@ -272,10 +272,10 @@ function initialize_a_star( dom_container, level_index ) {
 					}
 			} else if ( e.type === "keydown" ) {
 				switch( e.keyCode ) {
-				case 38: // UP
-				case 40: // DOWN
 				case 37: // LEFT
+				case 38: // UP
 				case 39: // RIGHT
+				case 40: // DOWN
 					state = make_a_move( e.keyCode );
 					break;
 				case 32: // SPACE
