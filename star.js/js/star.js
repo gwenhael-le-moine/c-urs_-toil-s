@@ -1,6 +1,6 @@
 function initialize_a_star( dom_container, level_index ) {
 	// kinda enums
-	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
+	var cell = { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
 	var direction = { UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 };
 
 	var assets = {
@@ -38,17 +38,17 @@ function initialize_a_star( dom_container, level_index ) {
 	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
 	starhtml +=	'<aside id="infos"></aside>';
 	starhtml +=	'</div>';
-	$( dom_container ).html( starhtml );
+	jQuery( dom_container ).html( starhtml );
 
 	// Now we can collect some informations about this DOM branch we have
 	var DOM_infos = {
 		container: dom_container,
 		canvas: {
-			//$() returns a jquery object, [0] to get the canvas itself
-			context: $( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
-			offset:  $( dom_container + " #starboard" ).offset(),
-			width:   $( dom_container + " #starboard" ).width(),
-			height:  $( dom_container + " #starboard" ).height()
+			//jQuery() returns a jquery object, [0] to get the canvas itself
+			context: jQuery( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
+			offset:  jQuery( dom_container + " #starboard" ).offset(),
+			width:   jQuery( dom_container + " #starboard" ).width(),
+			height:  jQuery( dom_container + " #starboard" ).height()
 		}
 	};
 
@@ -166,7 +166,7 @@ function initialize_a_star( dom_container, level_index ) {
 		infos += "<em>" + count_gifts(  ) + "</em> gifts left<br />";
 		infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 
-		$( DOM_infos.container + " .gstar #infos" ).html( infos );
+		jQuery( DOM_infos.container + " .gstar #infos" ).html( infos );
 	}
 
 	function format_help(  ) {
@@ -317,9 +317,9 @@ function initialize_a_star( dom_container, level_index ) {
 
 
 	function start_loop(  ) {
-		$(document).focus(  );
-		$(document).click( event_handler );
-		$(document).keydown( event_handler );
+		jQuery(document).focus(  );
+		jQuery(document).click( event_handler );
+		jQuery(document).keydown( event_handler );
 	}
 
 	////// MAIN (so to speak) //////
