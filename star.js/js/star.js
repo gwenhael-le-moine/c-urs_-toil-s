@@ -32,43 +32,6 @@ function initialize_a_star( dom_container, level_index ) {
 				  "#################            # ## x ##x   x    ##   #x  x  ##  ## x    ##  #x  ## #x   x#    x ## ##x #@ H     #################                " ]
 	};
 
-	// First of all, setup our little DOM branch
-	var starhtml = '<div class="gstar">';
-	starhtml +=	'<aside id="help">' + format_help(  ) + '</aside>';
-	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
-	starhtml +=	'<aside id="infos"></aside>';
-	starhtml +=	'</div>';
-	jQuery( dom_container ).html( starhtml );
-
-	// Now we can collect some informations about this DOM branch we have
-	var DOM_infos = {
-		container: dom_container,
-		canvas: {
-			//jQuery() returns a jquery object, [0] to get the canvas itself
-			context: jQuery( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
-			offset:  jQuery( dom_container + " #starboard" ).offset(),
-			width:   jQuery( dom_container + " #starboard" ).width(),
-			height:  jQuery( dom_container + " #starboard" ).height()
-		}
-	};
-
-	var level_infos = {
-		height: 9,
-		width:  16,
-		cell: {
-			width:  DOM_infos.canvas.width / 16,
-			height: DOM_infos.canvas.height / 9
-		}
-	};
-
-	var state = {
-		moving:             cell.BALL,
-		distance_travelled: 0,
-		level:              0,
-		board:              "",
-		it_s_over:          false
-	};
-
 	////// FUNCTIONS //////
 	function load_sprites( theme ) {
 		var sprites = {  };
@@ -324,6 +287,44 @@ function initialize_a_star( dom_container, level_index ) {
 	}
 
 	////// MAIN (so to speak) //////
+
+	// First of all, setup our little DOM branch
+	var starhtml = '<div class="gstar">';
+	starhtml +=	'<aside id="help">' + format_help(  ) + '</aside>';
+	starhtml +=	'<canvas id="starboard" width="320" height="180"></canvas>';
+	starhtml +=	'<aside id="infos"></aside>';
+	starhtml +=	'</div>';
+	jQuery( dom_container ).html( starhtml );
+
+	// Now we can collect some informations about this DOM branch we have
+	var DOM_infos = {
+		container: dom_container,
+		canvas: {
+			//jQuery() returns a jquery object, [0] to get the canvas itself
+			context: jQuery( dom_container + " #starboard" )[ 0 ].getContext( '2d' ),
+			offset:  jQuery( dom_container + " #starboard" ).offset(),
+			width:   jQuery( dom_container + " #starboard" ).width(),
+			height:  jQuery( dom_container + " #starboard" ).height()
+		}
+	};
+
+	var level_infos = {
+		height: 9,
+		width:  16,
+		cell: {
+			width:  DOM_infos.canvas.width / 16,
+			height: DOM_infos.canvas.height / 9
+		}
+	};
+
+	var state = {
+		moving:             cell.BALL,
+		distance_travelled: 0,
+		level:              0,
+		board:              "",
+		it_s_over:          false
+	};
+
 	state = load_level( ( level_index === undefined ) ? 0 : 
 						( level_index >= assets.levels.length ) ? assets.levels.length - 1 :
 						( level_index < 0 ) ? 0 : level_index
