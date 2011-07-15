@@ -1,6 +1,6 @@
 function initialize_a_star( dom_container, level_index ) {
 	// kinda enums
-	var cell = { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
+	var cell = { WALL: '#', BALL: '@', CUBE: 'H', EMPTY: ' ', GIFT: 'x' };
 	var direction = { UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 };
 
 	var assets = {
@@ -224,7 +224,7 @@ function initialize_a_star( dom_container, level_index ) {
 				|| ( state.moving == cell.BALL && ( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
 		)
 		{
-			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* void the origin cell */
+			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* empty the origin cell */
 			draw_cell( assets.sprites.empty, item_coord[ 0 ], item_coord[ 1 ] );
 			
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
