@@ -1,7 +1,7 @@
 function initialize_a_star( dom_container, level_index ) {
 	// kinda enums
 	var cell= { WALL: '#', BALL: '@', CUBE: 'H', VOID: ' ', GIFT: 'x' };
-	var direction = { UP: 'u', DOWN: 'd', LEFT: 'l', RIGHT: 'r' };
+	var direction = { UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 };
 
 	var assets = {
 		sprites: load_sprites( "HP48" ),
@@ -273,16 +273,10 @@ function initialize_a_star( dom_container, level_index ) {
 			} else if ( e.type === "keydown" ) {
 				switch( e.keyCode ) {
 				case 38: // UP
-					state = make_a_move( direction.UP );
-					break;
 				case 40: // DOWN
-					state = make_a_move( direction.DOWN );
-					break;
 				case 37: // LEFT
-					state = make_a_move( direction.LEFT );
-					break;
 				case 39: // RIGHT
-					state = make_a_move( direction.RIGHT );
+					state = make_a_move( e.keyCode );
 					break;
 				case 32: // SPACE
 					state = switch_actor(  );
