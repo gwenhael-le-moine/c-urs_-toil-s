@@ -82,8 +82,8 @@ function initialize_a_star( dom_container, level_index ) {
 		sprites.cube_selected.src = "themes/" + theme + "/tex_cube_selected.png";
 		sprites.wall = new Image();
 		sprites.wall.src = "themes/" + theme + "/tex_wall.png";
-		sprites.void = new Image();
-		sprites.void.src = "themes/" + theme + "/tex_empty.png";
+		sprites.empty = new Image();
+		sprites.empty.src = "themes/" + theme + "/tex_empty.png";
 		sprites.gift = new Image();
 		sprites.gift.src = "themes/" + theme + "/tex_gift.png";
 		
@@ -153,7 +153,7 @@ function initialize_a_star( dom_container, level_index ) {
 				case "H": sprite = ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube; break;
 				case "#": sprite = assets.sprites.wall; break;
 				case "x": sprite = assets.sprites.gift; break;
-				case " ": sprite = assets.sprites.void; break;
+				case " ": sprite = assets.sprites.empty; break;
 				default: break;
 				}
 				draw_cell( sprite, j, i );
@@ -219,13 +219,13 @@ function initialize_a_star( dom_container, level_index ) {
 			( ( item_coord[ 0 ] + motion[ 0 ] >= 0 ) && ( item_coord[ 0 ] + motion[ 0 ] < level_infos.width ) ) &&
 				( ( item_coord[ 1 ] + motion[ 1 ] >= 0 ) && ( item_coord[ 1 ] + motion[ 1 ] < level_infos.height ) ) &&
 				/* and target cell is empty */
-			( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.VOID )
+			( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.EMPTY )
 			/* or, the ball will eat gifts so we can move it on one */
 				|| ( state.moving == cell.BALL && ( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
 		)
 		{
-			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.VOID ); /* void the origin cell */
-			draw_cell( assets.sprites.void, item_coord[ 0 ], item_coord[ 1 ] );
+			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* void the origin cell */
+			draw_cell( assets.sprites.empty, item_coord[ 0 ], item_coord[ 1 ] );
 			
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
