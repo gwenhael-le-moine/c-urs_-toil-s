@@ -176,6 +176,7 @@ function initialize_a_star( dom_container, level_index ) {
 		default: break;
 		}
 
+		var path = {  } + item_coord;
 		/* Calculating arrival coordinates */
 		while (                      /* Hairy conditions ahead */
 			/* target cell is within level's boundaries */
@@ -187,19 +188,21 @@ function initialize_a_star( dom_container, level_index ) {
 				|| ( state.moving == cell.BALL && ( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
 		)
 		{
-			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* empty the origin cell */
+			set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* empty the origin cell */
 			draw_cell( assets.sprites.empty, item_coord[ 0 ], item_coord[ 1 ] );
-			
+
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
-			state = set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
+			path += item_coord;
+
+			set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected, item_coord[ 0 ], item_coord[ 1 ] );
 
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
 		update_infos(  );
-		return state;
+		return path;
 	}
 
 	function event_handler( e ) {
@@ -222,15 +225,15 @@ function initialize_a_star( dom_container, level_index ) {
 							state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
 						} else if ( click.x == movingpos[0] ) {
 							if ( click.y > movingpos[1] ) {
-								state = make_a_move( direction.DOWN );
+								make_a_move( direction.DOWN );
 							} else if ( click.y < movingpos[1] ) {
-								state = make_a_move( direction.UP );
+								make_a_move( direction.UP );
 							}
 						} else if ( click.y == movingpos[1] ) {
 							if ( click.x > movingpos[0] ) {
-								state = make_a_move( direction.RIGHT );
+								make_a_move( direction.RIGHT );
 							} else {
-								state = make_a_move( direction.LEFT );
+								make_a_move( direction.LEFT );
 							}
 						}
 					}
@@ -240,10 +243,10 @@ function initialize_a_star( dom_container, level_index ) {
 				case 38: // UP
 				case 39: // RIGHT
 				case 40: // DOWN
-					state = make_a_move( e.keyCode );
+					make_a_move( e.keyCode );
 					break;
 				case 32: // SPACE
-					state = switch_actor(  );
+					switch_actor(  );
 					break;
 				case 78: // n
 					if ( state.level < assets.levels.length - 1 ) {
