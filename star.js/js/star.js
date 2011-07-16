@@ -174,7 +174,10 @@ function initialize_a_star( dom_container, level_index ) {
 		default: break;
 		}
 
-		var path = [  ] + item_coord;
+		var path = [  ];
+		path[ 0 ] = [  ];
+		path[ 0 ][ 0 ] = item_coord[ 0 ];
+		path[ 0 ][ 1 ] = item_coord[ 1 ];
 		/* Calculating arrival coordinates */
 		while (                      /* Hairy conditions ahead */
 			/* target cell is within level's boundaries */
@@ -186,23 +189,29 @@ function initialize_a_star( dom_container, level_index ) {
 				|| ( state.moving == cell.BALL && ( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
 		)
 		{
-			set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* empty the origin cell */
-			draw_cell( assets.sprites.empty, item_coord[ 0 ], item_coord[ 1 ] );
-
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
-			path += item_coord;
+			var push_pos = path.length;
+			path[ push_pos ] = [  ];
+			path[ push_pos ][ 0 ] = item_coord[ 0 ];
+			path[ push_pos ][ 1 ] = item_coord[ 1 ];
+		}
+		return path;
+	}
 
-			set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
-			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected, item_coord[ 0 ], item_coord[ 1 ] );
+	function display_move_actor( path ) {
+		for ( var i=0 ; i < path.length-1 ; i++ ) {
+			set_cell( path[ i ][ 0 ], path[ i ][ 1 ], cell.EMPTY ); /* empty the origin cell */
+			draw_cell( assets.sprites.empty, path[ i ][ 0 ], path[ i ][ 1 ] );
+
+			set_cell( path[ i+1 ][ 0 ], path[ i+1 ][ 1 ], state.moving ); /* move actor into target cell */
+			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected,
+					   path[ i+1 ][ 0 ], path[ i+1 ][ 1 ] );
 
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
 		update_infos(  );
-
-		alert(path);
-		return path;
 	}
 
 	function event_handler( e ) {
@@ -225,15 +234,15 @@ function initialize_a_star( dom_container, level_index ) {
 							switch_actor(  );
 						} else if ( click.x == movingpos[0] ) {
 							if ( click.y > movingpos[1] ) {
-								make_a_move( direction.DOWN );
+								display_move_actor( make_a_move( direction.DOWN ) );
 							} else if ( click.y < movingpos[1] ) {
-								make_a_move( direction.UP );
+								display_move_actor( make_a_move( direction.UP ) );
 							}
 						} else if ( click.y == movingpos[1] ) {
 							if ( click.x > movingpos[0] ) {
-								make_a_move( direction.RIGHT );
+								display_move_actor( make_a_move( direction.RIGHT ) );
 							} else {
-								make_a_move( direction.LEFT );
+								display_move_actor( make_a_move( direction.LEFT ) );
 							}
 						}
 					}
@@ -243,7 +252,7 @@ function initialize_a_star( dom_container, level_index ) {
 				case 38: // UP
 				case 39: // RIGHT
 				case 40: // DOWN
-					make_a_move( e.keyCode );
+					display_move_actor( make_a_move( e.keyCode ) );
 					break;
 				case 32: // SPACE
 					switch_actor(  );
