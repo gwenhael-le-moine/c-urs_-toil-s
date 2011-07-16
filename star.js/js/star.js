@@ -174,7 +174,7 @@ function initialize_a_star( dom_container, level_index ) {
 		default: break;
 		}
 
-		var path = {  } + item_coord;
+		var path = [  ] + item_coord;
 		/* Calculating arrival coordinates */
 		while (                      /* Hairy conditions ahead */
 			/* target cell is within level's boundaries */
@@ -201,6 +201,7 @@ function initialize_a_star( dom_container, level_index ) {
 		}
 		update_infos(  );
 
+		alert(path);
 		return path;
 	}
 
@@ -221,7 +222,6 @@ function initialize_a_star( dom_container, level_index ) {
 
 						// We're inside the board
 						if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
-							// state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
 							switch_actor(  );
 						} else if ( click.x == movingpos[0] ) {
 							if ( click.y > movingpos[1] ) {
