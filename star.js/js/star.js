@@ -189,6 +189,7 @@ function initialize_a_star( dom_container, level_index ) {
 				|| ( state.moving == cell.BALL && ( get_cell( item_coord[ 0 ] + motion[ 0 ], item_coord[ 1 ] + motion[ 1 ] ) == cell.GIFT ) )
 		)
 		{
+			set_cell( item_coord[ 0 ], item_coord[ 1 ], cell.EMPTY ); /* empty the origin cell */
 			item_coord[ 0 ] += motion[ 0 ];           /* move coordinate */
 			item_coord[ 1 ] += motion[ 1 ];           /* to those of target cells */
 			
@@ -196,16 +197,15 @@ function initialize_a_star( dom_container, level_index ) {
 			path[ push_pos ] = [  ];
 			path[ push_pos ][ 0 ] = item_coord[ 0 ];
 			path[ push_pos ][ 1 ] = item_coord[ 1 ];
+
+			set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 		}
 		return path;
 	}
 
 	function display_move_actor( path ) {
 		for ( var i=0 ; i < path.length-1 ; i++ ) {
-			set_cell( path[ i ][ 0 ], path[ i ][ 1 ], cell.EMPTY ); /* empty the origin cell */
 			draw_cell( assets.sprites.empty, path[ i ][ 0 ], path[ i ][ 1 ] );
-
-			set_cell( path[ i+1 ][ 0 ], path[ i+1 ][ 1 ], state.moving ); /* move actor into target cell */
 			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected,
 					   path[ i+1 ][ 0 ], path[ i+1 ][ 1 ] );
 
