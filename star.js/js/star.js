@@ -65,7 +65,7 @@ function initialize_a_star( dom_container, level_index ) {
 
 	function get_pos( actor ) {
 		var p = state.board.indexOf( actor, state.board );
-		var pos = {  };
+		var pos = [  ];
 		pos[ 1 ] = Math.floor( p / level_infos.width ); /* y */
 		pos[ 0 ] = p - ( pos[ 1 ] * level_infos.width ); /* x */
 
@@ -79,7 +79,6 @@ function initialize_a_star( dom_container, level_index ) {
 	function set_cell( x, y, value ) {
 		var p = x + ( y * level_infos.width );
 		state.board = [ state.board.substring( 0, p ), value, state.board.substring( p+1, state.board.length ) ].join( '' );
-		return state;
 	}
 
 	function draw_cell( sprite, x, y ) {
@@ -99,7 +98,6 @@ function initialize_a_star( dom_container, level_index ) {
 		draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball, ball_pos[ 0 ], ball_pos[ 1 ] );
 		// redraw cube
 		draw_cell( ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube, cube_pos[ 0 ], cube_pos[ 1 ] );
-		return state;
 	}
 
 	function won_or_not(  ) {
@@ -202,6 +200,7 @@ function initialize_a_star( dom_container, level_index ) {
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
 		update_infos(  );
+
 		return path;
 	}
 
@@ -222,7 +221,8 @@ function initialize_a_star( dom_container, level_index ) {
 
 						// We're inside the board
 						if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
-							state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
+							// state.moving = ( state.moving != cell.BALL ) ? cell.BALL : cell.CUBE;
+							switch_actor(  );
 						} else if ( click.x == movingpos[0] ) {
 							if ( click.y > movingpos[1] ) {
 								make_a_move( direction.DOWN );
