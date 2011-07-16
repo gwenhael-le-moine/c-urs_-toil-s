@@ -201,7 +201,7 @@ function initialize_a_star( dom_container, level_index ) {
 
 	function display_level(  ) {
 		update_infos(  );
-		full_display_on_canvas( DOM_infos.container + " #starboard" );
+		full_display_on_canvas(  );
 	}
 
 	function display_move_actor( path ) {
