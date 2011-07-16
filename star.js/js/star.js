@@ -1,4 +1,4 @@
-function initialize_a_star( dom_container, level_index ) {
+var initialize_a_star = function( dom_container, level_index ) {
 	// kinda enums
 	var cell = { WALL: '#', BALL: '@', CUBE: 'H', EMPTY: ' ', GIFT: 'x' };
 	var direction = { UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 };
@@ -32,7 +32,7 @@ function initialize_a_star( dom_container, level_index ) {
 	};
 
 	////// FUNCTIONS //////
-	function count_gifts(  ) {
+	var count_gifts = function(  ) {
 		var n = 0;
 		for ( var i = level_infos.height * level_infos.width ; i-- ; ) {
 			if ( state.board[ i ] == cell.GIFT ) {
@@ -40,43 +40,43 @@ function initialize_a_star( dom_container, level_index ) {
 			}
 		}
 		return n;
-	}
+	};
 
-	function get_pos( actor ) {
+	var get_pos = function( actor ) {
 		var p = state.board.indexOf( actor, state.board );
 		var pos = [  ];
 		pos[ 1 ] = Math.floor( p / level_infos.width ); /* y */
 		pos[ 0 ] = p - ( pos[ 1 ] * level_infos.width ); /* x */
 
 		return pos;
-	}
+	};
 
-	function get_cell( x, y ) {
+	var get_cell = function( x, y ) {
 		return state.board[ x + ( y * level_infos.width ) ];
-	}
+	};
 
-	function set_cell( x, y, value ) {
+	var set_cell = function( x, y, value ) {
 		var p = x + ( y * level_infos.width );
 		state.board = [ state.board.substring( 0, p ), value, state.board.substring( p+1, state.board.length ) ].join( '' );
-	}
+	};
 
-	function switch_actor(  ) {
+	var switch_actor = function(  ) {
 		state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
-	}
+	};
 
-	function won_or_not(  ) {
+	var won_or_not = function(  ) {
 		return count_gifts(  ) === 0;
-	}
+	};
 
-	function load_level( index ) {
+	var load_level = function( index ) {
 		return( { moving:             cell.BALL,
 				  distance_travelled: 0,
 				  level:              index,
 				  board:              assets.levels[ index ],
 				  it_s_over:          false } );
-	}
+	};
 
-	function make_a_move( where ) {
+	var make_a_move = function( where ) {
 		var motion = [ 0, 0 ];
 		var item_coord = get_pos( state.moving );
 
@@ -124,10 +124,10 @@ function initialize_a_star( dom_container, level_index ) {
 			set_cell( item_coord[ 0 ], item_coord[ 1 ], state.moving ); /* move actor into target cell */
 		}
 		return path;
-	}
+	};
 
 	////// HTML/Canvas version specific functions
-	function load_sprites( theme ) {
+	var load_sprites = function( theme ) {
 		assets.sprites = {  };
 		assets.sprites.ball = new Image();
 		assets.sprites.ball.src = "themes/" + theme + "/tex_ball.png";
@@ -143,17 +143,17 @@ function initialize_a_star( dom_container, level_index ) {
 		assets.sprites.empty.src = "themes/" + theme + "/tex_empty.png";
 		assets.sprites.gift = new Image();
 		assets.sprites.gift.src = "themes/" + theme + "/tex_gift.png";
-	}
+	};
 
-	function draw_cell( sprite, x, y ) {
+	var draw_cell = function( sprite, x, y ) {
 		DOM_infos.canvas.context.drawImage( sprite,
 											x * level_infos.cell.width,
 											y * level_infos.cell.height,
 											level_infos.cell.width,
 											level_infos.cell.height );		
-	}
+	};
 
- 	function display_switch_actor(  ) {
+ 	var display_switch_actor = function(  ) {
 		var ball_pos = get_pos( cell.BALL );
 		var cube_pos = get_pos( cell.CUBE );
 
@@ -161,9 +161,9 @@ function initialize_a_star( dom_container, level_index ) {
 		draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.ball, ball_pos[ 0 ], ball_pos[ 1 ] );
 		// redraw cube
 		draw_cell( ( state.moving == cell.CUBE ) ? assets.sprites.cube_selected : assets.sprites.cube, cube_pos[ 0 ], cube_pos[ 1 ] );
-	}
+	};
 
-	function full_display_on_canvas(  ) {
+	var full_display_on_canvas = function(  ) {
 		for ( var i=0 ; i < level_infos.height ; i++ ) {
 			for ( var j=0 ; j < level_infos.width ; j++ ) {
 				var c = get_cell( j, i );
@@ -179,32 +179,32 @@ function initialize_a_star( dom_container, level_index ) {
 				draw_cell( sprite, j, i );
 			}
 		}
-	}
+	};
 
-	function update_infos(  ) {
+	var update_infos = function(  ) {
 		var infos = "<h1>Star5</h1><br />";
 		infos += "Level <em>" + (state.level+1) + "</em> of <em>" + assets.levels.length + "</em><br />";
 		infos += "<em>" + count_gifts(  ) + "</em> gifts left<br />";
 		infos += "<em>" + state.distance_travelled + "</em> meters travelled";
 
 		jQuery( DOM_infos.container + " .gstar #infos" ).html( infos );
-	}
+	};
 
-	function format_help(  ) {
+	var format_help = function(  ) {
 		var help = "<em>←↑→↓</em> to move around<br />";
 		help += "<em>Space</em> to switch actor<br />";
 		help += "<em>r</em> to reload<br />";
 		help += "<em>n</em> to pass to the next level<br />";
 		help += "<em>p</em> to go back to the previous level<br />";
 		return help;
-	}
+	};
 
-	function display_level(  ) {
+	var display_level = function(  ) {
 		update_infos(  );
 		full_display_on_canvas(  );
-	}
+	};
 
-	function display_move_actor( path ) {
+	var display_move_actor = function( path ) {
 		for ( var i=0 ; i < path.length-1 ; i++ ) {
 			draw_cell( assets.sprites.empty, path[ i ][ 0 ], path[ i ][ 1 ] );
 			draw_cell( ( state.moving == cell.BALL ) ? assets.sprites.ball_selected : assets.sprites.cube_selected,
@@ -213,9 +213,9 @@ function initialize_a_star( dom_container, level_index ) {
 			state.distance_travelled++;                /* increment distance_travelled */
 		}
 		update_infos(  );
-	}
+	};
 
-	function event_handler( e ) {
+	var event_handler = function( e ) {
 		if ( !state.it_s_over ) {
 			if ( e.type === "click" ) {
 				var movingpos = get_pos( state.moving );
@@ -292,7 +292,7 @@ function initialize_a_star( dom_container, level_index ) {
 				}
 			}
 		}
-	}
+	};
 
 	////// MAIN (so to speak) //////
 
@@ -338,4 +338,4 @@ function initialize_a_star( dom_container, level_index ) {
 	jQuery(document).focus(  );
 	jQuery(document).click( event_handler );
 	jQuery(document).keydown( event_handler );
-}
+};
