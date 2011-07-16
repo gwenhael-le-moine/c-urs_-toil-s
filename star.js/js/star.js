@@ -91,6 +91,9 @@ function initialize_a_star( dom_container, level_index ) {
 
 	function switch_actor(  ) {
 		state.moving = ( state.moving == cell.BALL ) ? cell.CUBE : cell.BALL;
+	}
+
+	function display_switch_actor(  ) {
 		var ball_pos = get_pos( cell.BALL );
 		var cube_pos = get_pos( cell.CUBE );
 
@@ -232,6 +235,7 @@ function initialize_a_star( dom_container, level_index ) {
 						// We're inside the board
 						if ( click.x == notmovingpos[0] && click.y == notmovingpos[1] ) {
 							switch_actor(  );
+							display_switch_actor(  );
 						} else if ( click.x == movingpos[0] ) {
 							if ( click.y > movingpos[1] ) {
 								display_move_actor( make_a_move( direction.DOWN ) );
@@ -256,6 +260,7 @@ function initialize_a_star( dom_container, level_index ) {
 					break;
 				case 32: // SPACE
 					switch_actor(  );
+					display_switch_actor(  );
 					break;
 				case 78: // n
 					if ( state.level < assets.levels.length - 1 ) {
