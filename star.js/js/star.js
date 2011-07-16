@@ -1,4 +1,4 @@
-var initialize_a_star = function( dom_container, level_index ) {
+var initialize_a_star = function( dom_container, level_index, theme ) {
 	// kinda enums
 	var cell = { WALL: '#', BALL: '@', CUBE: 'H', EMPTY: ' ', GIFT: 'x' };
 	var direction = { UP: 38, DOWN: 40, LEFT: 37, RIGHT: 39 };
@@ -305,7 +305,7 @@ var initialize_a_star = function( dom_container, level_index ) {
 	jQuery( dom_container ).html( starhtml );
 
 	// Now we can collect some informations about this DOM branch we have
-	load_sprites( "HP48" );
+	load_sprites( theme );
 	var DOM_infos = {
 		container: dom_container,
 		canvas: {
