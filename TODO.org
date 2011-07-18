@@ -1,11 +1,15 @@
 * C (reference version)
 ** DONE engine
 ** DONE UI
+** TODO 
+*** save current level
+*** save scores
+*** collect scores on server
 
 * Javascript
 ** DONE engine
 ** DONE UI
-** TODO
+** TODO 
 *** save current level in cookie
 *** save scores in cookie
 *** collect scores on server
