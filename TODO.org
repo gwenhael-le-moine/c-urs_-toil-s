@@ -1,10 +1,14 @@
-* DONE C (reference version)
+* C (reference version)
 ** DONE engine
 ** DONE UI
 
-* DONE Javascript
+* Javascript
 ** DONE engine
 ** DONE UI
+** TODO
+*** save current level in cookie
+*** save scores in cookie
+*** collect scores on server
 
 * DOING Ruby
 ** DOING engine
