@@ -1,5 +1,8 @@
 package com.cycojesus;
 
+import java.util.Map;
+import java.util.HashMap;
+
 public class Star {
      private int HEIGHT = 9;
      private int WIDTH  = 16;
@@ -10,7 +13,7 @@ public class Star {
      private char GIFT = 'x';
      private char VOID = ' ';
      private char WALL = '#';
-     
+
      private String[] levels = { "#################@##        x#H##          x ####       ##x    ##   ## x      #### x  x     x  ## x      x## x ##     ##x     x#################",
                                  " #  # # #   # ###   x         @#   #x  #x   x   # # x     x  # #      #   x   # #    #H#  x    #   #  # #   #xx##             #  #  #        #  ",
                                  "#################           x#@##   ##      ##H##   #x     x   ## x     x##   x## #x  x  x#  x### ##x #x  x x####x    ##x      #################",
@@ -60,7 +63,7 @@ public class Star {
      }
 
      // METHODS
-     private int countGifts(  ) {
+     private int countGifts(  ) { // FIXME: naïve approach, improvable
           int giftsCounter = 0;
           for ( int i = 0 ; i < HEIGHT * WIDTH ; i++ ) {
                if ( this.level.charAt( i ) == 'x' ) {
@@ -146,6 +149,13 @@ public class Star {
      
      // DEBUG FACILITIES
      public void debugDisplay(  ) {
+          Map<Character, String> symbols = new HashMap<Character, String>();
+          symbols.put( BALL, "()" );
+          symbols.put( CUBE, "[]" );
+          symbols.put( GIFT, "<>" );
+          symbols.put( VOID, "  " );
+          symbols.put( WALL, "##" );
+
           int[] positionBall = getPosition( BALL );
           int[] positionCube = getPosition( CUBE );
           System.out.println ( BALL + "("+positionBall[0]+";"+positionBall[1]+")" );
@@ -155,7 +165,7 @@ public class Star {
           System.out.println ( ( areWeDoneYet() ) ? "YOU WON" : "not won yet." );
           for ( int i = 0 ; i < HEIGHT ; i++ ) {
                for ( int j = 0 ; j < WIDTH ; j++ ) {
-                    System.out.print( this.level.charAt( ( i * WIDTH ) + j ) );
+                    System.out.print( symbols.get( this.level.charAt( ( i * WIDTH ) + j ) ) );
                }
                System.out.println( "" );
           }
