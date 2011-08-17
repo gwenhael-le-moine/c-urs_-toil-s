@@ -69,6 +69,7 @@ public class Star {
           }
           return giftsCounter;
      }
+     
      private int[] getPosition( char actor ) {
           int[] result = { 0, 0 };
           int position = this.level.indexOf( actor );
@@ -76,18 +77,23 @@ public class Star {
           result[ 0 ] = position - ( result[ 1 ] * WIDTH );
           return result;
      }
+     
      private char getCellAt( int x, int y ) {
           return this.level.charAt( ( y * WIDTH ) + x );
      }
+     
      private void setCellAt( int x, int y, char value ) {
           this.level = this.level.substring( 0, ( y * WIDTH ) + x ) + value + this.level.substring( ( y * WIDTH ) + x + 1 );
      }
+     
      public void switchActor(  ) {
           this.moving = ( this.moving == BALL ) ? CUBE : BALL;
      }
+     
      private boolean areWeDoneYet(  ) {
           return ( countGifts() == 0 );
      }
+     
      public void move( direction where ) {
           // TODO
           int[] motion = { 0, 0 };
@@ -133,7 +139,6 @@ public class Star {
                  that the move isn't noticeable. So it's commented.
                  (maybe on a very slow machine it adds beauty?...)
                */
-               /* display_level( s ); */
 
                this.distanceTravelled++;                /* increment distance_travelled */
           }
